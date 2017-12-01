@@ -37,6 +37,6 @@ platform "windows-2012r2-x64" do |plat|
 
   plat.platform_triple "x86_64-w64-mingw32"
 
-  plat.package_type "msi"
+  plat.package_type "archive"
   plat.output_dir "windows"
 end
