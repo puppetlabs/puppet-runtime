@@ -9,7 +9,7 @@ component "openssl" do |pkg, settings, platform|
 
   ## BUILD REQUIREMENTS
   if platform.is_windows?
-    pkg.build_requires "runtime"
+    pkg.build_requires "runtime-#{settings[:runtime_project]}"
   elsif platform.is_linux?
     pkg.build_requires 'pl-binutils'
     pkg.build_requires 'pl-gcc'

@@ -3,7 +3,7 @@ component 'augeas' do |pkg, settings, platform|
   pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
   pkg.url "#{settings[:buildsources_url]}/augeas-#{pkg.get_version}.tar.gz"
 
-  # pkg.replaces 'pe-augeas'
+  pkg.replaces 'pe-augeas'
   if platform.is_sles? && platform.os_version == '10'
     pkg.apply_patch 'resources/patches/augeas/augeas-1.2.0-fix-services-sles10.patch'
   end
@@ -14,12 +14,13 @@ component 'augeas' do |pkg, settings, platform|
   pkg.environment "PKG_CONFIG_PATH", "#{settings[:libdir]}/pkgconfig"
 
   if platform.is_aix?
+    pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/aix/#{platform.os_version}/ppc /pl-gcc-5.2.0-11.aix#{platform.os_version}.ppc.rpm"
     pkg.build_requires "http://osmirror.delivery.puppetlabs.net/AIX_MIRROR/pkg-config-0.19-6.aix5.2.ppc.rpm"
     pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", "-I#{settings[:includedir]}"
     pkg.build_requires 'libedit'
-    pkg.build_requires 'runtime'
+    pkg.build_requires "runtime-#{settings[:runtime_project]}"
   end
 
   if platform.is_rpm? && !platform.is_aix?
@@ -33,13 +34,13 @@ component 'augeas' do |pkg, settings, platform|
     end
 
     if platform.architecture =~ /aarch64|ppc64le|s390x/
-      pkg.build_requires 'runtime'
+      pkg.build_requires "runtime-#{settings[:runtime_project]}"
       pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
       pkg.environment "CFLAGS", settings[:cflags]
       pkg.environment "LDFLAGS", settings[:ldflags]
     end
   elsif platform.is_huaweios?
-    pkg.build_requires 'runtime'
+    pkg.build_requires "runtime-#{settings[:runtime_project]}"
     pkg.build_requires 'pl-pkg-config'
 
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
@@ -66,7 +67,7 @@ component 'augeas' do |pkg, settings, platform|
     pkg.environment "CFLAGS", settings[:cflags]
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.build_requires 'libedit'
-    pkg.build_requires 'runtime'
+    pkg.build_requires "runtime-#{settings[:runtime_project]}"
     if platform.os_version == "10"
       pkg.build_requires 'pkgconfig'
       pkg.environment "PKG_CONFIG_PATH", "/opt/csw/lib/pkgconfig"
