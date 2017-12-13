@@ -5,20 +5,8 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   pkg.mirror "#{settings[:buildsources_url]}/ruby-#{pkg.get_version}.tar.gz"
 
   if platform.is_windows?
-    # elevate.exe is not used in the PDK
-    # pkg.add_source "#{settings[:buildsources_url]}/windows/elevate/elevate.exe", sum: "bd81807a5c13da32dd2a7157f66fa55d"
-    # pkg.add_source "file://resources/files/windows/elevate.exe.config", sum: "a5aecf3f7335fa1250a0f691d754d561"
     pkg.add_source "file://resources/files/ruby_219/windows_ruby_gem_wrapper.bat"
   end
-
-  # PDK: we don't need the additional metadata to replace other packages
-  # pkg.replaces 'pe-ruby'
-  # pkg.replaces 'pe-ruby-mysql'
-  # pkg.replaces 'pe-rubygems'
-  # pkg.replaces 'pe-libyaml'
-  # pkg.replaces 'pe-libldap'
-  # pkg.replaces 'pe-ruby-ldap'
-  # pkg.replaces 'pe-rubygem-gem2rpm'
 
   base = 'resources/patches/ruby_219'
   pkg.apply_patch "#{base}/libyaml_cve-2014-9130.patch"
@@ -43,10 +31,6 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   #   - d09ed06f: (RE-5290) Update ruby to replace rbconfig for all solaris
   #   - bba35c1e: (RE-5290) Update ruby for a cross-compile on solaris 10
   rbconfig_info = {
-    'powerpc-ibm-aix5.3.0.0' => {
-      :sum => "5c445630ac67ddf61d16eb47a4ff955b",
-      :target_double => "powerpc-aix5.3.0.0",
-    },
     'powerpc-ibm-aix6.1.0.0' => {
       :sum => "82ee3719187cba9bbf6f4b7088b52305",
       :target_double => "powerpc-aix6.1.0.0",
@@ -58,10 +42,6 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     'aarch64-redhat-linux' => {
       :sum => "d7d0b046cdd1766e989da542e3fd3043",
       :target_double => "aarch64-linux",
-    },
-    'powerpc-linux-gnu' => {
-      :sum => "763f316f8f43878d1f3bd5aa6bbe36e8",
-      :target_double => "powerpc-linux",
     },
     'ppc64le-redhat-linux' => {
       :sum => "97f599edab5dec39b3231fc67b7208b5",
@@ -117,7 +97,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.build_requires "libedit"
-    pkg.build_requires "runtime"
+    pkg.build_requires "runtime-#{settings[:runtime_project]}"
 
     # This normalizes the build string to something like AIX 7.1.0.0 rather
     # than AIX 7.1.0.2 or something
@@ -138,7 +118,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   # Cross-compiles require a hand-built rbconfig from the target system as does Solaris, AIX and Windies
   if platform.is_cross_compiled_linux? || platform.is_solaris? || platform.is_aix? || platform.is_windows?
     pkg.add_source "file://resources/files/ruby_219/rbconfig/rbconfig-#{settings[:platform_triple]}.rb"
-    pkg.build_requires 'runtime' if platform.is_cross_compiled_linux?
+    pkg.build_requires "runtime-#{settings[:runtime_project]}" if platform.is_cross_compiled_linux?
   end
 
   pkg.build_requires "openssl"
@@ -177,7 +157,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
       special_flags += " --with-baseruby=#{settings[:host_ruby]} "
     end
     pkg.build_requires 'libedit'
-    pkg.build_requires 'runtime'
+    pkg.build_requires "runtime-#{settings[:runtime_project]}"
     pkg.environment "PATH" => "#{settings[:bindir]}:/usr/ccs/bin:/usr/sfw/bin:$$PATH:/opt/csw/bin"
     pkg.environment "CC" => "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
     pkg.environment "LDFLAGS" => "-Wl,-rpath=#{settings[:libdir]}"
@@ -238,12 +218,6 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   end
 
   if platform.is_windows?
-    # Elevate.exe is simply used when one of the run_facter.bat or
-    # run_puppet.bat files are called. These set up the required environment
-    # for the program, and elevate.exe gives the program the elevated
-    # privileges it needs to run
-    # pkg.install_file "../elevate.exe", "#{settings[:windows_tools]}/elevate.exe"
-    # pkg.install_file "../elevate.exe.config", "#{settings[:windows_tools]}/elevate.exe.config"
     lib_type = platform.architecture == "x64" ? "seh" : "sjlj"
 
     # As things stand right now, ssl should build under [INSTALLDIR]\Puppet\puppet on

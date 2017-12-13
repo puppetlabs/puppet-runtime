@@ -20,8 +20,11 @@ else
   fi
 fi
 
-RUNTIMEDIR=/opt/puppetlabs/pdk/lib
+if [ -z "$PROJECT_SHORTNAME" ]; then
+  PROJECT_SHORTNAME="pdk"
+fi
 
+RUNTIMEDIR="/opt/puppetlabs/$PROJECT_SHORTNAME/lib"
 mkdir -p "$RUNTIMEDIR"
 
 # Find the .so files we need

@@ -13,8 +13,6 @@ component "ruby-selinux" do |pkg, settings, platform|
     pkg.mirror "#{settings[:buildsources_url]}/libselinux-#{pkg.get_version}.tar.gz"
   end
 
-  # pkg.replaces 'pe-ruby-selinux'
-
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
   pkg.build_requires "swig"
   pkg.build_requires "libsepol"
