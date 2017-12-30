@@ -27,7 +27,7 @@ component "libxml2" do |pkg, settings, platform|
     pkg.environment "CFLAGS" => settings[:cflags]
   end
 
-  pkg.build_requires 'runtime'
+  pkg.build_requires "runtime-#{settings[:runtime_project]}"
 
   # The system pkg-config has been found to pass incorrect build flags on
   # some (but not all) cross-compiled debian-based platforms:

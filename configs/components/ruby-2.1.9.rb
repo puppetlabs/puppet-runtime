@@ -11,14 +11,13 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.add_source "file://resources/files/ruby_219/windows_ruby_gem_wrapper.bat"
   end
 
-  # PDK: we don't need the additional metadata to replace other packages
-  # pkg.replaces 'pe-ruby'
-  # pkg.replaces 'pe-ruby-mysql'
-  # pkg.replaces 'pe-rubygems'
-  # pkg.replaces 'pe-libyaml'
-  # pkg.replaces 'pe-libldap'
-  # pkg.replaces 'pe-ruby-ldap'
-  # pkg.replaces 'pe-rubygem-gem2rpm'
+  pkg.replaces 'pe-ruby'
+  pkg.replaces 'pe-ruby-mysql'
+  pkg.replaces 'pe-rubygems'
+  pkg.replaces 'pe-libyaml'
+  pkg.replaces 'pe-libldap'
+  pkg.replaces 'pe-ruby-ldap'
+  pkg.replaces 'pe-rubygem-gem2rpm'
 
   base = 'resources/patches/ruby_219'
   pkg.apply_patch "#{base}/libyaml_cve-2014-9130.patch"
@@ -117,7 +116,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.build_requires "libedit"
-    pkg.build_requires "runtime"
+    pkg.build_requires "runtime-#{settings[:runtime_project]}"
 
     # This normalizes the build string to something like AIX 7.1.0.0 rather
     # than AIX 7.1.0.2 or something
@@ -138,10 +137,10 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   # Cross-compiles require a hand-built rbconfig from the target system as does Solaris, AIX and Windies
   if platform.is_cross_compiled_linux? || platform.is_solaris? || platform.is_aix? || platform.is_windows?
     pkg.add_source "file://resources/files/ruby_219/rbconfig/rbconfig-#{settings[:platform_triple]}.rb"
-    pkg.build_requires 'runtime' if platform.is_cross_compiled_linux?
+    pkg.build_requires "runtime-#{settings[:runtime_project]}" if platform.is_cross_compiled_linux?
   end
 
-  pkg.build_requires "openssl"
+  pkg.build_requires "openssl-#{settings[:runtime_project]}"
 
   if platform.is_deb?
     pkg.build_requires "zlib1g-dev"
@@ -177,7 +176,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
       special_flags += " --with-baseruby=#{settings[:host_ruby]} "
     end
     pkg.build_requires 'libedit'
-    pkg.build_requires 'runtime'
+    pkg.build_requires "runtime-#{settings[:runtime_project]}"
     pkg.environment "PATH" => "#{settings[:bindir]}:/usr/ccs/bin:/usr/sfw/bin:$$PATH:/opt/csw/bin"
     pkg.environment "CC" => "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
     pkg.environment "LDFLAGS" => "-Wl,-rpath=#{settings[:libdir]}"

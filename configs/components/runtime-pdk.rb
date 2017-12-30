@@ -1,5 +1,5 @@
 # This component exists to link in the gcc and stdc++ runtime libraries.
-component "runtime" do |pkg, settings, platform|
+component "runtime-pdk" do |pkg, settings, platform|
   if platform.is_windows?
     lib_type = platform.architecture == "x64" ? "seh" : "sjlj"
     ["libgcc_s_#{lib_type}-1.dll", 'libstdc++-6.dll', 'libwinpthread-1.dll'].each do |dll|
