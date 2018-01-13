@@ -1,22 +1,14 @@
 component "ruby-2.1.9" do |pkg, settings, platform|
   pkg.version "2.1.9"
   pkg.md5sum "d9d2109d3827789344cc3aceb8e1d697"
-  pkg.url "https://cache.ruby-lang.org/pub/ruby/2.1/ruby-#{pkg.get_version}.tar.gz"
-  pkg.mirror "#{settings[:buildsources_url]}/ruby-#{pkg.get_version}.tar.gz"
 
-  if platform.is_windows?
-    pkg.add_source "file://resources/files/ruby_219/windows_ruby_gem_wrapper.bat"
-  end
+  # Most ruby configuration happens in the base ruby config:
+  instance_eval File.read('configs/components/base-ruby.rb')
+  # Configuration below should only be applicable to ruby 2.1.9
 
-  base = 'resources/patches/ruby_219'
-  pkg.apply_patch "#{base}/libyaml_cve-2014-9130.patch"
-
-  # Patches from Ruby 2.4.2 security fixes. See the description and
-  # comments of RE-9323 for more details.
-  pkg.apply_patch "#{base}/cve-2017-0898.patch"
-  pkg.apply_patch "#{base}/cve-2017-10784.patch"
-  pkg.apply_patch "#{base}/cve-2017-14033.patch"
-  pkg.apply_patch "#{base}/cve-2017-14064.patch"
+  ###########
+  # RBCONFIGS
+  ###########
 
   # These are a pretty smelly hack, and they run the risk of letting tests
   # based on the generated data (that should otherwise fail) pass
@@ -88,20 +80,24 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     },
   }
 
-  special_flags = " --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
+  #########
+  # PATCHES
+  #########
+
+  base = 'resources/patches/ruby_219'
+  pkg.apply_patch "#{base}/libyaml_cve-2014-9130.patch"
+
+  # Patches from Ruby 2.4.2 security fixes. See the description and
+  # comments of RE-9323 for more details.
+  pkg.apply_patch "#{base}/cve-2017-0898.patch"
+  pkg.apply_patch "#{base}/cve-2017-10784.patch"
+  pkg.apply_patch "#{base}/cve-2017-14033.patch"
+  pkg.apply_patch "#{base}/cve-2017-14064.patch"
 
   if platform.is_aix?
     pkg.apply_patch "#{base}/aix_ruby_2.1_libpath_with_opt_dir.patch"
     pkg.apply_patch "#{base}/aix_ruby_2.1_fix_proctitle.patch"
     pkg.apply_patch "#{base}/aix_ruby_2.1_fix_make_test_failure.patch"
-    pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
-    pkg.environment "LDFLAGS", settings[:ldflags]
-    pkg.build_requires "libedit"
-    pkg.build_requires "runtime-#{settings[:runtime_project]}"
-
-    # This normalizes the build string to something like AIX 7.1.0.0 rather
-    # than AIX 7.1.0.2 or something
-    special_flags += " --build=#{settings[:platform_triple]} "
   end
 
   if platform.is_windows?
@@ -115,68 +111,27 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     pkg.apply_patch "#{base}/rubygems_cve_2017_0902_0899_0900_0901.patch"
   end
 
-  # Cross-compiles require a hand-built rbconfig from the target system as does Solaris, AIX and Windies
-  if platform.is_cross_compiled_linux? || platform.is_solaris? || platform.is_aix? || platform.is_windows?
-    pkg.add_source "file://resources/files/ruby_219/rbconfig/rbconfig-#{settings[:platform_triple]}.rb"
-    pkg.build_requires "runtime-#{settings[:runtime_project]}" if platform.is_cross_compiled_linux?
-  end
+  ####################
+  # ENVIRONMENT, FLAGS
+  ####################
 
-  pkg.build_requires "openssl"
+  special_flags = " --prefix=#{settings[:prefix]} --with-opt-dir=#{settings[:prefix]} "
 
-  if platform.is_deb?
-    pkg.build_requires "zlib1g-dev"
-  elsif platform.is_aix?
-    pkg.build_requires "http://osmirror.delivery.puppetlabs.net/AIX_MIRROR/zlib-devel-1.2.3-4.aix5.2.ppc.rpm"
-  elsif platform.is_rpm?
-    pkg.build_requires "zlib-devel"
-  elsif platform.is_windows?
-    pkg.build_requires "pl-zlib-#{platform.architecture}"
-  end
-
-  if platform.is_cross_compiled_linux?
-    pkg.build_requires 'pl-ruby'
+  if platform.is_aix?
+    # This normalizes the build string to something like AIX 7.1.0.0 rather
+    # than AIX 7.1.0.2 or something
+    special_flags += " --build=#{settings[:platform_triple]} "
+  elsif platform.is_solaris? && platform.architecture == "sparc"
     special_flags += " --with-baseruby=#{settings[:host_ruby]} "
-    pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
-    pkg.environment "CC" => "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
-    pkg.environment "LDFLAGS" => "-Wl,-rpath=#{settings[:libdir]}"
-  end
-
-  if platform.is_osx?
-    pkg.environment "optflags" => settings[:cflags]
-  end
-
-  if platform.is_solaris?
-    if platform.architecture == "sparc"
-      if platform.os_version == "10"
-        # ruby1.8 is not new enough to successfully cross-compile ruby 2.1.x (it doesn't understand the --disable-gems flag)
-        pkg.build_requires 'ruby20'
-      elsif platform.os_version == "11"
-        pkg.build_requires 'pl-ruby'
-      end
-
-      special_flags += " --with-baseruby=#{settings[:host_ruby]} "
-    end
-    pkg.build_requires 'libedit'
-    pkg.build_requires "runtime-#{settings[:runtime_project]}"
-    pkg.environment "PATH" => "#{settings[:bindir]}:/usr/ccs/bin:/usr/sfw/bin:$$PATH:/opt/csw/bin"
-    pkg.environment "CC" => "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
-    pkg.environment "LDFLAGS" => "-Wl,-rpath=#{settings[:libdir]}"
-  end
-
-  if platform.is_windows?
-    pkg.build_requires "pl-gdbm-#{platform.architecture}"
-    pkg.build_requires "pl-iconv-#{platform.architecture}"
-    pkg.build_requires "pl-libffi-#{platform.architecture}"
-    pkg.build_requires "pl-pdcurses-#{platform.architecture}"
-
-    pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:tools_root]}/bin):$(shell cygpath -u #{settings[:tools_root]}/include):$(shell cygpath -u #{settings[:bindir]}):$(shell cygpath -u #{settings[:ruby_bindir]}):$(shell cygpath -u #{settings[:includedir]}):$(PATH)"
-    pkg.environment "CYGWIN", settings[:cygwin]
-    pkg.environment "optflags", settings[:cflags] + " -O3"
-    pkg.environment "LDFLAGS", settings[:ldflags]
-
+  elsif platform.is_cross_compiled_linux?
+    special_flags += " --with-baseruby=#{settings[:host_ruby]} "
+  elsif platform.is_windows?
     special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
   end
 
+  ###########
+  # CONFIGURE
+  ###########
 
   # Here we set --enable-bundled-libyaml to ensure that the libyaml included in
   # ruby is used, even if the build system has a copy of libyaml available
@@ -192,52 +147,11 @@ component "ruby-2.1.9" do |pkg, settings, platform|
      ]
   end
 
-  pkg.build do
-    "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"
-  end
+  #########
+  # INSTALL
+  #########
 
-  # Because the autogenerated batch wrappers for ruby built from source are
-  # not consistent with legacy builds, we removed the addition of the batch
-  # wrappers from the build of ruby and instead we will just put them in
-  # ourselves. note that we can use the same source file for all batch wrappers
-  # because the batch wrappers use the wrappers file name to find the source
-  # to execute (i.e. irb.bat will look to execute "irb" due to it's filename)
-  if platform.is_windows?
-    pkg.install do
-      ["cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/irb.bat",
-       "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/gem.bat",
-       "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/rake.bat",
-       "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/erb.bat",
-       "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/rdoc.bat",
-       "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/ri.bat",]
-    end
-  end
-
-  pkg.install do
-    "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install"
-  end
-
-  if platform.is_windows?
-    lib_type = platform.architecture == "x64" ? "seh" : "sjlj"
-
-    # As things stand right now, ssl should build under [INSTALLDIR]\Puppet\puppet on
-    # windows. However, if things need to run *outside* of the normal batch file runs
-    # (puppet.bat ,mco.bat etcc) the location of openssl away from where ruby is
-    # installed will cause a failure. Specifically this is meant to help services like
-    # mco that require openssl but don't have access to environment.bat. Refer to
-    # https://tickets.puppetlabs.com/browse/RE-7593 for details on why this causes
-    # failures and why these copies fix that.
-    #                   -Sean P. McDonald 07/01/2016
-    pkg.install do
-      [
-        "cp #{settings[:prefix]}/bin/libgcc_s_#{lib_type}-1.dll #{settings[:ruby_bindir]}",
-        "cp #{settings[:prefix]}/bin/ssleay32.dll #{settings[:ruby_bindir]}",
-        "cp #{settings[:prefix]}/bin/libeay32.dll #{settings[:ruby_bindir]}",
-      ]
-    end
-    pkg.directory settings[:ruby_dir]
-  end
-  if platform.is_cross_compiled_linux? || platform.is_solaris? || platform.is_aix? || platform.is_windows?
+  if platform.is_cross_compiled_linux? || platform.is_solaris? || platform.is_aix?
     # Here we replace the rbconfig from our ruby compiled with our toolchain
     # with an rbconfig from a ruby of the same version compiled with the system
     # gcc. Without this, the rbconfig will be looking for a gcc that won't
@@ -251,10 +165,11 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     # installing a compiled gem would not work without us shipping that gcc.
     # This tells the ruby setup that it can use the default system gcc rather
     # than our own.
-    target_dir = File.join(settings[:ruby_dir], "lib", "ruby", "2.1.0", rbconfig_info[settings[:platform_triple]][:target_double])
+    target_dir = File.join(settings[:libdir], "ruby", "2.1.0", rbconfig_info[settings[:platform_triple]][:target_double])
     sed = "sed"
     sed = "gsed" if platform.is_solaris?
     sed = "/opt/freeware/bin/sed" if platform.is_aix?
+
     pkg.install do
       [
         "#{sed} -i 's|raise|warn|g' #{target_dir}/rbconfig.rb",
