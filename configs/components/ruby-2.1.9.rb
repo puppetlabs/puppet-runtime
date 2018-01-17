@@ -93,6 +93,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   pkg.apply_patch "#{base}/cve-2017-10784.patch"
   pkg.apply_patch "#{base}/cve-2017-14033.patch"
   pkg.apply_patch "#{base}/cve-2017-14064.patch"
+  pkg.apply_patch "#{base}/cve-2017-17405.patch"
 
   if platform.is_aix?
     pkg.apply_patch "#{base}/aix_ruby_2.1_libpath_with_opt_dir.patch"
