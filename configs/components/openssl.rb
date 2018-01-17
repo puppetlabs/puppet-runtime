@@ -1,13 +1,6 @@
 component 'openssl' do |pkg, settings, platform|
-  # TODO: All projects should be using the same version of openssl; Remove this block once that happens.
-  if settings[:runtime_project] == 'agent'
-    pkg.version '1.0.2k'
-    pkg.md5sum 'f965fc0bf01bf882b31314b61391ae65'
-  else
-    pkg.version '1.0.2m'
-    pkg.md5sum '10e9e37f492094b9ef296f68f24a7666'
-  end
-
+  pkg.version '1.0.2n'
+  pkg.md5sum '13bdc1b1d1ff39b6fd42a255e74676a4'
   pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
@@ -114,9 +107,6 @@ component 'openssl' do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
     pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
   elsif platform.is_solaris?
-    if platform.os_version == '10'
-      pkg.apply_patch 'resources/patches/openssl/solaris-10-domd-shell-compatability-fix.patch'
-    end
     pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
     pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
   elsif platform.is_linux?
