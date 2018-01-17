@@ -3,8 +3,8 @@
 # changes made to this file will be lost the next time ruby is built.
 
 module RbConfig
-  RUBY_VERSION == "2.4.2" or
-    raise "ruby lib version (2.4.2) doesn't match executable version (#{RUBY_VERSION})"
+  RUBY_VERSION == "2.4.3" or
+    raise "ruby lib version (2.4.3) doesn't match executable version (#{RUBY_VERSION})"
 
   TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/2.4.0/powerpc-aix6.1.0.0")
   DESTDIR = '' unless defined? DESTDIR
@@ -198,7 +198,7 @@ module RbConfig
   CONFIG["build_cpu"] = "powerpc"
   CONFIG["build"] = "powerpc-ibm-aix6.1.0.0"
   CONFIG["RUBY_RELEASE_DATE"] = "2017-03-22"
-  CONFIG["RUBY_PROGRAM_VERSION"] = "2.4.2"
+  CONFIG["RUBY_PROGRAM_VERSION"] = "2.4.3"
   CONFIG["target_alias"] = ""
   CONFIG["host_alias"] = ""
   CONFIG["build_alias"] = ""

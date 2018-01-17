@@ -1,10 +1,10 @@
-component 'ruby-2.4.2' do |pkg, settings, platform|
-  pkg.version '2.4.2'
-  pkg.md5sum 'fe106eed9738c4e03813ab904f8d891c'
+component 'ruby-2.4.3' do |pkg, settings, platform|
+  pkg.version '2.4.3'
+  pkg.md5sum "a00e0d49b454f4c0e528e7852d642925"
 
   # Most ruby configuration happens in the base ruby config:
   instance_eval File.read('configs/components/base-ruby.rb')
-  # Configuration below should only be applicable to ruby 2.4.2
+  # Configuration below should only be applicable to ruby 2.4.3
 
   ###########
   # RBCONFIGS
@@ -98,7 +98,7 @@ component 'ruby-2.4.2' do |pkg, settings, platform|
   # PATCHES
   #########
 
-  base = 'resources/patches/ruby_242'
+  base = 'resources/patches/ruby_243'
   pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator.patch"
 
   if platform.is_aix?

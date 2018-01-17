@@ -1,5 +1,5 @@
-# Custom rbconfig.rb file obtained from a test Ruby 2.4 build and modified
-# to change build_os to "mingw32" as per PA-1086
+# Custom rbconfig.rb file obtained from puppet-agent build with Ruby
+# 2.4 and modified to change build_os to "mingw32" as per PA-1086.
 #
 # frozen-string-literal: false
 #
@@ -12,10 +12,10 @@
 
 module RbConfig
   RUBY_VERSION.start_with?("2.4.") or
-    raise "ruby lib version (2.4.2) doesn't match executable version (#{RUBY_VERSION})"
+    raise "ruby lib version (2.4.3) doesn't match executable version (#{RUBY_VERSION})"
 
   # Ruby installed directory.
-  TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/2.4.0/x64-mingw32")
+  TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/2.4.0/i386-mingw32")
   # DESTDIR on make install.
   DESTDIR = TOPDIR && TOPDIR[/\A[a-z]:/i] || '' unless defined? DESTDIR
   # The hash configurations stored.
@@ -27,10 +27,10 @@ module RbConfig
   CONFIG["PATCHLEVEL"] = "111"
   CONFIG["INSTALL"] = '/bin/install -c'
   CONFIG["EXEEXT"] = ".exe"
-  CONFIG["prefix"] = (TOPDIR || DESTDIR + "C:/ProgramFiles64Folder/PuppetLabs/Puppet/sys/ruby")
+  CONFIG["prefix"] = (TOPDIR || DESTDIR + "C:/ProgramFilesFolder/PuppetLabs/Puppet/sys/ruby")
   CONFIG["ruby_install_name"] = "$(RUBY_BASE_NAME)"
   CONFIG["RUBY_INSTALL_NAME"] = "$(RUBY_BASE_NAME)"
-  CONFIG["RUBY_SO_NAME"] = "x64-msvcrt-$(RUBY_BASE_NAME)$(MAJOR)$(MINOR)0"
+  CONFIG["RUBY_SO_NAME"] = "msvcrt-$(RUBY_BASE_NAME)$(MAJOR)$(MINOR)0"
   CONFIG["exec"] = "exec"
   CONFIG["ruby_pc"] = "ruby-2.4.pc"
   CONFIG["PACKAGE"] = "ruby"
@@ -47,7 +47,7 @@ module RbConfig
   CONFIG["RUBY_SEARCH_PATH"] = ""
   CONFIG["UNIVERSAL_INTS"] = ""
   CONFIG["UNIVERSAL_ARCHNAMES"] = ""
-  CONFIG["configure_args"] = " '--enable-shared' '--enable-bundled-libyaml' '--disable-install-doc' '--disable-install-rdoc' '--host' 'x86_64-w64-mingw32' 'CPPFLAGS=-DFD_SETSIZE=2048' 'debugflags=-g' '--prefix=C:/ProgramFiles64Folder/PuppetLabs/Puppet/sys/ruby' '--with-opt-dir=C:/ProgramFiles64Folder/PuppetLabs/Puppet/puppet' 'host_alias=x86_64-w64-mingw32' 'LDFLAGS=-LC:/tools/pl-build-tools/lib -LC:/tools/mingw64/lib -LC:/ProgramFiles64Folder/PuppetLabs/Puppet/sys/ruby/lib'"
+  CONFIG["configure_args"] = " '--enable-shared' '--enable-bundled-libyaml' '--disable-install-doc' '--disable-install-rdoc' '--host' 'i686-w64-mingw32' 'CPPFLAGS=-DFD_SETSIZE=2048' 'debugflags=-g' '--prefix=C:/ProgramFilesFolder/PuppetLabs/Puppet/sys/ruby' '--with-opt-dir=C:/ProgramFilesFolder/PuppetLabs/Puppet/puppet' 'host_alias=i686-w64-mingw32' 'LDFLAGS=-LC:/tools/pl-build-tools/lib -LC:/tools/mingw32/lib -LC:/ProgramFilesFolder/PuppetLabs/Puppet/sys/ruby/lib'"
   CONFIG["CONFIGURE"] = "configure"
   CONFIG["vendorarchdir"] = "$(vendorlibdir)/$(sitearch)"
   CONFIG["vendorlibdir"] = "$(vendordir)/$(ruby_version)"
@@ -58,8 +58,8 @@ module RbConfig
   CONFIG["rubyarchdir"] = "$(rubylibdir)/$(arch)"
   CONFIG["rubylibdir"] = "$(rubylibprefix)/$(ruby_version)"
   CONFIG["ruby_version"] = "2.4.0"
-  CONFIG["sitearch"] = "x64-msvcrt"
-  CONFIG["arch"] = "x64-mingw32"
+  CONFIG["sitearch"] = "i386-msvcrt"
+  CONFIG["arch"] = "i386-mingw32"
   CONFIG["sitearchincludedir"] = "$(includedir)/$(sitearch)"
   CONFIG["archincludedir"] = "$(includedir)/$(arch)"
   CONFIG["sitearchlibdir"] = "$(libdir)/$(sitearch)"
@@ -75,7 +75,7 @@ module RbConfig
   CONFIG["MAKEFILES"] = "Makefile GNUmakefile"
   CONFIG["PLATFORM_DIR"] = "win32"
   CONFIG["THREAD_MODEL"] = "win32"
-  CONFIG["SYMBOL_PREFIX"] = ""
+  CONFIG["SYMBOL_PREFIX"] = "_"
   CONFIG["EXPORT_PREFIX"] = " "
   CONFIG["COMMON_HEADERS"] = "winsock2.h windows.h"
   CONFIG["COMMON_MACROS"] = ""
@@ -98,7 +98,7 @@ module RbConfig
   CONFIG["strict_warnflags"] = ""
   CONFIG["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
   CONFIG["debugflags"] = "-g"
-  CONFIG["optflags"] = "-IC:/tools/pl-build-tools/include -IC:/tools/mingw64/include -IC:/ProgramFiles64Folder/PuppetLabs/Puppet/puppet/include -O3 -fno-omit-frame-pointer -fno-fast-math"
+  CONFIG["optflags"] = "-IC:/tools/pl-build-tools/include -IC:/tools/mingw32/include -IC:/ProgramFilesFolder/PuppetLabs/Puppet/puppet/include -O3 -fno-omit-frame-pointer -fno-fast-math"
   CONFIG["NULLCMD"] = ":"
   CONFIG["DLNOBJ"] = "dln.o"
   CONFIG["INSTALL_STATIC_LIBRARY"] = "no"
@@ -129,7 +129,7 @@ module RbConfig
   CONFIG["CCDLFLAGS"] = ""
   CONFIG["STATIC"] = ""
   CONFIG["ARCH_FLAG"] = ""
-  CONFIG["DLDFLAGS"] = "-LC:/tools/pl-build-tools/lib -LC:/tools/mingw64/lib -LC:/ProgramFiles64Folder/PuppetLabs/Puppet/sys/ruby/lib -Wl,--enable-auto-image-base,--enable-auto-import -LC/lib -L/ProgramFiles64Folder/PuppetLabs/Puppet/puppet/lib $(DEFFILE)"
+  CONFIG["DLDFLAGS"] = "-LC:/tools/pl-build-tools/lib -LC:/tools/mingw32/lib -LC:/ProgramFilesFolder/PuppetLabs/Puppet/sys/ruby/lib -Wl,--enable-auto-image-base,--enable-auto-import -LC/lib -L/ProgramFilesFolder/PuppetLabs/Puppet/puppet/lib $(DEFFILE)"
   CONFIG["ALLOCA"] = ""
   CONFIG["codesign"] = ""
   CONFIG["POSTLINK"] = ":"
@@ -162,7 +162,7 @@ module RbConfig
   CONFIG["AR"] = "ar"
   CONFIG["RANLIB"] = "ranlib"
   CONFIG["try_header"] = ""
-  CONFIG["CC_VERSION_MESSAGE"] = "x86_64-w64-mingw32-gcc.exe (x86_64-win32-seh-rev0, Built by MinGW-W64 project) 5.2.0\nCopyright (C) 2015 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\r"
+  CONFIG["CC_VERSION_MESSAGE"] = "i686-w64-mingw32-gcc.exe (i686-win32-sjlj-rev0, Built by MinGW-W64 project) 5.2.0\nCopyright (C) 2015 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.\n\r"
   CONFIG["CC_VERSION"] = "$(CC) --version"
   CONFIG["CSRCFLAG"] = ""
   CONFIG["COUTFLAG"] = "-o "
@@ -176,23 +176,23 @@ module RbConfig
   CONFIG["CPP"] = "$(CC) -E"
   CONFIG["CXXFLAGS"] = "$(cxxflags)"
   CONFIG["OBJEXT"] = "o"
-  CONFIG["CPPFLAGS"] = "-DFD_SETSIZE=2048 -IC/include -I/ProgramFiles64Folder/PuppetLabs/Puppet/puppet/include -D_WIN32_WINNT=0x0501 -D__MINGW_USE_VC2005_COMPAT $(DEFS) $(cppflags)"
-  CONFIG["LDFLAGS"] = "-L. -LC:/tools/pl-build-tools/lib -LC:/tools/mingw64/lib -LC:/ProgramFiles64Folder/PuppetLabs/Puppet/sys/ruby/lib -LC/lib -L/ProgramFiles64Folder/PuppetLabs/Puppet/puppet/lib"
+  CONFIG["CPPFLAGS"] = "-DFD_SETSIZE=2048 -IC/include -I/ProgramFilesFolder/PuppetLabs/Puppet/puppet/include -D_WIN32_WINNT=0x0501 -D__MINGW_USE_VC2005_COMPAT $(DEFS) $(cppflags)"
+  CONFIG["LDFLAGS"] = "-L. -LC:/tools/pl-build-tools/lib -LC:/tools/mingw32/lib -LC:/ProgramFilesFolder/PuppetLabs/Puppet/sys/ruby/lib -LC/lib -L/ProgramFilesFolder/PuppetLabs/Puppet/puppet/lib"
   CONFIG["CFLAGS"] = "$(cflags)"
-  CONFIG["CXX"] = "x86_64-w64-mingw32-g++"
-  CONFIG["CC"] = "x86_64-w64-mingw32-gcc"
+  CONFIG["CXX"] = "i686-w64-mingw32-g++"
+  CONFIG["CC"] = "i686-w64-mingw32-gcc"
   CONFIG["NACL_LIB_PATH"] = ""
   CONFIG["NACL_SDK_VARIANT"] = ""
   CONFIG["NACL_SDK_ROOT"] = ""
   CONFIG["NACL_TOOLCHAIN"] = ""
   CONFIG["target_os"] = "mingw32"
   CONFIG["target_vendor"] = "w64"
-  CONFIG["target_cpu"] = "x64"
-  CONFIG["target"] = "x86_64-w64-mingw32"
+  CONFIG["target_cpu"] = "i386"
+  CONFIG["target"] = "i386-w64-mingw32"
   CONFIG["host_os"] = "mingw32"
   CONFIG["host_vendor"] = "w64"
-  CONFIG["host_cpu"] = "x86_64"
-  CONFIG["host"] = "x86_64-w64-mingw32"
+  CONFIG["host_cpu"] = "i686"
+  CONFIG["host"] = "i686-w64-mingw32"
   CONFIG["RUBY_VERSION_NAME"] = "$(RUBY_BASE_NAME)-$(ruby_version)"
   CONFIG["RUBYW_BASE_NAME"] = "rubyw"
   CONFIG["RUBY_BASE_NAME"] = "ruby"
@@ -200,12 +200,12 @@ module RbConfig
   CONFIG["build_vendor"] = "unknown"
   CONFIG["build_cpu"] = "x86_64"
   CONFIG["build"] = "x86_64-unknown-cygwin"
-  CONFIG["RUBY_PROGRAM_VERSION"] = "2.4.2"
+  CONFIG["RUBY_PROGRAM_VERSION"] = "2.4.3"
   CONFIG["cxxflags"] = "$(optflags) $(debugflags) $(warnflags)"
   CONFIG["cppflags"] = ""
   CONFIG["cflags"] = "$(optflags) $(debugflags) $(warnflags)"
   CONFIG["target_alias"] = ""
-  CONFIG["host_alias"] = "x86_64-w64-mingw32"
+  CONFIG["host_alias"] = "i686-w64-mingw32"
   CONFIG["build_alias"] = ""
   CONFIG["LIBS"] = "-lshell32 -lws2_32 -liphlpapi -limagehlp -lshlwapi "
   CONFIG["ECHO_T"] = ""
