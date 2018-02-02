@@ -1,88 +1,208 @@
-component "openssl" do |pkg, settings, platform|
-  ## SOURCE METADATA
-  pkg.version "1.0.2m"
-  pkg.md5sum "10e9e37f492094b9ef296f68f24a7666"
-  pkg.url "https://www.openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
+component 'openssl' do |pkg, settings, platform|
+  pkg.version '1.0.2n'
+  pkg.md5sum '13bdc1b1d1ff39b6fd42a255e74676a4'
+  pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
-  ## PACKAGE DEPENDENCIES
+  #############################
+  # ENVIRONMENT, FLAGS, TARGETS
+  #############################
 
-  ## BUILD REQUIREMENTS
+  target = cflags = ldflags = sslflags = ''
+
   if platform.is_windows?
-    pkg.build_requires "runtime"
-  elsif platform.is_linux?
-    pkg.build_requires 'pl-binutils'
-    pkg.build_requires 'pl-gcc'
-  end
+    pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
+    pkg.environment 'CYGWIN', settings[:cygwin]
+    pkg.environment 'CC', settings[:cc]
+    pkg.environment 'CXX', settings[:cxx]
+    pkg.environment 'MAKE', platform[:make]
 
-  ## BUILD CONFIGURATION
-  install_prefix = "INSTALL_PREFIX=/" unless platform.is_windows?
-
-  if platform.is_macos?
-    target = 'darwin64-x86_64-cc'
-    cflags = settings[:cflags]
-    ldflags = ''
-  elsif platform.is_windows?
-    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
-    pkg.apply_patch 'resources/patches/openssl/openssl-mingw-do-not-build-applink.patch'
-    target = platform.architecture == "x64" ? "mingw64" : "mingw"
-    pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
-    pkg.environment "CYGWIN", settings[:cygwin]
-    pkg.environment "CC", settings[:cc]
-    pkg.environment "CXX", settings[:cxx]
-    pkg.environment "MAKE", platform[:make]
+    target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
     cflags = settings[:cflags]
     ldflags = settings[:ldflags]
-  else # Linux Platforms
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin"
-    target = 'linux-x86_64'
+  elsif platform.is_cross_compiled_linux?
+    pkg.environment 'PATH', "/opt/pl-build-tools/bin:$$PATH"
+    pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
+
+    cflags = "#{settings[:cflags]} -fPIC"
+    ldflags = "-Wl,-rpath=/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
+    target = if platform.architecture == 'aarch64'
+               'linux-aarch64'
+             elsif platform.name =~ /debian-8-arm/
+               'linux-armv4'
+             elsif platform.architecture =~ /ppc64/
+               'linux-ppc64le'
+             elsif platform.architecture == 's390x'
+               'linux64-s390x'
+             end
+  elsif platform.is_aix?
+    pkg.environment 'CC', '/opt/pl-build-tools/bin/gcc'
+
+    cflags = '$${CFLAGS} -static-libgcc'
+    target = 'aix-gcc'
+  elsif platform.is_solaris?
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin'
+    pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
+
+    cflags = "#{settings[:cflags]} -fPIC"
+    ldflags = "-R/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
+    target = platform.architecture =~ /86/ ? 'solaris-x86-gcc' : 'solaris-sparcv9-gcc'
+  elsif platform.is_macos?
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
+
+    cflags = settings[:cflags]
+    target = 'darwin64-x86_64-cc'
+  elsif platform.is_linux?
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
+
     cflags = settings[:cflags]
     ldflags = "#{settings[:ldflags]} -Wl,-z,relro"
+    if platform.architecture =~ /86$/
+      target = 'linux-elf'
+      sslflags = '386'
+    elsif platform.architecture =~ /64$/
+      target = 'linux-x86_64'
+    end
   end
 
-  ## BUILD COMMANDS
-  pkg.configure do
-    [# OpenSSL Configure doesn't honor CFLAGS or LDFLAGS as environment variables.
-    # Instead, those should be passed to Configure at the end of its options, as
-    # any unrecognized options are passed straight through to ${CC}. Defining
-    # --libdir ensures that we avoid the multilib (lib/ vs. lib64/) problem,
-    # since configure uses the existence of a lib64 directory to determine
-    # if it should install its own libs into a multilib dir. Yay OpenSSL!
-    "./Configure \
-      --prefix=#{settings[:prefix]} \
-      --libdir=lib \
-      --openssldir=#{settings[:prefix]}/ssl \
-      shared \
-      no-asm \
-      #{target} \
-      no-camellia \
-      enable-seed \
-      enable-tlsext \
-      enable-rfc3779 \
-      enable-cms \
-      no-md2 \
-      no-mdc2 \
-      no-rc5 \
-      no-ec2m \
-      no-gost \
-      no-srp \
-      no-ssl2 \
-      no-ssl3 \
-      #{cflags} \
-      #{ldflags}"]
+  ####################
+  # BUILD REQUIREMENTS
+  ####################
+
+  pkg.build_requires "runtime-#{settings[:runtime_project]}"
+  if platform.is_cross_compiled_linux?
+    # These are needed for the makedepend command
+    pkg.build_requires 'imake' if platform.name =~ /^el/
+    pkg.build_requires 'xorg-x11-util-devel' if platform.name =~ /^sles/
+    pkg.build_requires 'xutils-dev' if platform.is_deb?
+  elsif platform.is_aix?
+    pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/aix/#{platform.os_version}/ppc/pl-gcc-5.2.0-11.aix#{platform.os_version}.ppc.rpm"
+  elsif platform.is_macos?
+    pkg.build_requires 'makedepend'
+  elsif platform.is_linux?
+    unless platform.is_fedora? && platform.os_version.delete('f').to_i >= 26
+      # TODO: pdk had this for all linux platforms, but agent didn't - necessary?
+      pkg.build_requires 'pl-binutils'
+    end
+    pkg.build_requires 'pl-gcc'
+
+    if platform.name =~ /debian-8-arm/
+      pkg.build_requires 'xutils-dev'
+    end
   end
+
+  #########
+  # PATCHES
+  #########
+
+  if platform.is_windows?
+    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
+    # This patch removes the option `-DOPENSSL_USE_APPLINK` from the mingw openssl congifure target
+    # This brings mingw more in line with what is happening with mingw64. All applink does it makes
+    # it possible to use the .dll compiled with one compiler with an application compiled with a
+    # different compiler. Given our openssl should only be interacting with things that we build,
+    # we can ensure everything is build with the same compiler.
+    pkg.apply_patch 'resources/patches/openssl/openssl-mingw-do-not-build-applink.patch'
+  elsif platform.is_aix?
+    pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
+    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
+  elsif platform.is_solaris?
+    pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
+    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
+  elsif platform.is_linux?
+    if platform.name =~ /debian-8-arm/
+      pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
+    end
+  end
+
+  ###########
+  # CONFIGURE
+  ###########
+
+  # OpenSSL Configure doesn't honor CFLAGS or LDFLAGS as environment variables.
+  # Instead, those should be passed to Configure at the end of its options, as
+  # any unrecognized options are passed straight through to ${CC}. Defining
+  # --libdir ensures that we avoid the multilib (lib/ vs. lib64/) problem,
+  # since configure uses the existence of a lib64 directory to determine
+  # if it should install its own libs into a multilib dir. Yay OpenSSL!
+  configure_flags = [
+    "--prefix=#{settings[:prefix]}",
+    '--libdir=lib',
+    "--openssldir=#{settings[:prefix]}/ssl",
+    'shared',
+    'no-asm',
+    target,
+    sslflags,
+    'enable-rfc3779',
+    'enable-tlsext',
+    'no-3des',
+    'no-camellia',
+    'no-ec2m',
+    'no-gost',
+    'no-md2',
+    'no-mdc2',
+    'no-rc5',
+    'no-srp',
+    'no-ssl2',
+    'no-ssl3',
+  ]
+
+  configure_flags << 'no-psk' unless platform.is_windows?
+
+  if settings[:runtime_project] == 'agent'
+    configure_flags.concat([
+       'no-dtls',
+       'no-dtls1',
+       'no-idea',
+       'no-seed',
+       'no-ssl2-method',
+       'no-weak-ssl-ciphers',
+       '-DOPENSSL_NO_HEARTBEATS',
+    ])
+  elsif settings[:runtime_project] == 'pdk'
+    configure_flags.concat([
+      'enable-cms',
+      'enable-seed',
+    ])
+  end
+
+  configure_flags << cflags << ldflags
+
+  pkg.configure do
+    ["./Configure #{configure_flags.join(' ')}"]
+  end
+
+  #######
+  # BUILD
+  #######
 
   pkg.build do
-    ["#{platform[:make]} depend",
-    "#{platform[:make]}"]
-  end
-
-  pkg.install do
-    ["#{platform[:make]} #{install_prefix} install",
-     "rm -f #{settings[:prefix]}/bin/openssl",
-     "rm -f #{settings[:prefix]}/bin/c_rehash",
+    [
+      "#{platform[:make]} depend",
+      "#{platform[:make]}"
     ]
   end
 
-  pkg.install_file "LICENSE", "#{settings[:prefix]}/share/doc/openssl-#{pkg.get_version}/LICENSE"
+  #########
+  # INSTALL
+  #########
+
+  install_prefix = platform.is_windows? ? '' : 'INSTALL_PREFIX=/'
+  install_commands = []
+
+  if platform.is_aix?
+    install_commands << "slibclean"
+  end
+
+  install_commands << "#{platform[:make]} #{install_prefix} install"
+
+  if settings[:runtime_project] == 'pdk'
+    install_commands << "rm -f #{settings[:prefix]}/bin/{openssl,c_rehash}"
+  end
+
+  pkg.install do
+    install_commands
+  end
+
+  pkg.install_file 'LICENSE', "#{settings[:prefix]}/share/doc/openssl-#{pkg.get_version}/LICENSE"
 end

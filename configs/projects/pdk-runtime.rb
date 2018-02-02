@@ -1,5 +1,8 @@
 project 'pdk-runtime' do |proj|
+  # Used in component configurations to conditionally include dependencies
+  proj.setting(:runtime_project, "pdk")
   platform = proj.get_platform
+
   proj.inherit_settings 'pdk', 'git://github.com/puppetlabs/pdk-vanagon', 'master'
   proj.version_from_git
   proj.generate_archives true
@@ -25,7 +28,7 @@ project 'pdk-runtime' do |proj|
   proj.component "git"
 
   # Ruby and deps
-  proj.component "runtime"
+  proj.component "runtime-pdk"
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
   proj.component "augeas" unless platform.is_windows?
@@ -36,7 +39,7 @@ project 'pdk-runtime' do |proj|
   if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
     proj.component "ruby-selinux"
   end
-  proj.component "ruby-stomp"
+  proj.component "ruby-stomp-1.4.4"
 
   # Platform specific deps
   proj.component "ansicon" if platform.is_windows?
