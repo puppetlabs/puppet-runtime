@@ -17,10 +17,10 @@ proj.license 'See components'
 proj.vendor 'Puppet, Inc.  <info@puppet.com>'
 proj.homepage 'https://puppet.com'
 
-# For puppet-agent, the ruby_bindir is only set for windows, but the augeas
-# component requires it to be set everywhere:
-proj.setting(:ruby_bindir, "#{proj.settings[:bindir]}") unless platform.is_windows?
-proj.setting(:ruby_dir, "#{proj.settings[:prefix]}") unless platform.is_windows?
+# Some projects and platforms using the runtime set custom ruby installation
+# directories - fall back to the project prefix if ruby_dir hasn't been set
+proj.setting(:ruby_dir, proj.settings[:prefix]) unless proj.settings[:ruby_dir]
+proj.setting(:ruby_bindir, File.join(proj.settings[:ruby_dir], 'bin')) unless proj.settings[:ruby_bindir]
 
 if platform.is_macos?
   proj.identifier 'com.puppetlabs'

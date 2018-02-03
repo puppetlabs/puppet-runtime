@@ -116,7 +116,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   # ENVIRONMENT, FLAGS
   ####################
 
-  special_flags = " --prefix=#{settings[:prefix]} --with-opt-dir=#{settings[:prefix]} "
+  special_flags = " --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
 
   if platform.is_aix?
     # This normalizes the build string to something like AIX 7.1.0.0 rather
@@ -166,7 +166,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     # installing a compiled gem would not work without us shipping that gcc.
     # This tells the ruby setup that it can use the default system gcc rather
     # than our own.
-    target_dir = File.join(settings[:libdir], "ruby", "2.1.0", rbconfig_info[settings[:platform_triple]][:target_double])
+    target_dir = File.join(settings[:ruby_dir], 'lib', 'ruby', '2.1.0', rbconfig_info[settings[:platform_triple]][:target_double])
     sed = "sed"
     sed = "gsed" if platform.is_solaris?
     sed = "/opt/freeware/bin/sed" if platform.is_aix?

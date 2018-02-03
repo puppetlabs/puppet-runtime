@@ -4,11 +4,11 @@
 
 # Condensed version, e.g. '2.4.3' -> '243'
 ruby_version_condensed = settings[:ruby_version].tr('.', '')
-# Base version, e.g. '2.4.3' -> '2.4'
-ruby_version_short = settings[:ruby_version].gsub(/(\d)\.(\d)\.(\d)/, '\1.\2')
+# Y version, e.g. '2.4.3' -> '2.4'
+ruby_version_y = settings[:ruby_version].gsub(/(\d)\.(\d)\.(\d)/, '\1.\2')
 
 pkg.mirror "#{settings[:buildsources_url]}/ruby-#{pkg.get_version}.tar.gz"
-pkg.url "https://cache.ruby-lang.org/pub/ruby/#{ruby_version_short}/ruby-#{pkg.get_version}.tar.gz"
+pkg.url "https://cache.ruby-lang.org/pub/ruby/#{ruby_version_y}/ruby-#{pkg.get_version}.tar.gz"
 
 
 #########
