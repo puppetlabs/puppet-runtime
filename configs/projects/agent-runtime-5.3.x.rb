@@ -3,7 +3,7 @@ project 'agent-runtime-5.3.x' do |proj|
   # Common agent settings:
   instance_eval File.read('configs/projects/base-agent-runtime.rb')
 
-  proj.version "#{proj.settings[:package_version]}"
+  proj.version proj.settings[:package_version]
 
   # Dependencies specific to the 5.3.x branch
   proj.component 'ruby-stomp-1.4.4'
