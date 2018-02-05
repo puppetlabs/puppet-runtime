@@ -63,6 +63,7 @@ if platform.is_windows?
   proj.component 'rubygem-win32-process'
   proj.component 'rubygem-win32-security'
   proj.component 'rubygem-win32-service'
+  proj.component 'rubygem-win32-eventlog'
 end
 
 if platform.is_windows? || platform.is_solaris?
