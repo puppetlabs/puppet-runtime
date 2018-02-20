@@ -1,7 +1,39 @@
 component 'augeas' do |pkg, settings, platform|
-  pkg.version '1.8.1'
-  pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
-  pkg.url "#{settings[:buildsources_url]}/augeas-#{pkg.get_version}.tar.gz"
+  # Projects may define an :augeas_version setting, or we use 1.8.1 by default:
+  version = settings[:augeas_version] || '1.8.1'
+  pkg.version version
+
+  case version
+    when '1.4.0'
+      pkg.md5sum 'a2536a9c3d744dc09d234228fe4b0c93'
+
+      pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-osx-stub-needed-readline-functions.patch'
+      pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-sudoers-negated-command-alias.patch'
+      pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-src-pathx.c-parse_name-correctly-handle-trailing-ws.patch'
+    when '1.8.1'
+      pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
+    when '1.10.1'
+      pkg.md5sum '6c0b2ea6eec45e8bc374b283aedf27ce'
+
+      if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
+        # Augeas 1.10.1 needs a libselinux pkgconfig file on these platforms:
+        pkg.build_requires 'ruby-selinux'
+      elsif platform.name =~ /solaris-10-sparc/
+        # This patch to gnulib fixes a linking error around symbol versioning in pthread.
+        pkg.add_source 'file://resources/patches/augeas/augeas-1.10.1-gnulib-pthread-in-use.patch'
+
+        pkg.configure do
+          # gnulib is a submodule, and its files don't exist until after configure,
+          # so we apply the patch manually here instead of using pkg.apply_patch.
+          ["/usr/bin/gpatch -p0 < ../augeas-1.10.1-gnulib-pthread-in-use.patch"]
+        end
+      end
+    else
+      raise "augeas version #{version} has not been configured; Cannot continue."
+  end
+
+  pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
+  pkg.mirror "#{settings[:buildsources_url]}/augeas-#{pkg.get_version}.tar.gz"
 
   pkg.build_requires "libxml2"
 
