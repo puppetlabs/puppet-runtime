@@ -3,10 +3,6 @@ component 'augeas' do |pkg, settings, platform|
   pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
   pkg.url "#{settings[:buildsources_url]}/augeas-#{pkg.get_version}.tar.gz"
 
-  if platform.is_sles? && platform.os_version == '10'
-    pkg.apply_patch 'resources/patches/augeas/augeas-1.2.0-fix-services-sles10.patch'
-  end
-
   pkg.build_requires "libxml2"
 
   # Ensure we're building against our own libraries when present
