@@ -10,8 +10,9 @@ component "runtime-pdk" do |pkg, settings, platform|
     pkg.build_requires "pl-zlib-#{platform.architecture}"
     pkg.install_file "#{settings[:tools_root]}/bin/zlib1.dll", "#{settings[:bindir]}/zlib1.dll"
 
-    # gdbm, yaml-cpp and iconv are all runtime dependancies of ruby, and their libraries need
+    # zlib, gdbm, yaml-cpp and iconv are all runtime dependancies of ruby, and their libraries need
     # To exist inside our vendored ruby
+    pkg.install_file "#{settings[:tools_root]}/bin/zlib1.dll", "#{settings[:ruby_bindir]}/zlib1.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libgdbm-4.dll", "#{settings[:ruby_bindir]}/libgdbm-4.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libgdbm_compat-4.dll", "#{settings[:ruby_bindir]}/libgdbm_compat-4.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libiconv-2.dll", "#{settings[:ruby_bindir]}/libiconv-2.dll"
