@@ -100,6 +100,7 @@ component 'ruby-2.4.3' do |pkg, settings, platform|
 
   base = 'resources/patches/ruby_243'
   pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator.patch"
+  pkg.apply_patch "#{base}/thread_wakeup_ownership_check.patch"
 
   if platform.is_aix?
     # TODO: Remove this patch once PA-1607 is resolved.
