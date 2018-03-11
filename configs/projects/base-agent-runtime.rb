@@ -28,7 +28,14 @@ end
 
 # Common components required by all agent branches
 proj.component 'runtime-agent'
-proj.component 'openssl'
+
+if platform.name =~ /^redhat-fips-7-.*/
+  # Link against the system openssl instead of our vendored version:
+  proj.setting(:system_openssl, true)
+else
+  proj.component 'openssl'
+end
+
 proj.component 'curl'
 proj.component 'puppet-ca-bundle'
 proj.component "ruby-#{proj.ruby_version}"
