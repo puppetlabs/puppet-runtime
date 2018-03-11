@@ -52,7 +52,11 @@ end
 # BUILD REQUIREMENTS
 ####################
 
-pkg.build_requires 'openssl'
+if settings[:system_openssl]
+  pkg.build_requires 'openssl-devel'
+else
+  pkg.build_requires 'openssl'
+end
 
 if platform.is_aix?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
