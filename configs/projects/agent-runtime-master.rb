@@ -3,7 +3,7 @@ project 'agent-runtime-master' do |proj|
   proj.setting :augeas_version, '1.10.1'
 
   # Common agent settings:
-  instance_eval File.read('configs/projects/base-agent-runtime.rb')
+  instance_eval File.read(File.join(File.dirname(__FILE__), 'base-agent-runtime.rb'))
 
   # Dependencies specific to the master branch
   proj.component 'ruby-stomp-1.4.4'
