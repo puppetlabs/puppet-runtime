@@ -7,7 +7,7 @@ project 'agent-runtime-1.10.x' do |proj|
   proj.setting :ruby_stomp_version, '1.3.3'
 
   # Common agent settings:
-  instance_eval File.read('configs/projects/base-agent-runtime.rb')
+  instance_eval File.read(File.join(File.dirname(__FILE__), 'base-agent-runtime.rb'))
 
   proj.version proj.settings[:package_version]
 end
