@@ -21,7 +21,7 @@ module RbConfig
   CONFIG["DESTDIR"] = DESTDIR
   CONFIG["MAJOR"] = "2"
   CONFIG["MINOR"] = "4"
-  CONFIG["TEENY"] = "2"
+  CONFIG["TEENY"] = "3"
   CONFIG["PATCHLEVEL"] = "198"
   CONFIG["INSTALL"] = '/bin/install -c'
   CONFIG["EXEEXT"] = ""

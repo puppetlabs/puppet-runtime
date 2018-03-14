@@ -23,8 +23,8 @@ module RbConfig
   CONFIG["DESTDIR"] = DESTDIR
   CONFIG["MAJOR"] = "2"
   CONFIG["MINOR"] = "4"
-  CONFIG["TEENY"] = "2"
-  CONFIG["PATCHLEVEL"] = "111"
+  CONFIG["TEENY"] = "3"
+  CONFIG["PATCHLEVEL"] = "205"
   CONFIG["INSTALL"] = '/bin/install -c'
   CONFIG["EXEEXT"] = ".exe"
   CONFIG["prefix"] = (TOPDIR || DESTDIR + "C:/ProgramFilesFolder/PuppetLabs/Puppet/sys/ruby")
