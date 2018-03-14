@@ -135,11 +135,6 @@ end
 proj.setting(:platform_triple, platform_triple)
 proj.setting(:host, host)
 
-# For some platforms the default doc location for the BOM does not exist or is incorrect - move it to specified directory
-if platform.name =~ /cisco-wrlinux/
-  proj.bill_of_materials File.join(proj.datadir, "doc")
-end
-
 # Define default CFLAGS and LDFLAGS for most platforms, and then
 # tweak or adjust them as needed.
 proj.setting(:cppflags, "-I#{proj.includedir} -I/opt/pl-build-tools/include")
