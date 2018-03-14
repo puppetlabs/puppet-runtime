@@ -9,6 +9,5 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.version proj.settings[:package_version]
 
   # Dependencies specific to the 5.5.x branch
-  proj.component 'ruby-stomp-1.4.4'
   proj.component 'rubygem-multi_json'
 end
