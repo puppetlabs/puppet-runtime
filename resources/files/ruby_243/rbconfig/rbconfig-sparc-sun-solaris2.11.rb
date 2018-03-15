@@ -12,8 +12,8 @@ module RbConfig
   CONFIG["DESTDIR"] = DESTDIR
   CONFIG["MAJOR"] = "2"
   CONFIG["MINOR"] = "4"
-  CONFIG["TEENY"] = "2"
-  CONFIG["PATCHLEVEL"] = "111"
+  CONFIG["TEENY"] = "3"
+  CONFIG["PATCHLEVEL"] = "205"
   CONFIG["INSTALL"] = '/usr/bin/ginstall -c'
   CONFIG["EXEEXT"] = ""
   CONFIG["prefix"] = (TOPDIR || DESTDIR + "/opt/puppetlabs/puppet")
@@ -195,7 +195,7 @@ module RbConfig
   CONFIG["build_vendor"] = "sun"
   CONFIG["build_cpu"] = "sparc"
   CONFIG["build"] = "sparc-sun-solaris2.11"
-  CONFIG["RUBY_RELEASE_DATE"] = "2017-03-22"
+  CONFIG["RUBY_RELEASE_DATE"] = "2017-12-14"
   CONFIG["RUBY_PROGRAM_VERSION"] = "2.4.3"
   CONFIG["target_alias"] = ""
   CONFIG["host_alias"] = ""
