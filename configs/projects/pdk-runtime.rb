@@ -39,7 +39,7 @@ project 'pdk-runtime' do |proj|
   if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
     proj.component "ruby-selinux"
   end
-  proj.component "ruby-stomp-1.4.4"
+  proj.component "ruby-stomp"
 
   # Platform specific deps
   proj.component "ansicon" if platform.is_windows?
