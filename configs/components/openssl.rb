@@ -135,38 +135,17 @@ component 'openssl' do |pkg, settings, platform|
     sslflags,
     'enable-rfc3779',
     'enable-tlsext',
-    'no-3des',
     'no-camellia',
     'no-ec2m',
-    'no-gost',
     'no-md2',
     'no-mdc2',
-    'no-rc5',
-    'no-srp',
     'no-ssl2',
     'no-ssl3',
   ]
 
-  configure_flags << 'no-psk' unless platform.is_windows?
-
-  if settings[:runtime_project] == 'agent'
-    configure_flags.concat([
-       'no-dtls',
-       'no-dtls1',
-       'no-idea',
-       'no-seed',
-       'no-ssl2-method',
-       'no-weak-ssl-ciphers',
-       '-DOPENSSL_NO_HEARTBEATS',
-    ])
-  elsif settings[:runtime_project] == 'pdk'
-    configure_flags.concat([
-      'enable-cms',
-      'enable-seed',
-    ])
-  end
-
-  configure_flags << cflags << ldflags
+  # Individual projects may provide their own openssl configure flags:
+  project_flags = settings[:openssl_extra_configure_flags] || []
+  configure_flags << project_flags << cflags << ldflags
 
   pkg.configure do
     ["./Configure #{configure_flags.join(' ')}"]
