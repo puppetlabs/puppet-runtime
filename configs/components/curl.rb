@@ -46,11 +46,18 @@ component 'curl' do |pkg, settings, platform|
     ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"]
   end
 
+  install_steps = [
+    "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install",
+  ]
+
+  unless settings[:runtime_project] == 'agent'
+    # Most projects won't need curl binaries, so delete them after installation.
+    # Note that the agent _should_ include curl binaries; Some projects and
+    # scripts depend on them and they can be helpful in debugging.
+    install_steps << "rm -f #{settings[:prefix]}/bin/{curl,curl-config}"
+  end
+
   pkg.install do
-    # Do not need curl binaries, delete after install
-    ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install",
-     "rm -f #{settings[:prefix]}/bin/curl",
-     "rm -f #{settings[:prefix]}/bin/curl-config"
-    ]
+    install_steps
   end
 end
