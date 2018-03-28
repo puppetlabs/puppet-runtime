@@ -2,7 +2,7 @@
 # See configs/projects/agent-runtime-<branchname>.rb
 unless defined?(proj)
   warn('This is the base project for the puppet-agent runtime.')
-  warn('Please choose one of `puppet-agent-master`, `puppet-agent-5.3.x`, or `puppet-agent-1.10.x` instead.')
+  warn('Please choose one of the other puppet-agent projects instead.')
   exit 1
 end
 
@@ -191,6 +191,18 @@ proj.timeout 7200 if platform.is_windows?
 
 # Common components required by all agent branches
 proj.component 'runtime-agent'
+
+# Most branches of puppet-agent use these openssl flags in addition to the defaults in configs/components/openssl.rb -
+# Individual projects can override these if necessary.
+proj.setting(:openssl_extra_configure_flags, [
+  'no-dtls',
+  'no-dtls1',
+  'no-idea',
+  'no-seed',
+  'no-ssl2-method',
+  'no-weak-ssl-ciphers',
+  '-DOPENSSL_NO_HEARTBEATS',
+]) unless proj.settings[:openssl_extra_configure_flags]
 
 if platform.name =~ /^redhat-fips-7-.*/
   # Link against the system openssl instead of our vendored version:

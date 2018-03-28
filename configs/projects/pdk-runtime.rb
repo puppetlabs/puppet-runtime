@@ -17,6 +17,15 @@ project 'pdk-runtime' do |proj|
     proj.identifier "com.puppetlabs"
   end
 
+  # These flags are applied in addition to the defaults in configs/component/openssl.rb.
+  proj.setting(:openssl_extra_configure_flags, [
+    'enable-cms',
+    'enable-seed',
+    'no-gost',
+    'no-rc5',
+    'no-srp',
+  ])
+
   # What to build?
   # --------------
 
