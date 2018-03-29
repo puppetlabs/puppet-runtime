@@ -204,7 +204,7 @@ proj.setting(:openssl_extra_configure_flags, [
   '-DOPENSSL_NO_HEARTBEATS',
 ]) unless proj.settings[:openssl_extra_configure_flags]
 
-if platform.name =~ /^redhat-fips-7-.*/
+if platform.name =~ /^redhatfips-7-.*/
   # Link against the system openssl instead of our vendored version:
   proj.setting(:system_openssl, true)
 else
