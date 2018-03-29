@@ -238,7 +238,6 @@ proj.component 'rubygem-text'
 proj.component 'rubygem-locale'
 proj.component 'rubygem-gettext'
 proj.component 'rubygem-fast_gettext'
-proj.component 'rubygem-gettext-setup'
 
 if platform.is_windows?
   proj.component 'rubygem-ffi'
