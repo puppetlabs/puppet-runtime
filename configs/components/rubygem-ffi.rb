@@ -1,5 +1,5 @@
 component "rubygem-ffi" do |pkg, settings, platform|
-  instance_eval File.read('configs/components/base-rubygem.rb')
+  instance_eval File.read('configs/components/_base-rubygem.rb')
 
   version = settings[:rubygem_ffi_version] || '1.9.18'
   pkg.version version

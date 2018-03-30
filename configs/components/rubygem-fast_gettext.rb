@@ -1,5 +1,5 @@
 component "rubygem-fast_gettext" do |pkg, settings, platform|
-  instance_eval File.read('configs/components/base-rubygem.rb')
+  instance_eval File.read('configs/components/_base-rubygem.rb')
 
   version = settings[:rubygem_fast_gettext_version] || '1.1.2'
   pkg.version version

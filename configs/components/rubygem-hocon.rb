@@ -1,5 +1,6 @@
 component "rubygem-hocon" do |pkg, settings, platform|
-  instance_eval File.read('configs/components/base-rubygem.rb')
+  instance_eval File.read('configs/components/_base-rubygem.rb')
+
   pkg.version "1.2.5"
   pkg.md5sum "e7821d3a731ab617320ccfa4f67f886b"
   pkg.url "https://rubygems.org/downloads/hocon-#{pkg.get_version}.gem"
