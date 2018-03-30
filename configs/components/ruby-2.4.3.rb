@@ -3,7 +3,7 @@ component 'ruby-2.4.3' do |pkg, settings, platform|
   pkg.md5sum "a00e0d49b454f4c0e528e7852d642925"
 
   # Most ruby configuration happens in the base ruby config:
-  instance_eval File.read('configs/components/base-ruby.rb')
+  instance_eval File.read('configs/components/_base-ruby.rb')
   # Configuration below should only be applicable to ruby 2.4.3
 
   ###########
@@ -195,8 +195,8 @@ component 'ruby-2.4.3' do |pkg, settings, platform|
       [
         "#{sed} -i 's|raise|warn|g' #{target_dir}/rbconfig.rb",
         "mkdir -p #{settings[:datadir]}/doc",
-        "cp #{target_dir}/rbconfig.rb #{settings[:datadir]}/doc",
-        "cp ../rbconfig-#{settings[:platform_triple]}.rb #{target_dir}/rbconfig.rb",
+        "cp #{target_dir}/rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.4.3-orig.rb",
+        "cp ../rbconfig-243-#{settings[:platform_triple]}.rb #{target_dir}/rbconfig.rb",
       ]
     end
   end

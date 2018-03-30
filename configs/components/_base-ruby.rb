@@ -3,13 +3,18 @@
 # load it with instance_eval. See ruby-x.y.z.rb configs.
 
 # Condensed version, e.g. '2.4.3' -> '243'
-ruby_version_condensed = settings[:ruby_version].tr('.', '')
+ruby_version_condensed = pkg.get_version.tr('.', '')
 # Y version, e.g. '2.4.3' -> '2.4'
-ruby_version_y = settings[:ruby_version].gsub(/(\d)\.(\d)\.(\d)/, '\1.\2')
+ruby_version_y = pkg.get_version.gsub(/(\d)\.(\d)\.(\d)/, '\1.\2')
 
 pkg.mirror "#{settings[:buildsources_url]}/ruby-#{pkg.get_version}.tar.gz"
 pkg.url "https://cache.ruby-lang.org/pub/ruby/#{ruby_version_y}/ruby-#{pkg.get_version}.tar.gz"
 
+
+# These may have been overridden in the including file,
+# if not then default them back to original values.
+ruby_dir ||= settings[:ruby_dir]
+ruby_bindir ||= settings[:ruby_bindir]
 
 #########
 # SOURCES
@@ -21,7 +26,7 @@ end
 
 # Cross-compiles require a hand-built rbconfig from the target system as does Solaris, AIX and Windies
 if platform.is_cross_compiled_linux? || platform.is_solaris? || platform.is_aix? || platform.is_windows?
-  pkg.add_source "file://resources/files/ruby_#{ruby_version_condensed}/rbconfig/rbconfig-#{settings[:platform_triple]}.rb"
+  pkg.add_source "file://resources/files/ruby_#{ruby_version_condensed}/rbconfig/rbconfig-#{ruby_version_condensed}-#{settings[:platform_triple]}.rb"
 end
 
 #############
@@ -40,7 +45,7 @@ elsif platform.is_cross_compiled_linux? || platform.is_solaris?
   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
   pkg.environment 'LDFLAGS', "-Wl,-rpath=#{settings[:libdir]}"
 elsif platform.is_windows?
-  pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:tools_root]}/bin):$(shell cygpath -u #{settings[:tools_root]}/include):$(shell cygpath -u #{settings[:bindir]}):$(shell cygpath -u #{settings[:ruby_bindir]}):$(shell cygpath -u #{settings[:includedir]}):$(PATH)"
+  pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:tools_root]}/bin):$(shell cygpath -u #{settings[:tools_root]}/include):$(shell cygpath -u #{settings[:bindir]}):$(shell cygpath -u #{ruby_bindir}):$(shell cygpath -u #{settings[:includedir]}):$(PATH)"
   pkg.environment 'CYGWIN', settings[:cygwin]
   pkg.environment 'LDFLAGS', settings[:ldflags]
   pkg.environment 'optflags', settings[:cflags] + ' -O3'
@@ -114,12 +119,12 @@ if platform.is_windows?
   # to execute (i.e. irb.bat will look to execute "irb" due to it's filename)
   # Note that this step must happen before the install step below
   pkg.install do
-    ["cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/irb.bat",
-     "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/gem.bat",
-     "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/rake.bat",
-     "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/erb.bat",
-     "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/rdoc.bat",
-     "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/ri.bat",]
+    ["cp ../windows_ruby_gem_wrapper.bat #{ruby_bindir}/irb.bat",
+     "cp ../windows_ruby_gem_wrapper.bat #{ruby_bindir}/gem.bat",
+     "cp ../windows_ruby_gem_wrapper.bat #{ruby_bindir}/rake.bat",
+     "cp ../windows_ruby_gem_wrapper.bat #{ruby_bindir}/erb.bat",
+     "cp ../windows_ruby_gem_wrapper.bat #{ruby_bindir}/rdoc.bat",
+     "cp ../windows_ruby_gem_wrapper.bat #{ruby_bindir}/ri.bat",]
   end
 end
 
@@ -140,11 +145,11 @@ if platform.is_windows?
 
   pkg.install do
     [
-      "cp #{settings[:prefix]}/bin/libgcc_s_#{lib_type}-1.dll #{settings[:ruby_bindir]}",
-      "cp #{settings[:prefix]}/bin/ssleay32.dll #{settings[:ruby_bindir]}",
-      "cp #{settings[:prefix]}/bin/libeay32.dll #{settings[:ruby_bindir]}",
+      "cp #{settings[:prefix]}/bin/libgcc_s_#{lib_type}-1.dll #{ruby_bindir}",
+      "cp #{settings[:prefix]}/bin/ssleay32.dll #{ruby_bindir}",
+      "cp #{settings[:prefix]}/bin/libeay32.dll #{ruby_bindir}",
     ]
   end
 
-  pkg.directory settings[:ruby_dir]
+  pkg.directory ruby_dir
 end
