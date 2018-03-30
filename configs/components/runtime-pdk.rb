@@ -17,6 +17,17 @@ component "runtime-pdk" do |pkg, settings, platform|
     pkg.install_file "#{settings[:tools_root]}/bin/libgdbm_compat-4.dll", "#{settings[:ruby_bindir]}/libgdbm_compat-4.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libiconv-2.dll", "#{settings[:ruby_bindir]}/libiconv-2.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libffi-6.dll", "#{settings[:ruby_bindir]}/libffi-6.dll"
+
+    # Copy the DLLs into additional ruby install bindirs as well.
+    if settings.has_key?(:additional_rubies)
+      settings[:additional_rubies].each do |rubyver, local_settings|
+        pkg.install_file "#{settings[:tools_root]}/bin/zlib1.dll", "#{local_settings[:ruby_bindir]}/zlib1.dll"
+        pkg.install_file "#{settings[:tools_root]}/bin/libgdbm-4.dll", "#{local_settings[:ruby_bindir]}/libgdbm-4.dll"
+        pkg.install_file "#{settings[:tools_root]}/bin/libgdbm_compat-4.dll", "#{local_settings[:ruby_bindir]}/libgdbm_compat-4.dll"
+        pkg.install_file "#{settings[:tools_root]}/bin/libiconv-2.dll", "#{local_settings[:ruby_bindir]}/libiconv-2.dll"
+        pkg.install_file "#{settings[:tools_root]}/bin/libffi-6.dll", "#{local_settings[:ruby_bindir]}/libffi-6.dll"
+      end
+    end
   elsif platform.is_macos?
 
     # Do nothing
