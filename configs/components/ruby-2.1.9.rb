@@ -2,8 +2,31 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   pkg.version "2.1.9"
   pkg.md5sum "d9d2109d3827789344cc3aceb8e1d697"
 
+
+  # PDK packages multiple rubies and we need to tweak some settings
+  # if this is not the *primary* ruby.
+  if (pkg.get_version != settings[:ruby_version])
+    # not primary ruby
+
+    # ensure we have config for this ruby
+    unless settings.has_key?(:additional_rubies) && settings[:additional_rubies].has_key?(pkg.get_version)
+      raise "missing config for additional ruby #{pkg.get_version}"
+    end
+
+    ruby_settings = settings[:additional_rubies][pkg.get_version]
+
+    ruby_dir = ruby_settings[:ruby_dir]
+    ruby_bindir = ruby_settings[:ruby_bindir]
+    host_ruby = ruby_settings[:host_ruby]
+  else
+    # primary ruby
+    ruby_dir = settings[:ruby_dir]
+    ruby_bindir = settings[:ruby_bindir]
+    host_ruby = settings[:host_ruby]
+  end
+
   # Most ruby configuration happens in the base ruby config:
-  instance_eval File.read('configs/components/base-ruby.rb')
+  instance_eval File.read('configs/components/_base-ruby.rb')
   # Configuration below should only be applicable to ruby 2.1.9
 
   ###########
@@ -104,10 +127,10 @@ component "ruby-2.1.9" do |pkg, settings, platform|
 
   if platform.is_windows?
     pkg.apply_patch "#{base}/windows_ruby_2.1_update_to_rubygems_2.4.5.patch"
-    pkg.apply_patch "#{base}/windows_fixup_generated_batch_files.patch"
+    pkg.apply_patch "#{base}/windows_ruby_2.1_fixup_generated_batch_files.patch"
     pkg.apply_patch "#{base}/windows_remove_DL_deprecated_warning.patch"
     pkg.apply_patch "#{base}/windows_ruby_2.1_update_to_rubygems_2.4.5.1.patch"
-    pkg.apply_patch "#{base}/update_rbinstall_for_windows.patch"
+    pkg.apply_patch "#{base}/windows_ruby_2.1_update_rbinstall.patch"
     pkg.apply_patch "#{base}/windows_rubygems_cve_2017_0902_0899_0900_0901.patch"
   else
     pkg.apply_patch "#{base}/rubygems_cve_2017_0902_0899_0900_0901.patch"
@@ -117,18 +140,18 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   # ENVIRONMENT, FLAGS
   ####################
 
-  special_flags = " --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
+  special_flags = " --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
 
   if platform.is_aix?
     # This normalizes the build string to something like AIX 7.1.0.0 rather
     # than AIX 7.1.0.2 or something
     special_flags += " --build=#{settings[:platform_triple]} "
   elsif platform.is_solaris? && platform.architecture == "sparc"
-    special_flags += " --with-baseruby=#{settings[:host_ruby]} "
+    special_flags += " --with-baseruby=#{host_ruby} "
   elsif platform.is_cross_compiled_linux?
-    special_flags += " --with-baseruby=#{settings[:host_ruby]} "
+    special_flags += " --with-baseruby=#{host_ruby} "
   elsif platform.is_windows?
-    special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
+    special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
   end
 
   ###########
@@ -167,7 +190,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
     # installing a compiled gem would not work without us shipping that gcc.
     # This tells the ruby setup that it can use the default system gcc rather
     # than our own.
-    target_dir = File.join(settings[:ruby_dir], 'lib', 'ruby', '2.1.0', rbconfig_info[settings[:platform_triple]][:target_double])
+    target_dir = File.join(ruby_dir, 'lib', 'ruby', '2.1.0', rbconfig_info[settings[:platform_triple]][:target_double])
     sed = "sed"
     sed = "gsed" if platform.is_solaris?
     sed = "/opt/freeware/bin/sed" if platform.is_aix?
@@ -176,8 +199,8 @@ component "ruby-2.1.9" do |pkg, settings, platform|
       [
         "#{sed} -i 's|raise|warn|g' #{target_dir}/rbconfig.rb",
         "mkdir -p #{settings[:datadir]}/doc",
-        "cp #{target_dir}/rbconfig.rb #{settings[:datadir]}/doc",
-        "cp ../rbconfig-#{settings[:platform_triple]}.rb #{target_dir}/rbconfig.rb",
+        "cp #{target_dir}/rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.1.9-orig.rb",
+        "cp ../rbconfig-219-#{settings[:platform_triple]}.rb #{target_dir}/rbconfig.rb",
       ]
     end
   end

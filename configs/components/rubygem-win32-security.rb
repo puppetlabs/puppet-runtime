@@ -1,5 +1,6 @@
 component "rubygem-win32-security" do |pkg, settings, platform|
-  instance_eval File.read('configs/components/base-rubygem.rb')
+  instance_eval File.read('configs/components/_base-rubygem.rb')
+
   pkg.version "0.2.5"
   pkg.md5sum "97c4b971ea19ca48cea7dec1d21d506a"
   pkg.url "https://rubygems.org/downloads/win32-security-#{pkg.get_version}.gem"
