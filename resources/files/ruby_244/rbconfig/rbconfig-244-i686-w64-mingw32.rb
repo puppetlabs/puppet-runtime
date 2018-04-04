@@ -12,7 +12,7 @@
 
 module RbConfig
   RUBY_VERSION.start_with?("2.4.") or
-    raise "ruby lib version (2.4.3) doesn't match executable version (#{RUBY_VERSION})"
+    raise "ruby lib version (2.4.4) doesn't match executable version (#{RUBY_VERSION})"
 
   # Ruby installed directory.
   TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/2.4.0/i386-mingw32")
@@ -23,8 +23,8 @@ module RbConfig
   CONFIG["DESTDIR"] = DESTDIR
   CONFIG["MAJOR"] = "2"
   CONFIG["MINOR"] = "4"
-  CONFIG["TEENY"] = "3"
-  CONFIG["PATCHLEVEL"] = "205"
+  CONFIG["TEENY"] = "4"
+  CONFIG["PATCHLEVEL"] = "296"
   CONFIG["INSTALL"] = '/bin/install -c'
   CONFIG["EXEEXT"] = ".exe"
   CONFIG["prefix"] = (TOPDIR || DESTDIR + "C:/ProgramFilesFolder/PuppetLabs/Puppet/sys/ruby")
@@ -200,7 +200,7 @@ module RbConfig
   CONFIG["build_vendor"] = "unknown"
   CONFIG["build_cpu"] = "x86_64"
   CONFIG["build"] = "x86_64-unknown-cygwin"
-  CONFIG["RUBY_PROGRAM_VERSION"] = "2.4.3"
+  CONFIG["RUBY_PROGRAM_VERSION"] = "2.4.4"
   CONFIG["cxxflags"] = "$(optflags) $(debugflags) $(warnflags)"
   CONFIG["cppflags"] = ""
   CONFIG["cflags"] = "$(optflags) $(debugflags) $(warnflags)"
