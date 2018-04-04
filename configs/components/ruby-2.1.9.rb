@@ -118,6 +118,16 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   pkg.apply_patch "#{base}/cve-2017-14064.patch"
   pkg.apply_patch "#{base}/cve-2017-17405.patch"
 
+  # Patches from Ruby 2.2.10 security fixes from March 2018. See
+  # RE-10480 for more details.
+  pkg.apply_patch "#{base}/cve-2018-8780.patch"
+  pkg.apply_patch "#{base}/cve-2018-6914.patch"
+  pkg.apply_patch "#{base}/cve-2018-8779.patch"
+  pkg.apply_patch "#{base}/cve-2018-8778.patch"
+  pkg.apply_patch "#{base}/cve-2018-8777-1.patch"
+  pkg.apply_patch "#{base}/cve-2018-8777-2.patch"
+  pkg.apply_patch "#{base}/cve-2017-17742.patch"
+
   if platform.is_aix?
     pkg.apply_patch "#{base}/aix_ruby_2.1_libpath_with_opt_dir.patch"
     pkg.apply_patch "#{base}/aix_ruby_2.1_fix_proctitle.patch"
