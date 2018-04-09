@@ -7,8 +7,8 @@ component "rubygem-multi_json" do |pkg, settings, platform|
   pkg.mirror "#{settings[:buildsources_url]}/multi_json-#{pkg.get_version}.gem"
 
   # Overwrite the base rubygem's default GEM_HOME with the vendor gem directory
-  # shared by puppet and puppetserver:
-  pkg.environment "GEM_HOME", settings[:puppet_gem_vendor_dir]
+  # shared by puppet and puppetserver. Fall-back to gem_home for other projects.
+  pkg.environment "GEM_HOME", (settings[:puppet_gem_vendor_dir] || settings[:gem_home])
 
   pkg.install do
     ["#{settings[:gem_install]} multi_json-#{pkg.get_version}.gem"]
