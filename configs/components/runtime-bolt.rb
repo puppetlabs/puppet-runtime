@@ -18,7 +18,8 @@ component "runtime-bolt" do |pkg, settings, platform|
     # Do nothing
 
   else # Linux and Solaris systems
-    libdir = "/opt/pl-build-tools/lib64"
+    libbase = platform.architecture =~ /64/ ? 'lib64' : 'lib'
+    libdir = "/opt/pl-build-tools/#{libbase}"
     pkg.add_source "file://resources/files/runtime/runtime.sh"
     pkg.install do
       "bash runtime.sh #{libdir}"
