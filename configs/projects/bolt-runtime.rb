@@ -103,11 +103,8 @@ project 'bolt-runtime' do |proj|
   # What to build?
   # --------------
 
-  # Common deps
-  proj.component "openssl"
-  proj.component "curl"
-
   # Ruby and deps
+  proj.component "openssl"
   proj.component "runtime-bolt"
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
