@@ -33,10 +33,17 @@ project 'bolt-runtime' do |proj|
   proj.setting(:bindir, File.join(proj.prefix, 'bin'))
   proj.setting(:ruby_bindir, proj.bindir)
   proj.setting(:libdir, File.join(proj.prefix, 'lib'))
+  proj.setting(:includedir, File.join(proj.prefix, "include"))
+  proj.setting(:datadir, File.join(proj.prefix, "share"))
+  proj.setting(:mandir, File.join(proj.datadir, "man"))
 
   if platform.is_windows?
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
     proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem.bat"))
+
+    # For windows, we need to ensure we are building for mingw not cygwin
+    platform_triple = platform.platform_triple
+    host = "--host #{platform_triple}"
   else
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby"))
     proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
@@ -46,8 +53,41 @@ project 'bolt-runtime' do |proj|
   proj.setting(:gem_home, File.join(proj.libdir, 'ruby', 'gems', ruby_base_version))
   proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local --bindir=#{proj.ruby_bindir}")
 
+  proj.setting(:platform_triple, platform_triple)
+  proj.setting(:host, host)
+
   proj.setting(:artifactory_url, "https://artifactory.delivery.puppetlabs.net/artifactory")
   proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
+
+  # Define default CFLAGS and LDFLAGS for most platforms, and then
+  # tweak or adjust them as needed.
+  proj.setting(:cppflags, "-I#{proj.includedir} -I/opt/pl-build-tools/include")
+  proj.setting(:cflags, "#{proj.cppflags}")
+  proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
+
+  # Platform specific overrides or settings, which may override the defaults
+  if platform.is_windows?
+    arch = platform.architecture == "x64" ? "64" : "32"
+    proj.setting(:gcc_root, "C:/tools/mingw#{arch}")
+    proj.setting(:gcc_bindir, "#{proj.gcc_root}/bin")
+    proj.setting(:tools_root, "C:/tools/pl-build-tools")
+    proj.setting(:cppflags, "-I#{proj.tools_root}/include -I#{proj.gcc_root}/include -I#{proj.includedir}")
+    proj.setting(:cflags, "#{proj.cppflags}")
+    proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir} -Wl,--nxcompat -Wl,--dynamicbase")
+    proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
+  end
+
+  if platform.is_macos?
+    # For OS X, we should optimize for an older architecture than Apple
+    # currently ships for; there's a lot of older xeon chips based on
+    # that architecture still in use throughout the Mac ecosystem.
+    # Additionally, OS X doesn't use RPATH for linking. We shouldn't
+    # define it or try to force it in the linker, because this might
+    # break gcc or clang if they try to use the RPATH values we forced.
+    proj.setting(:cppflags, "-I#{proj.includedir}")
+    proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
+    proj.setting(:ldflags, "-L#{proj.libdir} ")
+  end
 
   # These flags are applied in addition to the defaults in configs/component/openssl.rb.
   proj.setting(:openssl_extra_configure_flags, [
@@ -68,6 +108,7 @@ project 'bolt-runtime' do |proj|
   proj.component "curl"
 
   # Ruby and deps
+  proj.component "runtime-bolt"
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
 

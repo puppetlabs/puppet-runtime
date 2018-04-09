@@ -132,7 +132,7 @@ pkg.install do
   [ "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install" ]
 end
 
-if platform.is_windows?
+if platform.is_windows? && settings[:bindir] != ruby_bindir
   # As things stand right now, ssl should build under [INSTALLDIR]\Puppet\puppet on
   # windows. However, if things need to run *outside* of the normal batch file runs
   # (puppet.bat ,mco.bat etcc) the location of openssl away from where ruby is
@@ -145,9 +145,9 @@ if platform.is_windows?
 
   pkg.install do
     [
-      "cp #{settings[:prefix]}/bin/libgcc_s_#{lib_type}-1.dll #{ruby_bindir}",
-      "cp #{settings[:prefix]}/bin/ssleay32.dll #{ruby_bindir}",
-      "cp #{settings[:prefix]}/bin/libeay32.dll #{ruby_bindir}",
+      "cp #{settings[:bindir]}/libgcc_s_#{lib_type}-1.dll #{ruby_bindir}",
+      "cp #{settings[:bindir]}/ssleay32.dll #{ruby_bindir}",
+      "cp #{settings[:bindir]}/libeay32.dll #{ruby_bindir}",
     ]
   end
 
