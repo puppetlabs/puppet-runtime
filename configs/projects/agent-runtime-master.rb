@@ -7,4 +7,7 @@ project 'agent-runtime-master' do |proj|
 
   # Dependencies specific to the master branch
   proj.component 'rubygem-multi_json'
+  proj.component 'rubygem-highline'
+  proj.component 'rubygem-trollop'
+  proj.component 'rubygem-hiera-eyaml'
 end

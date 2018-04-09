@@ -8,4 +8,7 @@ project 'agent-runtime-5.5.x' do |proj|
   # Dependencies specific to the 5.5.x branch
   proj.component 'rubygem-gettext-setup'
   proj.component 'rubygem-multi_json'
+  proj.component 'rubygem-highline'
+  proj.component 'rubygem-trollop'
+  proj.component 'rubygem-hiera-eyaml'
 end
