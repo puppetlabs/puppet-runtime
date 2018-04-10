@@ -1,0 +1,37 @@
+# The "&." operator was introduced in Ruby 2.3.0, but we cross-compile
+# ruby with ruby 2.1.9 from pl-build-tools-vanagon. This patch removes
+# use of the "&." operator, reverting to the last instance of the code
+# used before that change was made (ruby 2.3.7, except for the normalize!
+# method change, which was taken from ruby 2.2.10).
+#
+# This patch should be REMOVED once we update pl-ruby to 2.3.0 or later.
+# Patch authored by Scott Garman <scott.garman@puppet.com>
+--- a/lib/uri/generic.rb
++++ b/lib/uri/generic.rb
+@@ -207,7 +207,7 @@
+           "the scheme #{@scheme} does not accept registry part: #{registry} (or bad hostname?)"
+       end
+ 
+-      @scheme&.freeze
++      @scheme.freeze if @scheme
+       self.set_path('') if !@path && !@opaque # (see RFC2396 Section 5.2)
+       self.set_port(self.default_port) if self.default_port && !@port
+     end
+@@ -330,7 +330,7 @@
+     # see also URI::Generic.scheme=
+     #
+     def set_scheme(v)
+-      @scheme = v&.downcase
++      @scheme = v ? v.downcase : v
+     end
+     protected :set_scheme
+ 
+@@ -1305,7 +1305,7 @@
+     # Destructive version of #normalize
+     #
+     def normalize!
+-      if path&.empty?
++      if path && path.empty?
+         set_path('/')
+       end
+       if scheme && scheme != scheme.downcase

@@ -1,5 +1,5 @@
 project 'agent-runtime-master' do |proj|
-  proj.setting :ruby_version, '2.4.3'
+  proj.setting :ruby_version, '2.4.4'
   proj.setting :augeas_version, '1.10.1'
 
   # Common agent settings:

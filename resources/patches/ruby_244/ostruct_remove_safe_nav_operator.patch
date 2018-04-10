@@ -20,7 +20,7 @@ index 1d42321b66..333f65c232 100644
 +++ b/lib/ostruct.rb
 @@ -188,7 +188,7 @@ def freeze
  
-   def respond_to_missing?(mid, include_private = false)
+   def respond_to_missing?(mid, include_private = false) # :nodoc:
      mname = mid.to_s.chomp("=").to_sym
 -    @table&.key?(mname) || super
 +    @table.key?(mname) || super
@@ -29,4 +29,3 @@ index 1d42321b66..333f65c232 100644
    def method_missing(mid, *args) # :nodoc:
 -- 
 2.13.5 (Apple Git-94)
-

@@ -3,14 +3,12 @@
 #
 # The module storing Ruby interpreter configurations on building.
 #
-# This file was created from a native ruby build on a SLES 12 SP2 ppc64le system.
-# It contains build information for ruby which is used e.g. by mkmf to build
-# compatible native extensions.  Any changes made to this file will be
-# lost the next time ruby is built.
+# This file was created from a native ruby build on an Ubuntu 16.04 powerpc64le system.
+# Any changes made to this file will be lost the next time ruby is built.
 
 module RbConfig
   RUBY_VERSION.start_with?("2.4.") or
-    raise "ruby lib version (2.4.3) doesn't match executable version (#{RUBY_VERSION})"
+    raise "ruby lib version (2.4.4) doesn't match executable version (#{RUBY_VERSION})"
 
   # Ruby installed directory.
   TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/2.4.0/powerpc64le-linux")
@@ -21,8 +19,8 @@ module RbConfig
   CONFIG["DESTDIR"] = DESTDIR
   CONFIG["MAJOR"] = "2"
   CONFIG["MINOR"] = "4"
-  CONFIG["TEENY"] = "3"
-  CONFIG["PATCHLEVEL"] = "205"
+  CONFIG["TEENY"] = "4"
+  CONFIG["PATCHLEVEL"] = "296"
   CONFIG["INSTALL"] = '/usr/bin/install -c'
   CONFIG["EXEEXT"] = ""
   CONFIG["prefix"] = (TOPDIR || DESTDIR + "/opt/puppetlabs/puppet")
@@ -45,7 +43,7 @@ module RbConfig
   CONFIG["RUBY_SEARCH_PATH"] = ""
   CONFIG["UNIVERSAL_INTS"] = ""
   CONFIG["UNIVERSAL_ARCHNAMES"] = ""
-  CONFIG["configure_args"] = " '--prefix=/opt/puppetlabs/puppet' '--with-opt-dir=/opt/puppetlabs/puppet' '--enable-shared' '--enable-bundled-libyaml' '--disable-install-doc' '--disable-install-rdoc'"
+  CONFIG["configure_args"] = " '--prefix=/opt/puppetlabs/puppet' '--with-opt-dir=/opt/puppetlabs/puppet' '--enable-shared' '--enable-bundled-libyaml' '--disable-install-doc'"
   CONFIG["CONFIGURE"] = "configure"
   CONFIG["vendorarchdir"] = "$(vendorlibdir)/$(sitearch)"
   CONFIG["vendorlibdir"] = "$(vendordir)/$(ruby_version)"
@@ -94,7 +92,7 @@ module RbConfig
   CONFIG["EXTDLDFLAGS"] = ""
   CONFIG["EXTLDFLAGS"] = ""
   CONFIG["strict_warnflags"] = "-std=gnu99"
-  CONFIG["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format"
+  CONFIG["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
   CONFIG["debugflags"] = "-ggdb3"
   CONFIG["optflags"] = "-O3 -fno-fast-math"
   CONFIG["NULLCMD"] = ":"
@@ -138,12 +136,12 @@ module RbConfig
   CONFIG["RMDIR"] = "rmdir --ignore-fail-on-non-empty"
   CONFIG["CP"] = "cp"
   CONFIG["RM"] = "rm -f"
-  CONFIG["PKG_CONFIG"] = "pkg-config"
+  CONFIG["PKG_CONFIG"] = ""
   CONFIG["PYTHON"] = ""
   CONFIG["DOXYGEN"] = ""
   CONFIG["DOT"] = ""
-  CONFIG["MAKEDIRS"] = "/usr/bin/mkdir -p"
-  CONFIG["MKDIR_P"] = "/usr/bin/mkdir -p"
+  CONFIG["MAKEDIRS"] = "/bin/mkdir -p"
+  CONFIG["MKDIR_P"] = "/bin/mkdir -p"
   CONFIG["INSTALL_DATA"] = "$(INSTALL) -m 644"
   CONFIG["INSTALL_SCRIPT"] = "$(INSTALL)"
   CONFIG["INSTALL_PROGRAM"] = "$(INSTALL)"
@@ -160,7 +158,7 @@ module RbConfig
   CONFIG["AR"] = "ar"
   CONFIG["RANLIB"] = "ranlib"
   CONFIG["try_header"] = ""
-  CONFIG["CC_VERSION_MESSAGE"] = "gcc (SUSE Linux) 4.8.5\nCopyright (C) 2015 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
+  CONFIG["CC_VERSION_MESSAGE"] = "gcc (Ubuntu/IBM 5.4.0-6ubuntu1~16.04.4) 5.4.0 20160609\nCopyright (C) 2015 Free Software Foundation, Inc.\nThis is free software; see the source for copying conditions.  There is NO\nwarranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE."
   CONFIG["CC_VERSION"] = "$(CC) --version"
   CONFIG["CSRCFLAG"] = ""
   CONFIG["COUTFLAG"] = "-o "
@@ -169,8 +167,8 @@ module RbConfig
   CONFIG["GNU_LD"] = "yes"
   CONFIG["LD"] = "ld"
   CONFIG["GCC"] = "yes"
-  CONFIG["EGREP"] = "/usr/bin/grep -E"
-  CONFIG["GREP"] = "/usr/bin/grep"
+  CONFIG["EGREP"] = "/bin/grep -E"
+  CONFIG["GREP"] = "/bin/grep"
   CONFIG["CPP"] = "$(CC) -E"
   CONFIG["CXXFLAGS"] = "$(cxxflags)"
   CONFIG["OBJEXT"] = "o"
@@ -198,7 +196,7 @@ module RbConfig
   CONFIG["build_vendor"] = "unknown"
   CONFIG["build_cpu"] = "powerpc64le"
   CONFIG["build"] = "powerpc64le-unknown-linux-gnu"
-  CONFIG["RUBY_PROGRAM_VERSION"] = "2.4.3"
+  CONFIG["RUBY_PROGRAM_VERSION"] = "2.4.4"
   CONFIG["cxxflags"] = "$(optflags) $(debugflags) $(warnflags)"
   CONFIG["cppflags"] = ""
   CONFIG["cflags"] = "$(optflags) $(debugflags) $(warnflags)"
@@ -237,7 +235,7 @@ module RbConfig
   CONFIG["PACKAGE_TARNAME"] = ""
   CONFIG["PACKAGE_NAME"] = ""
   CONFIG["PATH_SEPARATOR"] = ":"
-  CONFIG["SHELL"] = "/bin/sh"
+  CONFIG["SHELL"] = "/bin/bash"
   CONFIG["UNICODE_VERSION"] = "9.0.0"
   CONFIG["archdir"] = "$(rubyarchdir)"
   CONFIG["topdir"] = File.dirname(__FILE__)

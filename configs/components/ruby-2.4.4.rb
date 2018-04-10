@@ -1,10 +1,10 @@
-component 'ruby-2.4.3' do |pkg, settings, platform|
-  pkg.version '2.4.3'
-  pkg.md5sum "a00e0d49b454f4c0e528e7852d642925"
+component 'ruby-2.4.4' do |pkg, settings, platform|
+  pkg.version '2.4.4'
+  pkg.md5sum "d50e00ccc1c9cf450f837b92d3ed3e88"
 
   # Most ruby configuration happens in the base ruby config:
   instance_eval File.read('configs/components/_base-ruby.rb')
-  # Configuration below should only be applicable to ruby 2.4.3
+  # Configuration below should only be applicable to ruby 2.4.4
 
   ###########
   # RBCONFIGS
@@ -98,12 +98,15 @@ component 'ruby-2.4.3' do |pkg, settings, platform|
   # PATCHES
   #########
 
-  base = 'resources/patches/ruby_243'
+  base = 'resources/patches/ruby_244'
   pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator.patch"
-  pkg.apply_patch "#{base}/thread_wakeup_ownership_check.patch"
   # This patch creates our server/client shared Gem path, used for all gems
   # that are dependencies of the shared Ruby code.
   pkg.apply_patch "#{base}/rubygems_add_puppet_vendor_dir.patch"
+
+  if platform.is_cross_compiled?
+    pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator.patch"
+  end
 
   if platform.is_aix?
     # TODO: Remove this patch once PA-1607 is resolved.
@@ -195,8 +198,8 @@ component 'ruby-2.4.3' do |pkg, settings, platform|
       [
         "#{sed} -i 's|raise|warn|g' #{target_dir}/rbconfig.rb",
         "mkdir -p #{settings[:datadir]}/doc",
-        "cp #{target_dir}/rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.4.3-orig.rb",
-        "cp ../rbconfig-243-#{settings[:platform_triple]}.rb #{target_dir}/rbconfig.rb",
+        "cp #{target_dir}/rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.4.4-orig.rb",
+        "cp ../rbconfig-244-#{settings[:platform_triple]}.rb #{target_dir}/rbconfig.rb",
       ]
     end
   end
