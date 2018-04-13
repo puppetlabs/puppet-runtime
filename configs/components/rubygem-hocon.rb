@@ -8,6 +8,10 @@ component "rubygem-hocon" do |pkg, settings, platform|
 
   install_steps = ["#{settings[:gem_install]} hocon-#{pkg.get_version}.gem"]
 
+  # Overwrite the base rubygem's default GEM_HOME with the vendor gem directory
+  # shared by puppet and puppetserver. Fall-back to gem_home for other projects.
+  pkg.environment "GEM_HOME", (settings[:puppet_gem_vendor_dir] || settings[:gem_home])
+
   if platform.is_macos?
     # The unicode characters in one of the hocon gem's spec files will make tar
     # blow up when extracting the runtime tarball on MacOS if not using unicode.
