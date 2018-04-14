@@ -81,8 +81,6 @@ raise "Couldn't find a :ruby_version setting in the project file" unless proj.ru
 ruby_base_version = proj.ruby_version.gsub(/(\d)\.(\d)\.(\d)/, '\1.\2.0')
 proj.setting(:gem_home, File.join(proj.libdir, 'ruby', 'gems', ruby_base_version))
 proj.setting(:ruby_vendordir, File.join(proj.libdir, "ruby", "vendor_ruby"))
-# Directory for gems shared by puppet and puppetserver
-proj.setting(:puppet_gem_vendor_dir, File.join(proj.libdir, "ruby", "vendor_gems"))
 
 # Cross-compiled Linux platforms
 platform_triple = "ppc64le-redhat-linux" if platform.architecture == "ppc64le"
