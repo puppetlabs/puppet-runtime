@@ -1,13 +1,18 @@
-# This project is designed for reuse by branch-specific agent-runtime configs;
+# This "project" is designed to be shared by all puppet-agent projects
 # See configs/projects/agent-runtime-<branchname>.rb
 unless defined?(proj)
-  warn('This is the base project for the puppet-agent runtime.')
+  warn('These are base settings shared by all puppet-agent projects; They cannot be built as a standalone project.')
   warn('Please choose one of the other puppet-agent projects instead.')
   exit 1
 end
 
-# Used in component configurations to conditionally include dependencies
+# Use sparingly in component configurations to conditionally include
+# dependencies that should not be in other projects that use puppet-runtime
 proj.setting(:runtime_project, 'agent')
+
+########
+# Common build settings for all versions of puppet-agent
+########
 
 proj.generate_archives true
 proj.generate_packages false
@@ -21,10 +26,6 @@ proj.version_from_git
 proj.setting(:artifactory_url, "https://artifactory.delivery.puppetlabs.net/artifactory")
 proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
 
-
-########
-# Common build settings for all versions of puppet-agent
-########
 
 if platform.is_windows?
   proj.setting(:company_id, "PuppetLabs")
@@ -183,13 +184,6 @@ end
 
 proj.timeout 7200 if platform.is_windows?
 
-########
-# Common components for all versions of puppet-agent
-########
-
-# Common components required by all agent branches
-proj.component 'runtime-agent'
-
 # Most branches of puppet-agent use these openssl flags in addition to the defaults in configs/components/openssl.rb -
 # Individual projects can override these if necessary.
 proj.setting(:openssl_extra_configure_flags, [
@@ -205,49 +199,6 @@ proj.setting(:openssl_extra_configure_flags, [
 if platform.name =~ /^redhatfips-7-.*/
   # Link against the system openssl instead of our vendored version:
   proj.setting(:system_openssl, true)
-else
-  proj.component 'openssl'
-end
-
-proj.component 'curl'
-proj.component 'puppet-ca-bundle'
-proj.component "ruby-#{proj.ruby_version}"
-proj.component 'augeas' unless platform.is_windows?
-proj.component 'libxml2' unless platform.is_windows?
-proj.component 'libxslt' unless platform.is_windows?
-proj.component 'ruby-augeas' unless platform.is_windows?
-proj.component 'ruby-shadow' unless platform.is_aix? || platform.is_windows?
-proj.component 'ruby-stomp'
-# We only build ruby-selinux for EL 5-7
-if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
-  proj.component 'ruby-selinux'
-end
-
-# libedit is used instead of readline on these platforms
-if platform.is_aix? || platform.is_solaris?
-  proj.component 'libedit'
-end
-
-proj.component 'rubygem-deep-merge'
-proj.component 'rubygem-net-ssh'
-proj.component 'rubygem-hocon'
-proj.component 'rubygem-semantic_puppet'
-proj.component 'rubygem-text'
-proj.component 'rubygem-locale'
-proj.component 'rubygem-gettext'
-proj.component 'rubygem-fast_gettext'
-
-if platform.is_windows?
-  proj.component 'rubygem-ffi'
-  proj.component 'rubygem-win32-dir'
-  proj.component 'rubygem-win32-process'
-  proj.component 'rubygem-win32-security'
-  proj.component 'rubygem-win32-service'
-  proj.component 'rubygem-win32-eventlog'
-end
-
-if platform.is_windows? || platform.is_solaris?
-  proj.component 'rubygem-minitar'
 end
 
 # Commmon platform-specific settings for all agent branches:
