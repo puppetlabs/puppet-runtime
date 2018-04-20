@@ -87,7 +87,6 @@ component 'augeas' do |pkg, settings, platform|
     pkg.build_requires 'libedit'
     pkg.build_requires "runtime-#{settings[:runtime_project]}"
     if platform.os_version == "10"
-      pkg.build_requires 'pkgconfig'
       pkg.environment "PKG_CONFIG_PATH", "/opt/csw/lib/pkgconfig"
       pkg.environment "PKG_CONFIG", "/opt/csw/bin/pkg-config"
     else
