@@ -14,7 +14,7 @@ end
 proj.component 'runtime-agent'
 
 unless proj.settings[:system_openssl]
-  proj.component 'openssl'
+  proj.component "openssl-#{proj.openssl_version}"
 end
 
 proj.component 'curl'
