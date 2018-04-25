@@ -79,16 +79,15 @@ component 'openssl' do |pkg, settings, platform|
     pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/aix/#{platform.os_version}/ppc/pl-gcc-5.2.0-11.aix#{platform.os_version}.ppc.rpm"
   elsif platform.is_macos?
     pkg.build_requires 'makedepend'
-  elsif platform.is_linux?
-    unless platform.is_fedora? && platform.os_version.delete('f').to_i >= 26
-      # TODO: pdk had this for all linux platforms, but agent didn't - necessary?
-      pkg.build_requires 'pl-binutils'
-    end
-    pkg.build_requires 'pl-gcc'
+  elsif platform.is_cross_compiled_linux?
+    pkg.build_requires "pl-binutils-#{platform.architecture}"
+    pkg.build_requires "pl-gcc-#{platform.architecture}"
 
     if platform.name =~ /debian-8-arm/
       pkg.build_requires 'xutils-dev'
     end
+  elsif platform.is_linux?
+    pkg.build_requires 'pl-gcc'
   end
 
   #########
