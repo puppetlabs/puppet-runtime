@@ -61,7 +61,7 @@ end
 if settings[:system_openssl]
   pkg.build_requires 'openssl-devel'
 else
-  pkg.build_requires 'openssl'
+  pkg.build_requires "openssl-#{settings[:openssl_version]}"
 end
 
 if platform.is_aix?
@@ -140,11 +140,27 @@ if platform.is_windows? && settings[:bindir] != ruby_bindir
   #                   -Sean P. McDonald 07/01/2016
   lib_type = platform.architecture == "x64" ? "seh" : "sjlj"
 
+  if platform.architecture == "x64"
+    gcc_postfix = 'seh'
+    ssl_postfix = '-x64'
+  else
+    gcc_postfix = 'sjlj'
+    ssl_postfix = ''
+  end
+
+  if Gem::Version.new(settings[:openssl_version]) >= Gem::Version.new('1.1.0')
+    ssl_lib = "libssl-1_1#{ssl_postfix}.dll"
+    crypto_lib = "libcrypto-1_1#{ssl_postfix}.dll"
+  else
+    ssl_lib = "ssleay32.dll"
+    crypto_lib = "libeay32.dll"
+  end
+
   pkg.install do
     [
-      "cp #{settings[:bindir]}/libgcc_s_#{lib_type}-1.dll #{ruby_bindir}",
-      "cp #{settings[:bindir]}/ssleay32.dll #{ruby_bindir}",
-      "cp #{settings[:bindir]}/libeay32.dll #{ruby_bindir}",
+      "cp #{settings[:bindir]}/libgcc_s_#{gcc_postfix}-1.dll #{ruby_bindir}",
+      "cp #{settings[:bindir]}/#{ssl_lib} #{ruby_bindir}",
+      "cp #{settings[:bindir]}/#{crypto_lib} #{ruby_bindir}",
     ]
   end
 

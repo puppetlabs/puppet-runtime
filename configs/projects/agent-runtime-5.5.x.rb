@@ -4,6 +4,7 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.setting :ruby_version, '2.4.4'
   proj.setting :rubygem_net_ssh, '4.1.0'
   proj.setting :rubygem_semantic_puppet_version, '0.1.2'
+  proj.setting :openssl_version, '1.0.2'
 
   ########
   # Load shared agent settings
