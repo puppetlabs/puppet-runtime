@@ -20,4 +20,5 @@ project 'agent-runtime-5.3.x' do |proj|
   ########
 
   proj.component 'rubygem-gettext-setup'
+  proj.component 'ruby-stomp'
 end

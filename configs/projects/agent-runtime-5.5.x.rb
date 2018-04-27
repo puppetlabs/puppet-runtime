@@ -31,4 +31,5 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.component 'rubygem-highline'
   proj.component 'rubygem-trollop'
   proj.component 'rubygem-hiera-eyaml'
+  proj.component 'ruby-stomp'
 end
