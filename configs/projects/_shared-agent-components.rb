@@ -44,8 +44,13 @@ proj.component 'rubygem-locale'
 proj.component 'rubygem-gettext'
 proj.component 'rubygem-fast_gettext'
 
-if platform.is_windows?
+# FFI does not compile on AIX, Solaris, or EL 5
+# Skip FFI on space constrained platforms: cisco-wrlinux, cumulus, eos
+unless platform.name =~ /^(aix|solaris|el-5|cisco-wrlinux|cumulus|eos)-/
   proj.component 'rubygem-ffi'
+end
+
+if platform.is_windows?
   proj.component 'rubygem-win32-dir'
   proj.component 'rubygem-win32-process'
   proj.component 'rubygem-win32-security'
