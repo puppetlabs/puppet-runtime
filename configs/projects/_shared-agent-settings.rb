@@ -191,7 +191,7 @@ proj.setting(:openssl_extra_configure_flags, [
   'no-dtls1',
   'no-idea',
   'no-seed',
-  'no-ssl2-method',
+  # 'no-ssl2-method',
   'no-weak-ssl-ciphers',
   '-DOPENSSL_NO_HEARTBEATS',
 ]) unless proj.settings[:openssl_extra_configure_flags]
