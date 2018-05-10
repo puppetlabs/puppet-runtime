@@ -5,7 +5,8 @@ component "rubygem-semantic_puppet" do |pkg, settings, platform|
   pkg.md5sum "48f4a060e6004604e2f46716bfeabcdc"
   pkg.url "https://rubygems.org/downloads/semantic_puppet-#{pkg.get_version}.gem"
   pkg.mirror "#{settings[:buildsources_url]}/semantic_puppet-#{pkg.get_version}.gem"
-
+  pkg.environment "GEM_HOME", (settings[:puppet_gem_vendor_dir] || settings[:gem_home])
+  
   pkg.install do
     ["#{settings[:gem_install]} semantic_puppet-#{pkg.get_version}.gem"]
   end
