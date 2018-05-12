@@ -6,6 +6,9 @@ unless defined?(proj)
   exit 1
 end
 
+# Export the settings for the current project and platform as yaml during builds
+proj.publish_yaml_settings
+
 # Use sparingly in component configurations to conditionally include
 # dependencies that should not be in other projects that use puppet-runtime
 proj.setting(:runtime_project, 'agent')

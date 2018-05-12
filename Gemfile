@@ -11,7 +11,7 @@ def vanagon_location_for(place)
 end
 
 gem 'artifactory'
-gem 'vanagon', *vanagon_location_for(ENV['VANAGON_LOCATION'] || '0.15.5')
+gem 'vanagon', *vanagon_location_for(ENV['VANAGON_LOCATION'] || '0.15.10')
 gem 'packaging', :github => 'puppetlabs/packaging', branch: '1.0.x'
 gem 'rake', '~> 12.0'
 
