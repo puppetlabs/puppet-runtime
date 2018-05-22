@@ -1,0 +1,59 @@
+From bcdb695438374428338f2c4dd7e61b8c8ef63692 Mon Sep 17 00:00:00 2001
+From: Matthaus Owens <matthaus@puppetlabs.com>
+Date: Mon, 10 Aug 2015 12:29:49 -0700
+Subject: [PATCH 1/2] Use sh compliant subshells
+
+In commit d21102f2a1cab05dbf97fcfefd3b37d1b2bbf666, the icc detection
+was updated to use bash style subshells, which breaks on systems that
+have just sh, such as solaris 10. This commit updates the detection to
+use `` style subshells instead of $().
+---
+ tools/build/src/engine/build.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/build/src/engine/build.sh b/tools/build/src/engine/build.sh
+index 612011d..4c19c10 100755
+--- a/tools/build/src/engine/build.sh
++++ b/tools/build/src/engine/build.sh
+@@ -152,9 +152,9 @@ case $BOOST_JAM_TOOLSET in
+     intel-linux)
+     which icc >/dev/null 2>&1
+     if test $? ; then
+-	BOOST_JAM_CC=$(which icc)
++	BOOST_JAM_CC=`which icc`
+ 	echo "Found $BOOST_JAM_CC in environment"
+-	BOOST_JAM_TOOLSET_ROOT=$(echo $BOOST_JAM_CC | sed -e 's/bin.*\/icc//')
++	BOOST_JAM_TOOLSET_ROOT=`echo $BOOST_JAM_CC | sed -e 's/bin.*\/icc//'`
+ 	# probably the most widespread
+ 	ARCH=intel64
+     else
+
+From eefd58579e1e7e777e90166d494e71bea8fc8b2e Mon Sep 17 00:00:00 2001
+From: Matthaus Owens <matthaus@puppetlabs.com>
+Date: Mon, 10 Aug 2015 12:35:17 -0700
+Subject: [PATCH 2/2] Use test_path instead of which
+
+which was used to detect icc, but on some platforms such as solaris 10
+which always returns 0, even when the command is not found on the path.
+This commit updates the invocation to use the test_path function
+instead, which does return non-zero on solaris 10 in the failure case.
+---
+ tools/build/src/engine/build.sh | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/tools/build/src/engine/build.sh b/tools/build/src/engine/build.sh
+index 4c19c10..bf3c695 100755
+--- a/tools/build/src/engine/build.sh
++++ b/tools/build/src/engine/build.sh
+@@ -150,9 +150,9 @@ case $BOOST_JAM_TOOLSET in
+     ;;
+ 
+     intel-linux)
+-    which icc >/dev/null 2>&1
++    test_path icc >/dev/null 2>&1
+     if test $? ; then
+-	BOOST_JAM_CC=`which icc`
++	BOOST_JAM_CC=`test_path icc`
+ 	echo "Found $BOOST_JAM_CC in environment"
+ 	BOOST_JAM_TOOLSET_ROOT=`echo $BOOST_JAM_CC | sed -e 's/bin.*\/icc//'`
+ 	# probably the most widespread

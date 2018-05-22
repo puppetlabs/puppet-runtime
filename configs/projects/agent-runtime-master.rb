@@ -2,7 +2,7 @@ project 'agent-runtime-master' do |proj|
   # Set preferred component versions if they differ from defaults:
   proj.setting :ruby_version, '2.4.4'
   proj.setting :augeas_version, '1.10.1'
-  proj.setting :openssl_version, '1.1.0'
+  proj.setting :openssl_version, '1.0.1'
 
   ########
   # Load shared agent settings
@@ -31,4 +31,6 @@ project 'agent-runtime-master' do |proj|
   proj.component 'rubygem-highline'
   proj.component 'rubygem-trollop'
   proj.component 'rubygem-hiera-eyaml'
+  proj.component 'boost'
+  proj.component 'yaml-cpp'
 end

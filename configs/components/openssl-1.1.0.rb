@@ -27,14 +27,14 @@ component 'openssl' do |pkg, settings, platform|
     cflags = "#{settings[:cflags]} -fPIC"
     ldflags = "-Wl,-rpath=/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
     target = if platform.architecture == 'aarch64'
-               'linux-aarch64'
-             elsif platform.name =~ /debian-8-arm/
-               'linux-armv4'
-             elsif platform.architecture =~ /ppc64/
-               'linux-ppc64le'
-             elsif platform.architecture == 's390x'
-               'linux64-s390x'
-             end
+                'linux-aarch64'
+              elsif platform.name =~ /debian-8-arm/
+                'linux-armv4'
+              elsif platform.architecture =~ /ppc64/
+                'linux-ppc64le'
+              elsif platform.architecture == 's390x'
+                'linux64-s390x'
+              end
   elsif platform.is_aix?
     pkg.environment 'CC', '/opt/pl-build-tools/bin/gcc'
 
@@ -79,40 +79,16 @@ component 'openssl' do |pkg, settings, platform|
     pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/aix/#{platform.os_version}/ppc/pl-gcc-5.2.0-11.aix#{platform.os_version}.ppc.rpm"
   elsif platform.is_macos?
     pkg.build_requires 'makedepend'
-  elsif platform.is_linux?
-    unless platform.is_fedora? && platform.os_version.delete('f').to_i >= 26
-      # TODO: pdk had this for all linux platforms, but agent didn't - necessary?
-      pkg.build_requires 'pl-binutils'
-    end
+    if platform.name =~ /debian-8-arm/
+      unless platform.is_fedora? && platform.os_version.delete('f').to_i >= 26
+        # TODO: pdk had this for all linux platforms, but agent didn't - necessary?
+        pkg.build_requires 'pl-binutils'
+      end
     pkg.build_requires 'pl-gcc'
-
-    if platform.name =~ /debian-8-arm/
-      pkg.build_requires 'xutils-dev'
     end
-  end
-
-  #########
-  # PATCHES
-  #########
-
-  if platform.is_windows?
-    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
-    # This patch removes the option `-DOPENSSL_USE_APPLINK` from the mingw openssl congifure target
-    # This brings mingw more in line with what is happening with mingw64. All applink does it makes
-    # it possible to use the .dll compiled with one compiler with an application compiled with a
-    # different compiler. Given our openssl should only be interacting with things that we build,
-    # we can ensure everything is build with the same compiler.
-    pkg.apply_patch 'resources/patches/openssl/openssl-mingw-do-not-build-applink.patch'
-  elsif platform.is_aix?
-    pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
-    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
-  elsif platform.is_solaris?
-    pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
-    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
   elsif platform.is_linux?
-    if platform.name =~ /debian-8-arm/
-      pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
-    end
+      # pkg.build_requires 'xutils-dev'
+      # pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
   end
 
   ###########
@@ -133,22 +109,24 @@ component 'openssl' do |pkg, settings, platform|
     'no-asm',
     target,
     sslflags,
-    'enable-rfc3779',
-    # 'enable-tlsext',
     'no-camellia',
     'no-ec2m',
     'no-md2',
-    'no-mdc2',
-    # 'no-ssl2',
     'no-ssl3',
   ]
 
   # Individual projects may provide their own openssl configure flags:
   project_flags = settings[:openssl_extra_configure_flags] || []
+  perl_exec = ''
+  if platform.is_aix?
+    perl_exec = '/opt/freeware/bin/perl'
+  elsif platform.is_solaris?
+    perl_exec = '/opt/csw/bin/perl'
+  end
   configure_flags << project_flags << cflags << ldflags
 
   pkg.configure do
-    ["./Configure #{configure_flags.join(' ')}"]
+    ["#{perl_exec} ./Configure #{configure_flags.join(' ')}"]
   end
 
   #######

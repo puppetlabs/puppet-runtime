@@ -1,0 +1,25 @@
+From f00dd485bf3793e17614637a085c3950c7ad8dcc Mon Sep 17 00:00:00 2001
+From: "Sean P. McDonald" <sean.mcdonald@puppetlabs.com>
+Date: Tue, 15 May 2018 14:02:23 -0700
+Subject: [PATCH] fix-build-for-solaris '
+
+---
+ tools/build/src/engine/build.sh | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/tools/build/src/engine/build.sh b/tools/build/src/engine/build.sh
+index 50a28e83..0a3ec858 100644
+--- a/tools/build/src/engine/build.sh
++++ b/tools/build/src/engine/build.sh
+@@ -132,7 +132,7 @@ case $BOOST_JAM_TOOLSET in
+ 
+     gcc)
+         # Check whether it's MinGW GCC, which has Windows headers and none of POSIX ones.
+-        machine=$(gcc -dumpmachine 2>/dev/null)
++        machine=`gcc -dumpmachine 2>/dev/null`
+         if [ $? -ne 0 ]; then
+             echo "BOOST_JAM_TOOLSET is gcc, but the 'gcc' command cannot be executed."
+             echo "Make sure 'gcc' is in PATH, or use a different toolset."
+-- 
+2.17.0.windows.1
+
