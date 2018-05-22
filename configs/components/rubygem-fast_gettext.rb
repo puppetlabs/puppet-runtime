@@ -15,6 +15,7 @@ component "rubygem-fast_gettext" do |pkg, settings, platform|
 
   pkg.url "https://rubygems.org/downloads/fast_gettext-#{pkg.get_version}.gem"
   pkg.mirror "#{settings[:buildsources_url]}/fast_gettext-#{pkg.get_version}.gem"
+  pkg.environment "GEM_HOME", (settings[:puppet_gem_vendor_dir] || settings[:gem_home])
 
   pkg.install do
     ["#{settings[:gem_install]} fast_gettext-#{pkg.get_version}.gem"]
