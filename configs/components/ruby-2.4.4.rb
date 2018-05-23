@@ -88,8 +88,6 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
   ####################
 
   if platform.is_aix?
-    pkg.build_requires 'http://osmirror.delivery.puppetlabs.net/AIX_MIRROR/zlib-1.2.3-4.aix5.2.ppc.rpm'
-
     # TODO: Remove this once PA-1607 is resolved.
     pkg.build_requires 'http://pl-build-tools.delivery.puppetlabs.net/aix/5.3/ppc/pl-autoconf-2.69-1.aix5.3.ppc.rpm'
   end
@@ -156,6 +154,7 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
   ###########
 
   # TODO: Remove this once PA-1607 is resolved.
+  # TODO: Can we use native autoconf? The dependencies seemed a little too extensive
   pkg.configure { ["/opt/pl-build-tools/bin/autoconf"] } if platform.is_aix?
 
   # Here we set --enable-bundled-libyaml to ensure that the libyaml included in

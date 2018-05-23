@@ -1,0 +1,47 @@
+From abcf55123b8d1fe9a72113b6bd0f20376a54cba6 Mon Sep 17 00:00:00 2001
+From: "Sean P. McDonald" <sean.mcdonald@puppetlabs.com>
+Date: Wed, 23 May 2018 13:55:53 -0700
+Subject: [PATCH] Fix bootstrap build for solaris 10
+
+The bootstrap build for boost includes building the 'b2' tool to
+eventually build boost. For Solaris, anything requiring the clock_gettime
+header needs to supply the -lrt flag to link against the rt lib. This patch
+supplies the -lrt flag to both the build.sh and the build.jam configurations
+that invoke gcc to build the b2 tool.
+---
+ tools/build/src/engine/build.jam | 8 ++++----
+ tools/build/src/engine/build.sh  | 2 +-
+ 2 files changed, 5 insertions(+), 5 deletions(-)
+
+diff --git a/tools/build/src/engine/build.jam b/tools/build/src/engine/build.jam
+index a92b70f7..d5784707 100644
+--- a/tools/build/src/engine/build.jam
++++ b/tools/build/src/engine/build.jam
+@@ -215,7 +215,7 @@ toolset darwin cc :  "-o " : -D
+     : -L$(--python-lib[1]) -l$(--python-lib[2]) ;
+ ## GCC 2.x, 3.x, 4.x
+ toolset gcc gcc : "-o " : -D
+-    : -pedantic -fno-strict-aliasing
++    : -pedantic -fno-strict-aliasing -lrt
+     [ opt --release : [ opt --symbols : -g : -s ] -O3 ]
+     [ opt --debug : -g -O0 -fno-inline ]
+     [ opt --profile : -O3 -g -pg ]
+ ## Microsoft Visual C++ .NET 7.x
+ toolset vc7 cl : /Fe /Fe /Fd /Fo : -D
+     : /nologo
+diff --git a/tools/build/src/engine/build.sh b/tools/build/src/engine/build.sh
+index 0a3ec858..12b22eed 100644
+--- a/tools/build/src/engine/build.sh
++++ b/tools/build/src/engine/build.sh
+@@ -330,7 +330,7 @@ if test "${BJAM_UPDATE}" != "update" ; then
+             echo_run ./bootstrap/mkjambase0 jambase.c Jambase
+         fi
+     fi
+-    echo_run ${BOOST_JAM_CC} ${BOOST_JAM_OPT_JAM} ${BJAM_SOURCES}
++    echo_run ${BOOST_JAM_CC} ${BOOST_JAM_OPT_JAM} -lrt ${BJAM_SOURCES}
+ fi
+ if test -x "./bootstrap/jam0" ; then
+     if test "${BJAM_UPDATE}" != "update" ; then
+--
+2.17.0.windows.1
+

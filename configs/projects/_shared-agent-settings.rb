@@ -158,6 +158,8 @@ if platform.is_windows?
   proj.setting(:cflags, "#{proj.cppflags}")
   proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir} -Wl,--nxcompat -Wl,--dynamicbase")
   proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
+else
+  proj.setting(:tools_root, "/opt/pl-build-tools")
 end
 
 if platform.is_macos?
