@@ -185,6 +185,9 @@ project 'pdk-runtime' do |proj|
   proj.directory proj.prefix
   proj.directory proj.link_bindir unless platform.is_windows?
 
+  # Export the settings for the current project and platform as yaml during builds
+  proj.publish_yaml_settings
+
   proj.timeout 7200 if platform.is_windows?
 
   # Here we rewrite public http urls to use our internal source host instead.

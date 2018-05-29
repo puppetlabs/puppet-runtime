@@ -131,5 +131,8 @@ project 'bolt-runtime' do |proj|
   # What to include in package?
   proj.directory proj.prefix
 
+  # Export the settings for the current project and platform as yaml during builds
+  proj.publish_yaml_settings
+
   proj.timeout 7200 if platform.is_windows?
 end
