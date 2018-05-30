@@ -34,6 +34,7 @@ project 'pdk-runtime' do |proj|
     proj.setting(:product_id, "DevelopmentKit")
     proj.setting(:install_root, File.join("C:", proj.base_dir, proj.company_id, proj.product_id))
     proj.setting(:prefix, proj.install_root)
+    proj.setting(:windows_tools, File.join(proj.install_root, "private/tools/bin"))
   else
     proj.setting(:install_root, "/opt/puppetlabs")
     proj.setting(:prefix, File.join(proj.install_root, "pdk"))
