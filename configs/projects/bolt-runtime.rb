@@ -109,12 +109,13 @@ project 'bolt-runtime' do |proj|
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
 
-  # Possibly optional Puppet dependencies
+  # Puppet dependencies
   proj.component 'rubygem-deep-merge'
   proj.component 'rubygem-text'
   proj.component 'rubygem-locale'
   proj.component 'rubygem-gettext'
   proj.component 'rubygem-fast_gettext'
+  proj.component 'rubygem-semantic_puppet'
 
   # Core dependencies
   proj.component 'rubygem-ffi'
