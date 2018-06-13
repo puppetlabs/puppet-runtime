@@ -5,6 +5,17 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.setting :rubygem_net_ssh, '4.1.0'
   proj.setting :rubygem_semantic_puppet_version, '0.1.2'
 
+  platform = proj.get_platform
+
+  # This modification to the platform definition is for compatibility with
+  # pre-puppet6 puppet-agent packaging. Fedora platforms for puppet5 must have
+  # have an `f` prefix before their version numbers and do not use an explicit
+  # .dist string.
+  if platform.name =~ /^fedora-([\d]+)/
+    platform.instance_variable_set(:@name, platform.name.sub(/\d+/, 'f\\0'))
+    platform.instance_variable_set(:@dist, nil)
+  end
+
   ########
   # Load shared agent settings
   ########
