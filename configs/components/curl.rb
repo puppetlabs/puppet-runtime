@@ -26,6 +26,7 @@ component 'curl' do |pkg, settings, platform|
     pkg.build_requires "runtime-#{settings[:runtime_project]}"
     pkg.environment "PATH" => "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
     pkg.environment "CYGWIN" => settings[:cygwin]
+    pkg.environment "NM" => "/bin/nm"
   else
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
   end
