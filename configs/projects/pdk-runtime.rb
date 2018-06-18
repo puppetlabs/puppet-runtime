@@ -166,6 +166,15 @@ project 'pdk-runtime' do |proj|
 
   proj.component "ruby-stomp"
 
+  # PDK Rubygems
+  proj.component "rubygem-ffi"
+  proj.component "rubygem-locale"
+  proj.component "rubygem-text"
+  proj.component "rubygem-gettext"
+  proj.component "rubygem-fast_gettext"
+  proj.component "rubygem-gettext-setup"
+  proj.component "rubygem-minitar"
+
   if proj.respond_to?(:additional_rubies)
     proj.additional_rubies.keys.each do |rubyver|
       proj.component "ruby-#{rubyver}"
