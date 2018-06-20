@@ -1,0 +1,17 @@
+# Boost doesn't build with the -m64 option on aarch64, and the compiler
+# builds 64-bit binaries by default, so remove the option.
+Index: boost_1_58_0/tools/build/src/tools/gcc.jam
+===================================================================
+--- boost_1_58_0.orig/tools/build/src/tools/gcc.jam
++++ boost_1_58_0/tools/build/src/tools/gcc.jam
+@@ -457,10 +457,6 @@ rule setup-address-model ( targets * : s
+                 {
+                     option = -m32 ;
+                 }
+-                else if $(model) = 64
+-                {
+-                    option = -m64 ;
+-                }
+             }
+             # For darwin, the model can be 32_64. darwin.jam will handle that
+             # on its own.

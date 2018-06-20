@@ -1,0 +1,41 @@
+From 0050fa1b46c683d1b727e81dbd484a37c7f2518a Mon Sep 17 00:00:00 2001
+From: Enis Inan <enis.inan@enis.inan-C02M48DGFD57>
+Date: Fri, 8 Sep 2017 10:44:34 -0700
+Subject: [PATCH] Use string instead of wstring in unique_path
+
+When filesystem::unique_path is called on Solaris-10 machines, a
+runtime_error: locale::facet::_S_create_c_locale name not valid
+is thrown - see https://svn.boost.org/trac10/ticket/10205 for
+more details on the reason for this error. This commit applies
+the fix outlined in:
+https://svn.boost.org/trac10/attachment/ticket/10205/10205.patch.
+---
+ libs/filesystem/src/unique_path.cpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/libs/filesystem/src/unique_path.cpp b/libs/filesystem/src/unique_path.cpp
+index 1b05c83..829f6b1 100644
+--- a/libs/filesystem/src/unique_path.cpp
++++ b/libs/filesystem/src/unique_path.cpp
+@@ -130,15 +130,15 @@ namespace boost { namespace filesystem { namespace detail {
+ BOOST_FILESYSTEM_DECL
+ path unique_path(const path& model, system::error_code* ec)
+ {
+-  std::wstring s (model.wstring());  // std::string ng for MBCS encoded POSIX
+-  const wchar_t hex[] = L"0123456789abcdef";
++  std::string s (model.string());  // std::string ng for MBCS encoded POSIX
++  const char hex[] = "0123456789abcdef";
+   char ran[] = "123456789abcdef";  // init to avoid clang static analyzer message
+                                    // see ticket #8954
+   assert(sizeof(ran) == 16);
+   const int max_nibbles = 2 * sizeof(ran);   // 4-bits per nibble
+ 
+   int nibbles_used = max_nibbles;
+-  for(std::wstring::size_type i=0; i < s.size(); ++i)
++  for(std::string::size_type i=0; i < s.size(); ++i)
+   {
+     if (s[i] == L'%')                        // digit request
+     {
+-- 
+2.11.0 (Apple Git-81)
+
