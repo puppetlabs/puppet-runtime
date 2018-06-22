@@ -19,7 +19,7 @@ pkg.build_requires "augeas"
 
 pkg.environment "PATH", "$(PATH):/opt/pl-build-tools/bin:/usr/local/bin:/opt/csw/bin:/usr/ccs/bin:/usr/sfw/bin"
 if platform.is_aix?
-  # We still use pl-gcc for AIX 7.1
+  pkg.build_requires "http://osmirror.delivery.puppetlabs.net/AIX_MIRROR/pkg-config-0.19-6.aix5.2.ppc.rpm"
   pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
   pkg.environment "RUBY", host_ruby
   pkg.environment "LDFLAGS", " -brtl #{settings[:ldflags]}"
