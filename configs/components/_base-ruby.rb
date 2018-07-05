@@ -34,7 +34,7 @@ end
 #############
 
 if platform.is_aix?
-  pkg.environment 'CC', '/opt/pl-build-tools/bin/gcc'
+#  pkg.environment 'CC', '/opt/pl-build-tools/bin/gcc'
   pkg.environment 'LDFLAGS', "#{settings[:ldflags]} -Wl,-bmaxdata:0x80000000"
 elsif platform.is_solaris?
   pkg.environment 'PATH', "#{settings[:bindir]}:/usr/ccs/bin:/usr/sfw/bin:$$PATH:/opt/csw/bin"
@@ -84,10 +84,7 @@ elsif platform.is_windows?
   pkg.build_requires "pl-pdcurses-#{platform.architecture}"
 end
 
-if platform.is_aix?
-  pkg.build_requires "http://osmirror.delivery.puppetlabs.net/AIX_MIRROR/zlib-1.2.3-4.aix5.2.ppc.rpm"
-  pkg.build_requires "http://osmirror.delivery.puppetlabs.net/AIX_MIRROR/zlib-devel-1.2.3-4.aix5.2.ppc.rpm"
-elsif platform.is_deb?
+if platform.is_deb?
   pkg.build_requires 'zlib1g-dev'
 elsif platform.is_rpm?
   pkg.build_requires 'zlib-devel'

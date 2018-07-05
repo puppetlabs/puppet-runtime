@@ -134,6 +134,7 @@ end
 # For AIX, we use the triple to install a better rbconfig
 if platform.is_aix?
   platform_triple = "powerpc-ibm-aix#{platform.os_version}.0.0"
+  platform.mktemp = "/opt/freeware/bin/mktemp --directory"
 end
 
 proj.setting(:platform_triple, platform_triple)
