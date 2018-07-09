@@ -104,8 +104,13 @@ component "boost" do |pkg, settings, platform|
 
     gpp = "C:/tools/mingw#{arch}/bin/g++"
 
+    # The default build style used by jam is 'minimal', which builds both
+    # static and dynamic libraries on *nix systems, but only static on Windows.
+    # Make the windows settings match the *nix settings:
+    addtl_flags = "variant=release threading=multi link=shared,static runtime-link=shared address-model=#{arch}"
+
     # We don't have iconv available on windows yet
-    addtl_flags = "boost.locale.iconv=off"
+    addtl_flags += " boost.locale.iconv=off"
   elsif platform.is_aix?
     pkg.environment "PATH" => "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
