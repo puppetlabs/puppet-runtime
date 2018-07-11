@@ -109,8 +109,12 @@ component "boost" do |pkg, settings, platform|
     # Make the windows settings match the *nix settings:
     addtl_flags = "variant=release threading=multi link=shared,static runtime-link=shared address-model=#{arch}"
 
+    # By default, boost gets built with WINVER set to the value for Windows XP.
+    # We want it to be Vista/Server 2008:
+    addtl_flags = "#{addtl_flags} define=WINVER=0x0600 define=_WIN32_WINNT=0x0600"
+
     # We don't have iconv available on windows yet
-    addtl_flags += " boost.locale.iconv=off"
+    addtl_flags = "#{addtl_flags} boost.locale.iconv=off"
   elsif platform.is_aix?
     pkg.environment "PATH" => "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
