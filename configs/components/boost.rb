@@ -68,6 +68,7 @@ component "boost" do |pkg, settings, platform|
   addtl_flags = ""
   gpp = "#{settings[:tools_root]}/bin/g++"
   b2flags = ""
+  b2location = "#{settings[:prefix]}/bin/b2"
 
   if platform.is_cross_compiled_linux?
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH"
@@ -91,12 +92,10 @@ component "boost" do |pkg, settings, platform|
     arch = platform.architecture == "x64" ? "64" : "32"
     pkg.environment "PATH" => "C:/tools/mingw#{arch}/bin:$$PATH"
     pkg.environment "CYGWIN" => "nodosfilewarning"
-
+    b2location = "#{settings[:prefix]}/bin/b2.exe"
     # bootstrap.bat does not take the `--with-toolset` flag
     toolset = "gcc"
     with_toolset = ""
-    # boost is installed with this extra subdirectory on windows
-    boost_dir = "boost-1_67"
     # we do not need to reference the .bat suffix when calling the bootstrap script
     bootstrap_suffix = ""
     # we need to make sure we link against non-cygwin libraries
@@ -104,17 +103,19 @@ component "boost" do |pkg, settings, platform|
 
     gpp = "C:/tools/mingw#{arch}/bin/g++"
 
-    # The default build style used by jam is 'minimal', which builds both
-    # static and dynamic libraries on *nix systems, but only static on Windows.
-    # Make the windows settings match the *nix settings:
-    addtl_flags = "variant=release threading=multi link=shared,static runtime-link=shared address-model=#{arch}"
-
+    # Set the address model so we only build one arch
+    #
     # By default, boost gets built with WINVER set to the value for Windows XP.
-    # We want it to be Vista/Server 2008:
-    addtl_flags = "#{addtl_flags} define=WINVER=0x0600 define=_WIN32_WINNT=0x0600"
+    # We want it to be Vista/Server 2008
+    #
+    # Set layout to system to avoid nasty version numbers and arches in filenames
+    b2flags = "address-model=#{arch} \
+               define=WINVER=0x0600 \
+               define=_WIN32_WINNT=0x0600 \
+               --layout=system"
 
     # We don't have iconv available on windows yet
-    addtl_flags = "#{addtl_flags} boost.locale.iconv=off"
+    install_only_flags = "boost.locale.iconv=off"
   elsif platform.is_aix?
     pkg.environment "PATH" => "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
@@ -146,29 +147,37 @@ component "boost" do |pkg, settings, platform|
       %Q{echo '#{userconfigjam}' > ~/user-config.jam},
       "cd tools/build",
       "#{execute}bootstrap#{bootstrap_suffix} #{with_toolset}",
-      "./b2 install -d+2 \
-      --prefix=#{settings[:prefix]} \
+      "./b2 \
+      install \
+      variant=release \
+      link=shared \
       toolset=#{toolset} \
       #{b2flags} \
+      -d+2 \
+      --prefix=#{settings[:prefix]} \
       --debug-configuration"
     ]
   end
 
   pkg.install do
-    [ "#{settings[:prefix]}/bin/b2 \
-    -d+2 \
-    toolset=#{toolset} \
-    #{b2flags} \
-    --debug-configuration \
-    --build-dir=. \
-    --prefix=#{settings[:prefix]} \
-    #{boost_libs.map {|lib| "--with-#{lib}"}.join(" ")} \
-    #{addtl_flags} \
-    install",
-    "chmod 0644 #{settings[:includedir]}/#{boost_dir}/boost/graph/vf2_sub_graph_iso.hpp",
-    "chmod 0644 #{settings[:includedir]}/#{boost_dir}/boost/thread/v2/shared_mutex.hpp",
-    # Remove the user-config.jam from the build user's home directory:
-    "rm -f ~/user-config.jam"
+    [
+      "#{b2location} \
+      install \
+      variant=release \
+      link=shared \
+      toolset=#{toolset} \
+      #{b2flags} \
+      -d+2 \
+      --debug-configuration \
+      --prefix=#{settings[:prefix]} \
+      --build-dir=. \
+      #{boost_libs.map {|lib| "--with-#{lib}"}.join(" ")} \
+      #{install_only_flags}",
+      "chmod 0644 #{settings[:includedir]}/boost/graph/vf2_sub_graph_iso.hpp",
+      "chmod 0644 #{settings[:includedir]}/boost/thread/v2/shared_mutex.hpp",
+      # Remove the user-config.jam from the build user's home directory:
+      "rm -f ~/user-config.jam",
+      "rm -f #{b2location}"
     ]
   end
 end
