@@ -31,4 +31,6 @@ project 'agent-runtime-master' do |proj|
   proj.component 'rubygem-trollop'
   proj.component 'rubygem-hiera-eyaml'
   proj.component 'rubygem-httpclient'
+  proj.component 'boost'
+  proj.component 'yaml-cpp'
 end
