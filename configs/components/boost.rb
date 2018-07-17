@@ -23,6 +23,10 @@ component "boost" do |pkg, settings, platform|
     #pkg.apply_patch 'resources/patches/boost/boost-aarch64-flags.patch'
   end
 
+  if platform.is_windows?
+    pkg.apply_patch 'resources/patches/boost/windows-thread-declare-do_try_join_until-as-inline.patch'
+  end
+
   # Package Dependency Metadata
 
   # Build Requirements
