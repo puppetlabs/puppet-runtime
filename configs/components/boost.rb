@@ -73,6 +73,7 @@ component "boost" do |pkg, settings, platform|
   gpp = "#{settings[:tools_root]}/bin/g++"
   b2flags = ""
   b2location = "#{settings[:prefix]}/bin/b2"
+  bjamlocation = "#{settings[:prefix]}/bin/bjam"
 
   if platform.is_cross_compiled_linux?
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH"
@@ -97,6 +98,7 @@ component "boost" do |pkg, settings, platform|
     pkg.environment "PATH" => "C:/tools/mingw#{arch}/bin:$$PATH"
     pkg.environment "CYGWIN" => "nodosfilewarning"
     b2location = "#{settings[:prefix]}/bin/b2.exe"
+    bjamlocation = "#{settings[:prefix]}/bin/bjam.exe"
     # bootstrap.bat does not take the `--with-toolset` flag
     toolset = "gcc"
     with_toolset = ""
@@ -181,7 +183,8 @@ component "boost" do |pkg, settings, platform|
       "chmod 0644 #{settings[:includedir]}/boost/thread/v2/shared_mutex.hpp",
       # Remove the user-config.jam from the build user's home directory:
       "rm -f ~/user-config.jam",
-      "rm -f #{b2location}"
+      "rm -f #{b2location}",
+      "rm -f #{bjamlocation}",
     ]
   end
 
