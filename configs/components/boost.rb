@@ -184,4 +184,25 @@ component "boost" do |pkg, settings, platform|
       "rm -f #{b2location}"
     ]
   end
+
+  # Boost.Build's behavior around setting the install_name for dylibs on macOS
+  # is not easily configurable. By default, it will hard-code the relative build
+  # directory there, making the libraries unusable once they're moved to the
+  # puppet libdir. Instead of dealing with this in a jamfile somewhere, we'll
+  # use a script to manually rewrite the finshed dylibs' install_names to use
+  # @rpath instead of the build directory.
+  if platform.is_macos?
+    pkg.add_source("file://resources/files/boost/macos_rpath_install_names.erb")
+    pkg.configure do
+      [
+        "#{settings[:bindir]}/erb libdir=#{settings[:libdir]} ../macos_rpath_install_names.erb > macos_rpath_install_names.sh",
+        "chmod +x macos_rpath_install_names.sh",
+      ]
+    end
+    pkg.install do
+      [
+        "./macos_rpath_install_names.sh",
+      ]
+    end
+  end
 end
