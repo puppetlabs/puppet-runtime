@@ -59,8 +59,11 @@ component "boost" do |pkg, settings, platform|
   end
 
   # Build-time Configuration
-  boost_libs = [ 'atomic', 'chrono', 'container', 'date_time', 'exception', 'filesystem', 'graph', 'graph_parallel', 'iostreams', 'locale', 'log', 'math', 'program_options', 'random', 'regex', 'serialization', 'signals', 'system', 'test', 'thread', 'timer', 'wave' ]
 
+  boost_libs = settings[:boost_libs] || ['atomic', 'chrono', 'container', 'date_time', 'exception', 'filesystem',
+                                         'graph', 'graph_parallel', 'iostreams', 'locale', 'log', 'math',
+                                         'program_options', 'random', 'regex', 'serialization', 'signals', 'system',
+                                         'test', 'thread', 'timer', 'wave']
   cflags = "-fPIC -std=c99"
   cxxflags = "-std=c++11 -fPIC"
 
