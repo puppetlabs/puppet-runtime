@@ -24,6 +24,10 @@ component "boost" do |pkg, settings, platform|
     #pkg.apply_patch 'resources/patches/boost/boost-aarch64-flags.patch'
   end
 
+  if platform.is_windows?
+    pkg.apply_patch 'resources/patches/boost/windows-thread-declare-do_try_join_until-as-inline.patch'
+  end
+
   # Package Dependency Metadata
 
   # Build Requirements
@@ -70,6 +74,7 @@ component "boost" do |pkg, settings, platform|
   gpp = "#{settings[:tools_root]}/bin/g++"
   b2flags = ""
   b2location = "#{settings[:prefix]}/bin/b2"
+  bjamlocation = "#{settings[:prefix]}/bin/bjam"
 
   if platform.is_cross_compiled_linux?
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH"
@@ -94,6 +99,7 @@ component "boost" do |pkg, settings, platform|
     pkg.environment "PATH" => "C:/tools/mingw#{arch}/bin:$$PATH"
     pkg.environment "CYGWIN" => "nodosfilewarning"
     b2location = "#{settings[:prefix]}/bin/b2.exe"
+    bjamlocation = "#{settings[:prefix]}/bin/bjam.exe"
     # bootstrap.bat does not take the `--with-toolset` flag
     toolset = "gcc"
     with_toolset = ""
@@ -178,7 +184,29 @@ component "boost" do |pkg, settings, platform|
       "chmod 0644 #{settings[:includedir]}/boost/thread/v2/shared_mutex.hpp",
       # Remove the user-config.jam from the build user's home directory:
       "rm -f ~/user-config.jam",
-      "rm -f #{b2location}"
+      "rm -f #{b2location}",
+      "rm -f #{bjamlocation}",
     ]
+  end
+
+  # Boost.Build's behavior around setting the install_name for dylibs on macOS
+  # is not easily configurable. By default, it will hard-code the relative build
+  # directory there, making the libraries unusable once they're moved to the
+  # puppet libdir. Instead of dealing with this in a jamfile somewhere, we'll
+  # use a script to manually rewrite the finshed dylibs' install_names to use
+  # @rpath instead of the build directory.
+  if platform.is_macos?
+    pkg.add_source("file://resources/files/boost/macos_rpath_install_names.erb")
+    pkg.configure do
+      [
+        "#{settings[:bindir]}/erb libdir=#{settings[:libdir]} ../macos_rpath_install_names.erb > macos_rpath_install_names.sh",
+        "chmod +x macos_rpath_install_names.sh",
+      ]
+    end
+    pkg.install do
+      [
+        "./macos_rpath_install_names.sh",
+      ]
+    end
   end
 end

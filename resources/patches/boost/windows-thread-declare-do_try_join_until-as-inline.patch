@@ -1,0 +1,11 @@
+diff -Naur boost_1_67_0.orig/boost/thread/detail/thread.hpp boost_1_67_0/boost/thread/detail/thread.hpp
+--- boost_1_67_0.orig/boost/thread/detail/thread.hpp	2018-07-16 20:42:54.889539200 +0000
++++ boost_1_67_0/boost/thread/detail/thread.hpp	2018-07-16 20:45:41.436156800 +0000
+@@ -461,7 +461,7 @@
+     private:
+         bool join_noexcept();
+         bool do_try_join_until_noexcept(detail::internal_platform_timepoint const &timeout, bool& res);
+-        bool do_try_join_until(detail::internal_platform_timepoint const &timeout);
++        inline bool do_try_join_until(detail::internal_platform_timepoint const &timeout);
+     public:
+         void join();
