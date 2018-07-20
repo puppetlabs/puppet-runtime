@@ -9,6 +9,7 @@ component "boost" do |pkg, settings, platform|
   if platform.is_solaris?
     pkg.apply_patch 'resources/patches/boost/0001-fix-build-for-solaris.patch'
     pkg.apply_patch 'resources/patches/boost/Fix-bootstrap-build-for-solaris-10.patch'
+    pkg.apply_patch 'resources/patches/boost/force-SONAME-option-for-solaris.patch'
   end
 
   if platform.is_solaris? || platform.is_aix?

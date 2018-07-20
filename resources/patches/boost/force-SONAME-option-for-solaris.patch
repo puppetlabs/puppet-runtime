@@ -1,0 +1,35 @@
+From 22bb70572d7da073bb8539900d48efda1cfd0d97 Mon Sep 17 00:00:00 2001
+From: "Sean P. McDonald" <sean.mcdonald@puppetlabs.com>
+Date: Fri, 20 Jul 2018 10:05:11 -0700
+Subject: [PATCH] force SONAME option for solaris
+# Solaris machines need to provide the shared object name via the -h flag to the
+# linker when compiling things. This is so when other things are linked against
+# the lib just the lib name is listed (and not an entire path). See
+# https://docs.oracle.com/cd/E19253-01/817-1984/chapter4-97194/index.html for a
+# better description.
+
+# This patch to the gcc jamfile forces the usage
+# of the -h flag via SONAME_OPTION.
+
+
+---
+ tools/build/src/tools/gcc.jam | 3 +++
+ 1 file changed, 3 insertions(+)
+
+diff --git a/tools/build/src/tools/gcc.jam b/tools/build/src/tools/gcc.jam
+index be363f1a..b080dfbd 100644
+--- a/tools/build/src/tools/gcc.jam
++++ b/tools/build/src/tools/gcc.jam
+@@ -938,6 +938,9 @@ toolset.flags gcc.link.dll .IMPLIB-COMMAND <target-os>cygwin : "-Wl,--out-implib
+     # See note [1]
+     toolset.flags gcc.link OPTIONS <target-os>solaris/<runtime-link>static : -static ;
+
++    toolset.flags gcc.link HAVE_SONAME <target-os>solaris : "" ;
++    toolset.flags gcc.link SONAME_OPTION <target-os>solaris : -h ;
++
+     # [1]
+     # For <runtime-link>static we made sure there are no dynamic libraries in the
+     # link. On HP-UX not all system libraries exist as archived libraries (for
+--
+2.18.0.windows.1
+
