@@ -60,8 +60,8 @@ component "yaml-cpp" do |pkg, settings, platform|
 
   # Build Commands
   pkg.build do
-    [ "#{mkdir} build-shared",
-      "cd build-shared",
+    [ "#{mkdir} build",
+      "cd build",
       "#{cmake} \
       #{cmake_toolchain_file} \
       -DCMAKE_INSTALL_PREFIX=#{settings[:prefix]} \
@@ -71,26 +71,12 @@ component "yaml-cpp" do |pkg, settings, platform|
       -DBUILD_SHARED_LIBS=ON \
       .. ",
       "#{make} VERBOSE=1 -j$(shell expr $(shell #{platform[:num_cores]}) + 1)",
-      "cd ../",
-      "#{mkdir} build-static",
-      "cd build-static",
-      "#{cmake} \
-      #{cmake_toolchain_file} \
-      -DCMAKE_INSTALL_PREFIX=#{settings[:prefix]} \
-      -DCMAKE_VERBOSE_MAKEFILE=ON \
-      -DYAML_CPP_BUILD_TOOLS=0 \
-      -DYAML_CPP_BUILD_TESTS=0 \
-      -DBUILD_SHARED_LIBS=OFF \
-      ..",
-      "#{make} VERBOSE=1 -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"
     ]
   end
 
   pkg.install do
-    [ "cd build-shared",
+    [ "cd build",
       "#{make} install",
-      "cd ../build-static",
-      "#{make} install"
     ]
   end
 end
