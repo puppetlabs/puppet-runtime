@@ -185,8 +185,9 @@ component "boost" do |pkg, settings, platform|
       #{install_only_flags}",
       "chmod 0644 #{settings[:includedir]}/boost/graph/vf2_sub_graph_iso.hpp",
       "chmod 0644 #{settings[:includedir]}/boost/thread/v2/shared_mutex.hpp",
-      # Remove the user-config.jam from the build user's home directory:
+      # Remove extraneous Boost.Build stuff:
       "rm -f ~/user-config.jam",
+      "rm -f #{settings[:prefix]}/share/boost-build",
       "rm -f #{b2location}",
       "rm -f #{bjamlocation}",
     ]
