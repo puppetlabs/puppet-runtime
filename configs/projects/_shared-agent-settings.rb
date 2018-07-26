@@ -161,6 +161,8 @@ if platform.is_windows?
   proj.setting(:cflags, "#{proj.cppflags}")
   proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir} -Wl,--nxcompat -Wl,--dynamicbase")
   proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
+else
+  proj.setting(:tools_root, "/opt/pl-build-tools")
 end
 
 if platform.is_macos?
@@ -186,6 +188,11 @@ elsif platform.is_macos?
 end
 
 proj.timeout 7200 if platform.is_windows?
+
+# These are the boost libraries we care about for facter and friends
+proj.setting(:boost_libs, ["chrono", "date_time", "filesystem", "locale", "log", "program_options",
+                           "random", "regex", "system", "thread"])
+
 
 # Most branches of puppet-agent use these openssl flags in addition to the defaults in configs/components/openssl.rb -
 # Individual projects can override these if necessary.
