@@ -117,6 +117,9 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-fast_gettext'
   proj.component 'rubygem-semantic_puppet'
 
+  # R10k dependencies
+  proj.component 'rubygem-gettext-setup'
+
   # Core dependencies
   proj.component 'rubygem-ffi'
   proj.component 'rubygem-minitar'
