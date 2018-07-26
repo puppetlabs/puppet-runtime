@@ -187,7 +187,7 @@ component "boost" do |pkg, settings, platform|
       "chmod 0644 #{settings[:includedir]}/boost/thread/v2/shared_mutex.hpp",
       # Remove extraneous Boost.Build stuff:
       "rm -f ~/user-config.jam",
-      "rm -f #{settings[:prefix]}/share/boost-build",
+      "rm -rf #{settings[:prefix]}/share/boost-build",
       "rm -f #{b2location}",
       "rm -f #{bjamlocation}",
     ]
