@@ -125,6 +125,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-minitar'
   proj.component 'rubygem-multi_json'
   proj.component 'rubygem-net-ssh'
+  proj.component 'rubygem-httpclient'
 
   # Core Windows dependencies
   proj.component 'rubygem-win32-dir'
