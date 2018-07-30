@@ -31,7 +31,9 @@ component "libxslt" do |pkg, settings, platform|
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
   else
-    pkg.build_requires "make"
+    unless platform.is_el?
+      pkg.build_requires "make"
+    end
     pkg.environment "LDFLAGS" => settings[:ldflags]
     pkg.environment "CFLAGS" => settings[:cflags]
   end

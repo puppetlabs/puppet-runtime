@@ -85,7 +85,7 @@ component 'openssl' do |pkg, settings, platform|
     if platform.name =~ /debian-8-arm/
       pkg.build_requires 'xutils-dev'
     end
-  elsif platform.is_linux?
+  elsif platform.is_linux? && !platform.is_el?
     pkg.build_requires 'pl-gcc'
   end
 

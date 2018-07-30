@@ -1,9 +1,7 @@
 component "puppet-ca-bundle" do |pkg, settings, platform|
   pkg.load_from_json("configs/components/puppet-ca-bundle.json")
 
-  if settings[:system_openssl]
-    pkg.build_requires 'openssl-devel'
-  else
+  unless settings[:system_openssl]
     pkg.build_requires "openssl-#{settings[:openssl_version]}"
   end
 

@@ -20,7 +20,7 @@ component "yaml-cpp" do |pkg, settings, platform|
     pkg.build_requires "cmake"
   elsif platform.is_macos?
     pkg.build_requires "cmake"
-  elsif platform.is_aix?
+  elsif platform.is_aix? || platform.is_el?
     # Moved to platform def, do nothing
   else
     pkg.build_requires "pl-gcc"

@@ -86,15 +86,6 @@ component 'openssl' do |pkg, settings, platform|
       end
     pkg.build_requires 'pl-gcc'
     end
-  elsif platform.is_linux?
-    if platform.name =~ /^el-5/
-      # OpenSSL 1.1.0's configure script requires perl >= version 5.10, but the
-      # default version on EL 5 is 5.8.8. Install a newer perl just so we can
-      # run the configure script:
-      pkg.build_requires 'pl-perl'
-    end
-      # pkg.build_requires 'xutils-dev'
-      # pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
   end
 
   ###########

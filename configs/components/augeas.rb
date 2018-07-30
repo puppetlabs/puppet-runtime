@@ -50,13 +50,15 @@ component 'augeas' do |pkg, settings, platform|
   end
 
   if platform.is_rpm? && !platform.is_aix?
-    pkg.build_requires 'readline-devel'
-    pkg.build_requires 'pkgconfig'
+    unless platform.is_el?
+      pkg.build_requires 'readline-devel'
+      pkg.build_requires 'pkgconfig'
 
-    if platform.is_cisco_wrlinux?
-      pkg.requires 'libreadline6'
-    else
-      pkg.requires 'readline'
+      if platform.is_cisco_wrlinux?
+        pkg.requires 'libreadline6'
+      else
+        pkg.requires 'readline'
+      end
     end
 
     if platform.architecture =~ /aarch64|ppc64le|s390x/

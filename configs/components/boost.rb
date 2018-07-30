@@ -31,7 +31,9 @@ component "boost" do |pkg, settings, platform|
   # Package Dependency Metadata
 
   # Build Requirements
-  if platform.is_cross_compiled_linux?
+  if platform.is_el?
+  #
+  elsif platform.is_cross_compiled_linux?
     pkg.build_requires "pl-binutils-#{platform.architecture}"
     pkg.build_requires "pl-gcc-#{platform.architecture}"
   elsif platform.is_aix?
@@ -46,7 +48,7 @@ component "boost" do |pkg, settings, platform|
     pkg.build_requires "pl-gcc"
     # Various Linux platforms
     case platform.name
-    when /el|fedora/
+    when /fedora/
       pkg.build_requires 'bzip2-devel'
       pkg.build_requires 'zlib-devel'
     when /sles-(11|12)/

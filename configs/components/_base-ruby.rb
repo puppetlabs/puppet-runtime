@@ -90,7 +90,9 @@ if platform.is_aix?
 elsif platform.is_deb?
   pkg.build_requires 'zlib1g-dev'
 elsif platform.is_rpm?
-  pkg.build_requires 'zlib-devel'
+  unless platform.is_el?
+    pkg.build_requires 'zlib-devel'
+  end
 elsif platform.is_windows?
   pkg.build_requires "pl-zlib-#{platform.architecture}"
 end

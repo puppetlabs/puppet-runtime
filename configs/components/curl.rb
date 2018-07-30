@@ -9,9 +9,7 @@ component 'curl' do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/curl/curl-7.55.1-aix-poll.patch'
   end
 
-  if settings[:system_openssl]
-    pkg.build_requires 'openssl-devel'
-  else
+  unless settings[:system_openssl]
     pkg.build_requires "openssl-#{settings[:openssl_version]}"
   end
 
