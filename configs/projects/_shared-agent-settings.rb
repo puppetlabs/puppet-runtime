@@ -29,7 +29,6 @@ proj.version_from_git
 proj.setting(:artifactory_url, "https://artifactory.delivery.puppetlabs.net/artifactory")
 proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
 
-
 if platform.is_windows?
   proj.setting(:company_id, "PuppetLabs")
   proj.setting(:product_id, "Puppet")
@@ -201,7 +200,6 @@ proj.setting(:openssl_extra_configure_flags, [
   'no-dtls1',
   'no-idea',
   'no-seed',
-  'no-ssl2-method',
   'no-weak-ssl-ciphers',
   '-DOPENSSL_NO_HEARTBEATS',
 ]) unless proj.settings[:openssl_extra_configure_flags]

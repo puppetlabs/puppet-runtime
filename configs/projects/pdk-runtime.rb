@@ -16,6 +16,8 @@ project 'pdk-runtime' do |proj|
     proj.identifier "com.puppetlabs"
   end
 
+  proj.setting :openssl_version, '1.0.2'
+
   # These flags are applied in addition to the defaults in configs/component/openssl.rb.
   proj.setting(:openssl_extra_configure_flags, [
     'enable-cms',
@@ -141,7 +143,7 @@ project 'pdk-runtime' do |proj|
   # --------------
 
   # Common deps
-  proj.component "openssl"
+  proj.component "openssl-#{proj.openssl_version}"
   proj.component "curl"
 
   # Git and deps

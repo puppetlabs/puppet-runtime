@@ -3,6 +3,7 @@ project 'agent-runtime-5.3.x' do |proj|
   proj.setting :augeas_version, '1.8.1'
   proj.setting :ruby_version, '2.4.4'
   proj.setting :rubygem_semantic_puppet_version, '0.1.2'
+  proj.setting :openssl_version, '1.0.2'
 
   platform = proj.get_platform
 

@@ -12,7 +12,7 @@ component 'curl' do |pkg, settings, platform|
   if settings[:system_openssl]
     pkg.build_requires 'openssl-devel'
   else
-    pkg.build_requires 'openssl'
+    pkg.build_requires "openssl-#{settings[:openssl_version]}"
   end
 
   pkg.build_requires "puppet-ca-bundle"

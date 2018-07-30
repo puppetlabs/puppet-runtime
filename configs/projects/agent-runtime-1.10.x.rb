@@ -6,6 +6,7 @@ project 'agent-runtime-1.10.x' do |proj|
   proj.setting :rubygem_fast_gettext_version, '1.1.0'
   proj.setting :rubygem_net_ssh_version, '4.1.0'
   proj.setting :rubygem_semantic_puppet_version, '0.1.2'
+  proj.setting :openssl_version, '1.0.2'
 
   platform = proj.get_platform
 
