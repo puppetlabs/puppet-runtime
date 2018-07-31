@@ -219,8 +219,6 @@ proj.directory proj.install_root
 proj.directory proj.prefix
 proj.directory proj.sysconfdir
 proj.directory proj.link_bindir
-proj.directory proj.logdir unless platform.is_windows?
-proj.directory proj.piddir unless platform.is_windows?
 if platform.is_windows? || platform.is_macos?
   proj.directory proj.bindir
 end
