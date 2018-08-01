@@ -1,6 +1,7 @@
 project 'pdk-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, "pdk")
+  proj.setting(:openssl_version, '1.0.2')
   platform = proj.get_platform
 
   proj.version_from_git
@@ -141,7 +142,7 @@ project 'pdk-runtime' do |proj|
   # --------------
 
   # Common deps
-  proj.component "openssl"
+  proj.component "openssl-#{proj.openssl_version}"
   proj.component "curl"
 
   # Git and deps
