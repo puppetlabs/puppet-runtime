@@ -90,7 +90,6 @@ component 'augeas' do |pkg, settings, platform|
       pkg.environment "PKG_CONFIG_PATH", "/opt/csw/lib/pkgconfig"
       pkg.environment "PKG_CONFIG", "/opt/csw/bin/pkg-config"
     else
-      pkg.build_requires 'pl-pkg-config'
       pkg.environment "PKG_CONFIG_PATH", "/usr/lib/pkgconfig"
       pkg.environment "PKG_CONFIG", "/opt/pl-build-tools/bin/pkg-config"
     end

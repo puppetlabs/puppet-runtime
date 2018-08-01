@@ -62,19 +62,12 @@ unless settings[:system_openssl]
   pkg.build_requires "openssl-#{settings[:openssl_version]}"
 end
 
-if platform.is_el? || platform.is_sles? || platform.is_fedora?
-  # do nothing
-elsif platform.is_aix?
+if platform.is_aix?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
   pkg.build_requires 'libedit'
 elsif platform.is_solaris?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
-  pkg.build_requires 'libedit'
-  if platform.architecture == 'sparc'
-    if platform.os_version == '11'
-      pkg.build_requires 'pl-ruby'
-    end
-  end
+  pkg.build_requires "libedit" if platform.name =~ /^solaris-10-sparc/
 elsif platform.is_cross_compiled_linux?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
   pkg.build_requires 'pl-ruby'

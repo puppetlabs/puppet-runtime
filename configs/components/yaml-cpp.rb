@@ -3,20 +3,12 @@ component "yaml-cpp" do |pkg, settings, platform|
   pkg.ref "refs/tags/yaml-cpp-0.6.2"
 
   # Build Requirements
-  if platform.is_aix? || platform.is_el? || platform.is_sles? || platform.is_fedora? || platform.is_deb?
+  if platform.is_aix? || platform.is_el? || platform.is_sles? || platform.is_fedora? || platform.is_deb? || platform.is_solaris?
   # Moved to platform def, do nothing
   elsif platform.is_cross_compiled_linux?
     pkg.build_requires "pl-binutils-#{platform.architecture}"
     pkg.build_requires "pl-gcc-#{platform.architecture}"
     pkg.build_requires "pl-cmake"
-  elsif platform.is_solaris?
-    if platform.os_version == "10"
-      pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/solaris/10/pl-cmake-3.2.3-15.i386.pkg.gz"
-    elsif platform.os_version == "11"
-      pkg.build_requires "pl-binutils-#{platform.architecture}"
-      pkg.build_requires "pl-gcc-#{platform.architecture}"
-      pkg.build_requires "pl-cmake"
-    end
   elsif platform.is_windows?
     pkg.build_requires "pl-toolchain-#{platform.architecture}"
     pkg.build_requires "cmake"
