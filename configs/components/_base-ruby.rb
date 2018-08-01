@@ -58,9 +58,7 @@ end
 # BUILD REQUIREMENTS
 ####################
 
-if settings[:system_openssl]
-  pkg.build_requires 'openssl-devel'
-else
+unless settings[:system_openssl]
   pkg.build_requires "openssl-#{settings[:openssl_version]}"
 end
 
@@ -85,10 +83,8 @@ elsif platform.is_windows?
   pkg.build_requires "pl-pdcurses-#{platform.architecture}"
 end
 
-if platform.is_aix?
+if platform.is_aix? || platform.is_deb?
   # Do nothing here, all package requirements in the platform file
-elsif platform.is_deb?
-  pkg.build_requires 'zlib1g-dev'
 elsif platform.is_rpm?
   unless platform.is_el?
     pkg.build_requires 'zlib-devel'

@@ -23,10 +23,6 @@ component "puppet-ca-bundle" do |pkg, settings, platform|
     case platform.name
       when /el-(6|7)/
         pkg.build_requires 'java-1.8.0-openjdk-devel'
-      when /(debian-(7|8)|ubuntu-14)/
-        pkg.build_requires 'openjdk-7-jdk'
-      when /(debian-9|ubuntu-(15|16))/
-        pkg.build_requires 'openjdk-8-jdk'
       when /sles-12/
         pkg.build_requires 'java-1_7_0-openjdk-devel'
       when /sles-11/

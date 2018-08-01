@@ -6,6 +6,16 @@ platform "cumulus-22-amd64" do |plat|
 
   plat.add_build_repository "http://pl-build-tools.delivery.puppetlabs.net/debian/pl-build-tools-release-wheezy.deb"
 
+  packages = [
+    "libbz2-dev",
+    "libreadline-dev",
+    "make",
+    "pkg-config",
+    "pl-cmake",
+    "pl-gcc",
+    "zlib1g-dev"
+  ]
+
   plat.provision_with %(
 echo 'deb http://enterprise.delivery.puppetlabs.net/build-tools/debian/CumulusLinux CumulusLinux-2.2 build-tools
 deb http://osmirror.delivery.puppetlabs.net/cumulus/ CumulusLinux-2.2 main addons security-updates testing updates' > /etc/apt/sources.list
@@ -18,9 +28,8 @@ apt-get dist-upgrade -qy --force-yes -o Dpkg::Options::="--force-confold" --allo
 echo 'deb http://osmirror.delivery.puppetlabs.net/debian/ wheezy main
 deb http://osmirror.delivery.puppetlabs.net/debian/ wheezy-updates main' >> /etc/apt/sources.list
 apt-get update -qq
-apt-get install -qy --no-install-recommends build-essential make quilt pkg-config debhelper devscripts rsync
+apt-get install -qy --no-install-recommends build-essential make quilt pkg-config debhelper devscripts rsync #{packages.join(' ')}
 )
-
   plat.install_build_dependencies_with "DEBIAN_FRONTEND=noninteractive; apt-get install -qy --no-install-recommends "
   plat.vmpooler_template "debian-7-x86_64"
   plat.output_dir File.join("deb", plat.get_codename, "PC1")

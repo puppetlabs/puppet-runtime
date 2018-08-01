@@ -31,8 +31,8 @@ component "boost" do |pkg, settings, platform|
   # Package Dependency Metadata
 
   # Build Requirements
-  if platform.is_el?
-  #
+  if platform.is_el? || platform.is_deb?
+    # Requirements have been moved to platform files
   elsif platform.is_cross_compiled_linux?
     pkg.build_requires "pl-binutils-#{platform.architecture}"
     pkg.build_requires "pl-gcc-#{platform.architecture}"
@@ -54,9 +54,6 @@ component "boost" do |pkg, settings, platform|
     when /sles-(11|12)/
       pkg.build_requires 'libbz2-devel'
       pkg.build_requires 'zlib-devel'
-    when /debian|ubuntu|Cumulus/i
-      pkg.build_requires 'libbz2-dev'
-      pkg.build_requires 'zlib1g-dev'
     end
   end
 

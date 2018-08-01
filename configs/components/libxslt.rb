@@ -31,7 +31,7 @@ component "libxslt" do |pkg, settings, platform|
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
   else
-    unless platform.is_el?
+    unless platform.is_el? || platform.is_deb?
       pkg.build_requires "make"
     end
     pkg.environment "LDFLAGS" => settings[:ldflags]
@@ -39,7 +39,7 @@ component "libxslt" do |pkg, settings, platform|
   end
 
   if platform.is_cross_compiled_linux? || platform.name =~ /solaris-11/
-    pkg.build_requires "pl-gcc-#{platform.architecture}"
+    pkg.build_requires "pl-gcc-#{platform.architecture}" unless platform.is_deb?
   end
 
   pkg.configure do
