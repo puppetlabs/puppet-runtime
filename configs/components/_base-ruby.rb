@@ -62,7 +62,9 @@ unless settings[:system_openssl]
   pkg.build_requires "openssl-#{settings[:openssl_version]}"
 end
 
-if platform.is_aix?
+if platform.is_el? || platform.is_sles? || platform.is_fedora?
+  # do nothing
+elsif platform.is_aix?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
   pkg.build_requires 'libedit'
 elsif platform.is_solaris?
@@ -86,7 +88,7 @@ end
 if platform.is_aix? || platform.is_deb?
   # Do nothing here, all package requirements in the platform file
 elsif platform.is_rpm?
-  unless platform.is_el?
+  unless platform.is_el? || platform.is_sles? || platform.is_fedora?
     pkg.build_requires 'zlib-devel'
   end
 elsif platform.is_windows?

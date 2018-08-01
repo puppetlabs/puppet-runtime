@@ -50,7 +50,7 @@ component 'augeas' do |pkg, settings, platform|
   end
 
   if platform.is_rpm? && !platform.is_aix?
-    unless platform.is_el?
+    unless platform.is_el? || platform.is_sles? || platform.is_fedora?
       pkg.build_requires 'readline-devel'
       pkg.build_requires 'pkgconfig'
 

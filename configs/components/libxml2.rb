@@ -22,7 +22,7 @@ component "libxml2" do |pkg, settings, platform|
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
   else
-    unless platform.is_el? || platform.is_deb?
+    unless platform.is_el? || platform.is_deb? || platform.is_sles? || platform.is_fedora?
       pkg.build_requires "make"
     end
     pkg.environment "LDFLAGS" => settings[:ldflags]

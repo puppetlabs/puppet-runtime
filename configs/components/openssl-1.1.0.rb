@@ -72,7 +72,9 @@ component 'openssl' do |pkg, settings, platform|
 
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
 
-  if platform.is_cross_compiled_linux?
+  if platform.is_sles? || platform.is_el?
+    # do nothing, buid requirements come from platform files
+  elsif platform.is_cross_compiled_linux?
     # These are needed for the makedepend command
     pkg.build_requires 'imake' if platform.name =~ /^el/
     pkg.build_requires 'xorg-x11-util-devel' if platform.name =~ /^sles/

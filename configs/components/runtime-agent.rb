@@ -3,15 +3,7 @@ component "runtime-agent" do |pkg, settings, platform|
   pkg.environment "PROJECT_SHORTNAME", "puppet"
   pkg.add_source "file://resources/files/runtime/runtime.sh"
 
-  if platform.name =~ /solaris-10/
-    if platform.architecture == 'sparc'
-      pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/solaris/10/pl-gcc-4.8.2-9.#{platform.architecture}.pkg.gz"
-      pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/solaris/10/pl-binutils-2.27-2.#{platform.architecture}.pkg.gz"
-    else
-      pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/solaris/10/pl-gcc-4.8.2-1.#{platform.architecture}.pkg.gz"
-      pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/solaris/10/pl-binutils-2.27-1.#{platform.architecture}.pkg.gz"
-    end
-  elsif platform.is_el? || platform.is_deb?
+  if platform.is_el? || platform.is_deb? || platform.is_solaris? || platform.is_macos? || platform.is_sles?
     # do nothing, build requirements come from platform files
   elsif platform.is_cross_compiled_linux? || platform.name =~ /solaris-11/
     pkg.build_requires "pl-binutils-#{platform.architecture}"
