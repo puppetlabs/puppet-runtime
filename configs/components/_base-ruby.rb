@@ -64,21 +64,11 @@ end
 
 if platform.is_aix?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
-  pkg.build_requires 'libedit'
 elsif platform.is_solaris?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
   pkg.build_requires "libedit" if platform.name =~ /^solaris-10-sparc/
 elsif platform.is_cross_compiled_linux?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
-  pkg.build_requires 'pl-ruby'
-end
-
-if platform.is_aix? || platform.is_deb?
-  # Do nothing here, all package requirements in the platform file
-elsif platform.is_rpm?
-  unless platform.is_el? || platform.is_sles? || platform.is_fedora?
-    pkg.build_requires 'zlib-devel'
-  end
 end
 
 #######

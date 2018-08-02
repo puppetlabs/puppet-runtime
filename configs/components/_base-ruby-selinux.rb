@@ -29,12 +29,6 @@ else
 end
 
 pkg.build_requires "ruby-#{ruby_version}"
-unless platform.is_el?
-  pkg.build_requires "swig"
-  pkg.build_requires "libsepol"
-  pkg.build_requires "libsepol-devel"
-  pkg.build_requires "libselinux-devel"
-end
 cc = "/opt/pl-build-tools/bin/gcc"
 system_include = "-I/usr/include"
 ruby = "#{ruby_bindir}/ruby -rrbconfig"

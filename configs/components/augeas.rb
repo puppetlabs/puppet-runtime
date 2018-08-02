@@ -50,17 +50,6 @@ component 'augeas' do |pkg, settings, platform|
   end
 
   if platform.is_rpm? && !platform.is_aix?
-    unless platform.is_el? || platform.is_sles? || platform.is_fedora?
-      pkg.build_requires 'readline-devel'
-      pkg.build_requires 'pkgconfig'
-
-      if platform.is_cisco_wrlinux?
-        pkg.requires 'libreadline6'
-      else
-        pkg.requires 'readline'
-      end
-    end
-
     if platform.architecture =~ /aarch64|ppc64le|s390x/
       pkg.build_requires "runtime-#{settings[:runtime_project]}"
       pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"

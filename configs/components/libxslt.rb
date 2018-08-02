@@ -31,15 +31,8 @@ component "libxslt" do |pkg, settings, platform|
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
   else
-    unless platform.is_el? || platform.is_deb?  || platform.is_sles? || platform.is_fedora?
-      pkg.build_requires "make"
-    end
     pkg.environment "LDFLAGS" => settings[:ldflags]
     pkg.environment "CFLAGS" => settings[:cflags]
-  end
-
-  if platform.is_cross_compiled_linux?
-    pkg.build_requires "pl-gcc-#{platform.architecture}" unless platform.is_deb?
   end
 
   pkg.configure do

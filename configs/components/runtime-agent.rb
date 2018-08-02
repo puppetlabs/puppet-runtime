@@ -3,22 +3,11 @@ component "runtime-agent" do |pkg, settings, platform|
   pkg.environment "PROJECT_SHORTNAME", "puppet"
   pkg.add_source "file://resources/files/runtime/runtime.sh"
 
-  if platform.is_el? || platform.is_deb? || platform.is_solaris? || platform.is_macos? || platform.is_sles?
-    # do nothing, build requirements come from platform files
-  elsif platform.is_cross_compiled_linux? || platform.name =~ /solaris-11/
-    pkg.build_requires "pl-binutils-#{platform.architecture}"
-    pkg.build_requires "pl-gcc-#{platform.architecture}"
-  elsif platform.is_aix?
-    libdir = "/opt/pl-build-tools/lib/gcc/powerpc-ibm-aix#{platform.os_version}.0.0/5.2.0/"
-  elsif platform.is_windows?
-    # do nothing, build requirements come from platform file
-  else
-    pkg.build_requires "pl-gcc"
-  end
-
   if platform.is_cross_compiled?
     libdir = File.join("/opt/pl-build-tools", settings[:platform_triple], "lib")
     libdir = File.join("/opt/pl-build-tools", settings[:platform_triple], "lib64") if platform.architecture =~ /aarch64|s390x|ppc64le/
+  elsif platform.is_aix?
+    libdir = "/opt/pl-build-tools/lib/gcc/powerpc-ibm-aix#{platform.os_version}.0.0/5.2.0/"
   elsif platform.is_solaris? || platform.architecture =~ /i\d86/
     libdir = "/opt/pl-build-tools/lib"
   elsif platform.architecture =~ /64/

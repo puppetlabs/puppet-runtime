@@ -22,20 +22,11 @@ component "libxml2" do |pkg, settings, platform|
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
   else
-    unless platform.is_el? || platform.is_deb? || platform.is_sles? || platform.is_fedora?
-      pkg.build_requires "make"
-    end
     pkg.environment "LDFLAGS" => settings[:ldflags]
     pkg.environment "CFLAGS" => settings[:cflags]
   end
 
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
-
-  # The system pkg-config has been found to pass incorrect build flags on
-  # some (but not all) cross-compiled debian-based platforms:
-  if platform.is_cross_compiled? && platform.is_deb?
-    pkg.build_requires "pl-pkg-config" unless platform.name =~ /ubuntu-16\.04-ppc64el/
-  end
 
   pkg.configure do
     ["./configure --prefix=#{settings[:prefix]} --without-python #{settings[:host]}"]

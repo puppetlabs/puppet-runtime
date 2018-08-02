@@ -70,22 +70,6 @@ component 'openssl' do |pkg, settings, platform|
 
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
 
-  if platform.is_cross_compiled_linux?
-    # These are needed for the makedepend command
-    pkg.build_requires 'imake' if platform.name =~ /^el/
-    pkg.build_requires 'xorg-x11-util-devel' if platform.name =~ /^sles/
-    unless platform.is_deb? || platform.is_el?
-      pkg.build_requires "pl-binutils-#{platform.architecture}"
-      pkg.build_requires "pl-gcc-#{platform.architecture}"
-    end
-  elsif platform.is_aix?
-    # Do nothing, aix requirements are included in platform file
-  elsif platform.is_macos?
-    pkg.build_requires 'makedepend'
-  elsif platform.is_linux?
-    pkg.build_requires 'pl-gcc' unless platform.is_el? || platform.is_deb?
-  end
-
   #########
   # PATCHES
   #########
