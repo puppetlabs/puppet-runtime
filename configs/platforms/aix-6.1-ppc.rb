@@ -10,6 +10,7 @@ platform "aix-6.1-ppc" do |plat|
   # We can't rely on yum, and rpm can't download over https on AIX, so curl packages before installing them
   # Order matters here - there is no automatic dependency resolution
   packages = [
+    "http://pl-build-tools.delivery.puppetlabs.net/aix/5.3/ppc/pl-autoconf-2.69-1.aix5.3.ppc.rpm",
     "https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_oss4aix.org/RPMS/mktemp/mktemp-1.7-1.aix5.1.ppc.rpm",
     "https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS/ppc/rsync/rsync-3.0.6-1.aix5.3.ppc.rpm",
     "https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS/ppc/coreutils/coreutils-5.2.1-2.aix5.1.ppc.rpm",
