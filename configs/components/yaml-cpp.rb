@@ -10,8 +10,7 @@ component "yaml-cpp" do |pkg, settings, platform|
     pkg.build_requires "pl-gcc-#{platform.architecture}"
     pkg.build_requires "pl-cmake"
   elsif platform.is_windows?
-    pkg.build_requires "pl-toolchain-#{platform.architecture}"
-    pkg.build_requires "cmake"
+    # Do nothing, build requirements come from platform files
   else
     pkg.build_requires "pl-gcc"
     pkg.build_requires "make"

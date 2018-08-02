@@ -71,11 +71,6 @@ elsif platform.is_solaris?
 elsif platform.is_cross_compiled_linux?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
   pkg.build_requires 'pl-ruby'
-elsif platform.is_windows?
-  pkg.build_requires "pl-gdbm-#{platform.architecture}"
-  pkg.build_requires "pl-iconv-#{platform.architecture}"
-  pkg.build_requires "pl-libffi-#{platform.architecture}"
-  pkg.build_requires "pl-pdcurses-#{platform.architecture}"
 end
 
 if platform.is_aix? || platform.is_deb?
@@ -84,8 +79,6 @@ elsif platform.is_rpm?
   unless platform.is_el? || platform.is_sles? || platform.is_fedora?
     pkg.build_requires 'zlib-devel'
   end
-elsif platform.is_windows?
-  pkg.build_requires "pl-zlib-#{platform.architecture}"
 end
 
 #######

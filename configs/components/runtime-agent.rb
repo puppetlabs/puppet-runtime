@@ -11,8 +11,7 @@ component "runtime-agent" do |pkg, settings, platform|
   elsif platform.is_aix?
     libdir = "/opt/pl-build-tools/lib/gcc/powerpc-ibm-aix#{platform.os_version}.0.0/5.2.0/"
   elsif platform.is_windows?
-    # We only need zlib because curl is dynamically linking against zlib
-    pkg.build_requires "pl-zlib-#{platform.architecture}"
+    # do nothing, build requirements come from platform file
   else
     pkg.build_requires "pl-gcc"
   end

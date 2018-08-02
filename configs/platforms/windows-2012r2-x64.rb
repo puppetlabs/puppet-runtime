@@ -16,8 +16,21 @@ platform "windows-2012r2-x64" do |plat|
   plat.provision_with "C:/ProgramData/chocolatey/bin/choco.exe upgrade -y chocolatey"
   plat.provision_with "C:/ProgramData/chocolatey/bin/choco.exe sources remove -name chocolatey"
 
-  plat.provision_with "C:/ProgramData/chocolatey/bin/choco.exe install -y mingw-w64 -version 5.2.0 -debug --no-progress"
-  plat.provision_with "C:/ProgramData/chocolatey/bin/choco.exe install -y Wix310 -version 3.10.2 -debug -x86 --no-progress"
+  packages = [
+    "cmake",
+    "pl-gdbm-#{self._platform.architecture}",
+    "pl-iconv-#{self._platform.architecture}",
+    "pl-libffi-#{self._platform.architecture}",
+    "pl-pdcurses-#{self._platform.architecture}",
+    "pl-toolchain-#{self._platform.architecture}",
+    "pl-zlib-#{self._platform.architecture}",
+    "mingw-w64 -version 5.2.0 -debug",
+    "Wix310 -version 3.10.2 -debug -x86"
+  ]
+
+  packages.each do |name|
+    plat.provision_with("C:/ProgramData/chocolatey/bin/choco.exe install -y --no-progress #{name}")
+  end
   # We use cache-location in the following install because msvc has several long paths
   # if we do not update the cache location choco will fail because paths get too long
   plat.provision_with "C:/ProgramData/chocolatey/bin/choco.exe install msvc.#{visual_studio_version}-#{visual_studio_sdk_version}.sdk.en-us -y --cache-location=\"C:\\msvc\" --no-progress"
