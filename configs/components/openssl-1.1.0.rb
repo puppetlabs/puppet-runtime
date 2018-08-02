@@ -78,15 +78,6 @@ component 'openssl' do |pkg, settings, platform|
     pkg.build_requires 'imake' if platform.name =~ /^el/
     pkg.build_requires 'xorg-x11-util-devel' if platform.name =~ /^sles/
     pkg.build_requires 'xutils-dev' if platform.is_deb?
-  elsif platform.is_macos?
-    pkg.build_requires 'makedepend'
-    if platform.name =~ /debian-8-arm/
-      unless platform.is_fedora? && platform.os_version.delete('f').to_i >= 26
-        # TODO: pdk had this for all linux platforms, but agent didn't - necessary?
-        pkg.build_requires 'pl-binutils'
-      end
-    pkg.build_requires 'pl-gcc'
-    end
   end
 
   ###########
