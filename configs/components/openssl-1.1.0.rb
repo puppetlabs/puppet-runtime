@@ -75,6 +75,12 @@ component 'openssl' do |pkg, settings, platform|
   # CONFIGURE
   ###########
 
+  # OpenSSL fails to work on aarch unless we turn down the compiler optimization.
+  # See PA-2135 for details
+  if platform.architecture =~ /aarch/
+    pkg.apply_patch 'resources/patches/openssl/turn-down-optimization-on-aarch.patch'
+  end
+
   # OpenSSL Configure doesn't honor CFLAGS or LDFLAGS as environment variables.
   # Instead, those should be passed to Configure at the end of its options, as
   # any unrecognized options are passed straight through to ${CC}. Defining
