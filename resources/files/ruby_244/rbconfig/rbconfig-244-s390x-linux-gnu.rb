@@ -3,7 +3,7 @@
 # changes made to this file will be lost the next time ruby is built.
 
 module RbConfig
-  RUBY_VERSION == "2.4." or
+  RUBY_VERSION == "2.4.4" or
     raise "ruby lib version (2.4.4) doesn't match executable version (#{RUBY_VERSION})"
 
   TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/2.4.0/s390x-linux")
