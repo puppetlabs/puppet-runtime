@@ -10,6 +10,7 @@ platform "el-7-s390x" do |plat|
     "automake",
     "createrepo",
     "gcc",
+    "imake",
     "java-1.8.0-openjdk-devel",
     "libsepol",
     "libsepol-devel",

@@ -7,16 +7,21 @@ platform "fedora-f25-i386" do |plat|
   packages = [
     "autoconf",
     "automake",
+    "bzip2-devel",
     "gcc",
     "libselinux-devel",
     "libsepol",
     "libsepol-devel",
     "make",
+    "pkgconfig",
+    "pl-cmake",
     "pl-gcc",
+    "readline-devel",
     "rpm-libs",
     "rpmdevtools",
     "rsync",
     "swig",
+    "zlib-devel"
   ]
   plat.provision_with("/usr/bin/dnf install -y --best --allowerasing #{packages.join(' ')}")
   plat.install_build_dependencies_with "/usr/bin/dnf install -y --best --allowerasing"
