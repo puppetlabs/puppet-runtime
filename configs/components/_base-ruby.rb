@@ -114,8 +114,6 @@ if platform.is_windows? && settings[:bindir] != ruby_bindir
   # https://tickets.puppetlabs.com/browse/RE-7593 for details on why this causes
   # failures and why these copies fix that.
   #                   -Sean P. McDonald 07/01/2016
-  lib_type = platform.architecture == "x64" ? "seh" : "sjlj"
-
   if platform.architecture == "x64"
     gcc_postfix = 'seh'
     ssl_postfix = '-x64'
