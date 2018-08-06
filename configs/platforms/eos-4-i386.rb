@@ -5,8 +5,24 @@ platform "eos-4-i386" do |plat|
 
   plat.add_build_repository "http://pl-build-tools.delivery.puppetlabs.net/yum/fedora/14/i386/pl-build-tools-fedora-14.repo"
   plat.add_build_repository "http://osmirror.delivery.puppetlabs.net/eos-4-i386/eos-4-i386.repo"
-  plat.provision_with "yum install -y --nogpgcheck autoconf automake createrepo rsync gcc make rpm-build rpm-libs yum-utils zip"
-
+  packages = [
+    "autoconf",
+    "automake",
+    "createrepo",
+    "gcc",
+    "make",
+    "pkgconfig",
+    "pl-cmake",
+    "pl-gcc",
+    "readline-devel",
+    "rpm-build",
+    "rpm-libs",
+    "rsync",
+    "yum-utils",
+    "zip",
+    "zlib-devel",
+  ]
+  plat.provision_with("yum install -y --nogpgcheck  #{packages.join(' ')}")
   plat.install_build_dependencies_with "yum install -y --nogpgcheck"
   plat.vmpooler_template "fedora-14-i386"
 end

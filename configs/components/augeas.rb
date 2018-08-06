@@ -50,15 +50,6 @@ component 'augeas' do |pkg, settings, platform|
   end
 
   if platform.is_rpm? && !platform.is_aix?
-    pkg.build_requires 'readline-devel'
-    pkg.build_requires 'pkgconfig'
-
-    if platform.is_cisco_wrlinux?
-      pkg.requires 'libreadline6'
-    else
-      pkg.requires 'readline'
-    end
-
     if platform.architecture =~ /aarch64|ppc64le|s390x/
       pkg.build_requires "runtime-#{settings[:runtime_project]}"
       pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
@@ -66,14 +57,12 @@ component 'augeas' do |pkg, settings, platform|
       pkg.environment "LDFLAGS", settings[:ldflags]
     end
   elsif platform.is_deb?
-    pkg.build_requires 'libreadline-dev'
     if platform.name =~ /debian-9/
       pkg.requires 'libreadline7'
     else
       pkg.requires 'libreadline6'
     end
 
-    pkg.build_requires 'pkg-config'
     if platform.is_cross_compiled_linux?
       pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
       pkg.environment "CFLAGS", settings[:cflags]
@@ -90,7 +79,6 @@ component 'augeas' do |pkg, settings, platform|
       pkg.environment "PKG_CONFIG_PATH", "/opt/csw/lib/pkgconfig"
       pkg.environment "PKG_CONFIG", "/opt/csw/bin/pkg-config"
     else
-      pkg.build_requires 'pl-pkg-config'
       pkg.environment "PKG_CONFIG_PATH", "/usr/lib/pkgconfig"
       pkg.environment "PKG_CONFIG", "/opt/pl-build-tools/bin/pkg-config"
     end

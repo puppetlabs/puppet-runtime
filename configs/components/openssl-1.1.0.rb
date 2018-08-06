@@ -1,6 +1,6 @@
 component 'openssl' do |pkg, settings, platform|
-  pkg.version '1.0.2n'
-  pkg.md5sum '13bdc1b1d1ff39b6fd42a255e74676a4'
+  pkg.version '1.1.0h'
+  pkg.md5sum '5271477e4d93f4ea032b665ef095ff24'
   pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
@@ -27,16 +27,17 @@ component 'openssl' do |pkg, settings, platform|
     cflags = "#{settings[:cflags]} -fPIC"
     ldflags = "-Wl,-rpath=/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
     target = if platform.architecture == 'aarch64'
-               'linux-aarch64'
-             elsif platform.name =~ /debian-8-arm/
-               'linux-armv4'
-             elsif platform.architecture =~ /ppc64/
-               'linux-ppc64le'
-             elsif platform.architecture == 's390x'
-               'linux64-s390x'
-             end
+                'linux-aarch64'
+              elsif platform.name =~ /debian-8-arm/
+                'linux-armv4'
+              elsif platform.architecture =~ /ppc64/
+                'linux-ppc64le'
+              elsif platform.architecture == 's390x'
+                'linux64-s390x'
+              end
   elsif platform.is_aix?
-    pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
+    pkg.environment 'CC', '/opt/pl-build-tools/bin/gcc'
+
     cflags = '$${CFLAGS} -static-libgcc'
     target = 'aix-gcc'
   elsif platform.is_solaris?
@@ -69,53 +70,16 @@ component 'openssl' do |pkg, settings, platform|
   ####################
 
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
-  if platform.is_cross_compiled_linux?
-    # These are needed for the makedepend command
-    pkg.build_requires 'imake' if platform.name =~ /^el/
-    pkg.build_requires 'xorg-x11-util-devel' if platform.name =~ /^sles/
-    pkg.build_requires 'xutils-dev' if platform.is_deb?
-  elsif platform.is_aix?
-    # Do nothing, aix requirements are included in platform file
-  elsif platform.is_macos?
-    pkg.build_requires 'makedepend'
-  elsif platform.is_cross_compiled_linux?
-    pkg.build_requires "pl-binutils-#{platform.architecture}"
-    pkg.build_requires "pl-gcc-#{platform.architecture}"
-
-    if platform.name =~ /debian-8-arm/
-      pkg.build_requires 'xutils-dev'
-    end
-  elsif platform.is_linux?
-    pkg.build_requires 'pl-gcc'
-  end
-
-  #########
-  # PATCHES
-  #########
-
-  if platform.is_windows?
-    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
-    # This patch removes the option `-DOPENSSL_USE_APPLINK` from the mingw openssl congifure target
-    # This brings mingw more in line with what is happening with mingw64. All applink does it makes
-    # it possible to use the .dll compiled with one compiler with an application compiled with a
-    # different compiler. Given our openssl should only be interacting with things that we build,
-    # we can ensure everything is build with the same compiler.
-    pkg.apply_patch 'resources/patches/openssl/openssl-mingw-do-not-build-applink.patch'
-  elsif platform.is_aix?
-    pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
-    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
-  elsif platform.is_solaris?
-    pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
-    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
-  elsif platform.is_linux?
-    if platform.name =~ /debian-8-arm/
-      pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
-    end
-  end
 
   ###########
   # CONFIGURE
   ###########
+
+  # OpenSSL fails to work on aarch unless we turn down the compiler optimization.
+  # See PA-2135 for details
+  if platform.architecture =~ /aarch/
+    pkg.apply_patch 'resources/patches/openssl/turn-down-optimization-on-aarch.patch'
+  end
 
   # OpenSSL Configure doesn't honor CFLAGS or LDFLAGS as environment variables.
   # Instead, those should be passed to Configure at the end of its options, as
@@ -131,22 +95,24 @@ component 'openssl' do |pkg, settings, platform|
     'no-asm',
     target,
     sslflags,
-    'enable-rfc3779',
-    'enable-tlsext',
     'no-camellia',
     'no-ec2m',
     'no-md2',
-    'no-mdc2',
-    'no-ssl2',
     'no-ssl3',
   ]
 
   # Individual projects may provide their own openssl configure flags:
   project_flags = settings[:openssl_extra_configure_flags] || []
+  perl_exec = ''
+  if platform.is_aix?
+    perl_exec = '/opt/freeware/bin/perl'
+  elsif platform.is_solaris? && platform.os_version == '10'
+    perl_exec = '/opt/csw/bin/perl'
+  end
   configure_flags << project_flags << cflags << ldflags
 
   pkg.configure do
-    ["./Configure #{configure_flags.join(' ')}"]
+    ["#{perl_exec} ./Configure #{configure_flags.join(' ')}"]
   end
 
   #######

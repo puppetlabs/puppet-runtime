@@ -3,29 +3,11 @@ component "runtime-agent" do |pkg, settings, platform|
   pkg.environment "PROJECT_SHORTNAME", "puppet"
   pkg.add_source "file://resources/files/runtime/runtime.sh"
 
-  if platform.name =~ /solaris-10/
-    if platform.architecture == 'sparc'
-      pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/solaris/10/pl-gcc-4.8.2-9.#{platform.architecture}.pkg.gz"
-      pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/solaris/10/pl-binutils-2.27-2.#{platform.architecture}.pkg.gz"
-    else
-      pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/solaris/10/pl-gcc-4.8.2-1.#{platform.architecture}.pkg.gz"
-      pkg.build_requires "http://pl-build-tools.delivery.puppetlabs.net/solaris/10/pl-binutils-2.27-1.#{platform.architecture}.pkg.gz"
-    end
-  elsif platform.is_cross_compiled_linux? || platform.name =~ /solaris-11/
-    pkg.build_requires "pl-binutils-#{platform.architecture}"
-    pkg.build_requires "pl-gcc-#{platform.architecture}"
-  elsif platform.is_aix?
-    libdir = "/opt/pl-build-tools/lib/gcc/powerpc-ibm-aix#{platform.os_version}.0.0/5.2.0/"
-  elsif platform.is_windows?
-    # We only need zlib because curl is dynamically linking against zlib
-    pkg.build_requires "pl-zlib-#{platform.architecture}"
-  else
-    pkg.build_requires "pl-gcc"
-  end
-
   if platform.is_cross_compiled?
     libdir = File.join("/opt/pl-build-tools", settings[:platform_triple], "lib")
     libdir = File.join("/opt/pl-build-tools", settings[:platform_triple], "lib64") if platform.architecture =~ /aarch64|s390x|ppc64le/
+  elsif platform.is_aix?
+    libdir = "/opt/pl-build-tools/lib/gcc/powerpc-ibm-aix#{platform.os_version}.0.0/5.2.0/"
   elsif platform.is_solaris? || platform.architecture =~ /i\d86/
     libdir = "/opt/pl-build-tools/lib"
   elsif platform.architecture =~ /64/

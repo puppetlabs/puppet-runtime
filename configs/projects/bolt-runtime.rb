@@ -1,7 +1,8 @@
 project 'bolt-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'bolt')
-  proj.setting :ruby_version, '2.4.4'
+  proj.setting(:ruby_version, '2.4.4')
+  proj.setting(:openssl_version, '1.0.2')
   platform = proj.get_platform
 
   proj.version_from_git
@@ -104,7 +105,7 @@ project 'bolt-runtime' do |proj|
   # --------------
 
   # Ruby and deps
-  proj.component "openssl"
+  proj.component "openssl-#{proj.openssl_version}"
   proj.component "runtime-bolt"
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"

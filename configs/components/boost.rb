@@ -28,36 +28,6 @@ component "boost" do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/boost/windows-thread-declare-do_try_join_until-as-inline.patch'
   end
 
-  # Package Dependency Metadata
-
-  # Build Requirements
-  if platform.is_cross_compiled_linux?
-    pkg.build_requires "pl-binutils-#{platform.architecture}"
-    pkg.build_requires "pl-gcc-#{platform.architecture}"
-  elsif platform.is_aix?
-    #
-  elsif platform.is_solaris?
-    #
-  elsif platform.is_windows?
-    #
-  elsif platform.is_macos?
-    #
-  else
-    pkg.build_requires "pl-gcc"
-    # Various Linux platforms
-    case platform.name
-    when /el|fedora/
-      pkg.build_requires 'bzip2-devel'
-      pkg.build_requires 'zlib-devel'
-    when /sles-(11|12)/
-      pkg.build_requires 'libbz2-devel'
-      pkg.build_requires 'zlib-devel'
-    when /debian|ubuntu|Cumulus/i
-      pkg.build_requires 'libbz2-dev'
-      pkg.build_requires 'zlib1g-dev'
-    end
-  end
-
   # Build-time Configuration
 
   boost_libs = settings[:boost_libs] || ['atomic', 'chrono', 'container', 'date_time', 'exception', 'filesystem',

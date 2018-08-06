@@ -83,15 +83,6 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
     },
   }
 
-  ####################
-  # BUILD REQUIREMENTS
-  ####################
-
-  if platform.is_aix?
-    # TODO: Remove this once PA-1607 is resolved.
-    pkg.build_requires 'http://pl-build-tools.delivery.puppetlabs.net/aix/5.3/ppc/pl-autoconf-2.69-1.aix5.3.ppc.rpm'
-  end
-
   #########
   # PATCHES
   #########
