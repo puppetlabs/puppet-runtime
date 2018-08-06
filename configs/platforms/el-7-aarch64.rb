@@ -10,6 +10,7 @@ platform "el-7-aarch64" do |plat|
     "automake",
     "createrepo",
     "gcc",
+    "imake",
     "java-1.8.0-openjdk-devel",
     "libsepol",
     "libsepol-devel",
