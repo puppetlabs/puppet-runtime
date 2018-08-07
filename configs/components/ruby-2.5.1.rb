@@ -24,47 +24,36 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
   #   - bba35c1e: (RE-5290) Update ruby for a cross-compile on solaris 10
   rbconfig_info = {
     'powerpc-ibm-aix6.1.0.0' => {
-      sum: 'dd3232f385602b45bdbf5e60128d8a19',
       target_double: 'powerpc-aix6.1.0.0',
     },
     'powerpc-ibm-aix7.1.0.0' => {
-      sum: '5ba750ff904c51104d9eb33716370b84',
       target_double: 'powerpc-aix7.1.0.0',
      },
     'aarch64-redhat-linux' => {
-      sum: '30b729a8397b0ce82a1d45cd00e4bd86',
       target_double: 'aarch64-linux',
     },
     'ppc64le-redhat-linux' => {
-      sum: '75f856df15c48c50514c803947f60bf9',
       target_double: 'powerpc64le-linux',
     },
     'powerpc64le-suse-linux' => {
-      sum: '00247ac1d0a9e59b1fcfb72025e7d628',
       target_double: 'powerpc64le-linux',
     },
     'powerpc64le-linux-gnu' => {
-      sum: '55e9426a06726f2baa82cc561f073fbf',
       target_double: 'powerpc64le-linux',
     },
     's390x-linux-gnu' => {
-      sum: 'cbcf3d927bf69b15deb7a7555efdc04e',
       target_double: 's390x-linux',
     },
     'i386-pc-solaris2.10' => {
-      sum: 'a3c043187b645c315aff56dadf996570',
       target_double: 'i386-solaris2.10',
     },
     'sparc-sun-solaris2.10' => {
-      sum: '72b7fdb633be6d3a6f611bc57ad8bc82',
       target_double: 'sparc-solaris2.10',
     },
     'i386-pc-solaris2.11' => {
-      sum: '7adedea72967ffae053ac8930f153e64',
       target_double: 'i386-solaris2.11',
     },
     'sparc-sun-solaris2.11' => {
-      sum: '89956d3af3481972c20f250b56e527e7',
       target_double: 'sparc-solaris2.11',
     },
     'arm-linux-gnueabihf' => {
@@ -74,11 +63,9 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
       target_double: 'arm-linux-eabi'
     },
     'x86_64-w64-mingw32' => {
-      sum: 'a93cbbeebb5f30ddf3e40de653f42ac9',
       target_double: 'x64-mingw32',
     },
     'i686-w64-mingw32' => {
-      sum: '07d789921e433dd7afdeb46a5d22d1f5',
       target_double: 'i386-mingw32',
     },
   }
@@ -87,7 +74,7 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
   # PATCHES
   #########
 
-  base = 'resources/patches/ruby_244'
+  base = 'resources/patches/ruby_251'
   pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator.patch"
   # This patch creates our server/client shared Gem path, used for all gems
   # that are dependencies of the shared Ruby code.
@@ -99,9 +86,8 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
 
   if platform.is_aix?
     # TODO: Remove this patch once PA-1607 is resolved.
-    pkg.apply_patch "#{base}/aix_revert_configure_in_changes.patch"
-
-    pkg.apply_patch "#{base}/aix_ruby_libpath_with_opt_dir.patch"
+    pkg.apply_patch "#{base}/aix_configure.patch"
+    pkg.apply_patch "#{base}/aix-fix-libpath-in-configure.patch"
     pkg.apply_patch "#{base}/aix_use_pl_build_tools_autoconf.patch"
     pkg.apply_patch "#{base}/aix_ruby_2.1_fix_make_test_failure.patch"
     pkg.apply_patch "#{base}/Remove-O_CLOEXEC-check-for-AIX-builds.patch"
@@ -193,7 +179,7 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
     # installing a compiled gem would not work without us shipping that gcc.
     # This tells the ruby setup that it can use the default system gcc rather
     # than our own.
-    target_dir = File.join(settings[:ruby_dir], 'lib', 'ruby', '2.4.0', rbconfig_info[settings[:platform_triple]][:target_double])
+    target_dir = File.join(settings[:ruby_dir], 'lib', 'ruby', '2.5.0', rbconfig_info[settings[:platform_triple]][:target_double])
     sed = "sed"
     sed = "gsed" if platform.is_solaris?
     sed = "/opt/freeware/bin/sed" if platform.is_aix?
@@ -202,7 +188,7 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
         "#{sed} -i 's|raise|warn|g' #{target_dir}/rbconfig.rb",
         "mkdir -p #{settings[:datadir]}/doc",
         "cp #{target_dir}/rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.5.1-orig.rb",
-        "cp ../rbconfig-244-#{settings[:platform_triple]}.rb #{target_dir}/rbconfig.rb",
+        "cp ../rbconfig-251-#{settings[:platform_triple]}.rb #{target_dir}/rbconfig.rb",
       ]
     end
   end

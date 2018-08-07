@@ -64,6 +64,7 @@ end
 
 if platform.is_aix?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
+  pkg.build_requires "libedit"
 elsif platform.is_solaris?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
   pkg.build_requires "libedit" if platform.name =~ /^solaris-10-sparc/
