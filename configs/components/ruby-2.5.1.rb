@@ -118,7 +118,7 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
   # ENVIRONMENT, FLAGS
   ####################
 
-  if platform.is_macos?
+  if platform.is_macos? || platform.name =~ /^sles-11-i386/  # -O(>0) flags produce errors on 32-bit SLES 11 with GCC 4.8.2, see PA-2138
     pkg.environment 'optflags', settings[:cflags]
   elsif platform.is_windows?
     pkg.environment 'optflags', settings[:cflags] + ' -O3'
