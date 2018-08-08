@@ -1,7 +1,5 @@
 ---
 project: 'puppet-runtime'
-packaging_url: 'git://github.com/puppetlabs/packaging.git --branch=master'
-packaging_repo: 'packaging'
 # foss_platforms will be shipped to the nightly repos
 # foss_platforms:
 pe_platforms:
