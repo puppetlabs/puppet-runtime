@@ -76,6 +76,7 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
 
   base = 'resources/patches/ruby_251'
   pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator.patch"
+  pkg.apply_patch "#{base}/Check-for-existance-of-O_CLOEXEC.patch"
   # This patch creates our server/client shared Gem path, used for all gems
   # that are dependencies of the shared Ruby code.
   pkg.apply_patch "#{base}/rubygems_add_puppet_vendor_dir.patch"
