@@ -24,11 +24,6 @@ if platform.is_windows?
   pkg.add_source "file://resources/files/ruby_#{ruby_version_condensed}/windows_ruby_gem_wrapper.bat"
 end
 
-# Cross-compiles require a hand-built rbconfig from the target system as does Solaris, AIX and Windies
-if platform.is_cross_compiled_linux? || platform.is_solaris? || platform.is_aix? || platform.is_windows?
-  pkg.add_source "file://resources/files/ruby_#{ruby_version_condensed}/rbconfig/rbconfig-#{ruby_version_condensed}-#{settings[:platform_triple]}.rb"
-end
-
 #############
 # ENVIRONMENT
 #############

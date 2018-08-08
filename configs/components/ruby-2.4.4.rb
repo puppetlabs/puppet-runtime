@@ -6,6 +6,11 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
   instance_eval File.read('configs/components/_base-ruby.rb')
   # Configuration below should only be applicable to ruby 2.4.4
 
+  # Cross-compiles require a hand-built rbconfig from the target system as does Solaris, AIX and Windies
+  if platform.is_cross_compiled_linux? || platform.is_solaris? || platform.is_aix? || platform.is_windows?
+    pkg.add_source "file://resources/files/ruby_#{ruby_version_condensed}/rbconfig/rbconfig-#{ruby_version_condensed}-#{settings[:platform_triple]}.rb"
+  end
+
   ###########
   # RBCONFIGS
   ###########
