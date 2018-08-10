@@ -2,6 +2,8 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   pkg.version "2.1.9"
   pkg.md5sum "d9d2109d3827789344cc3aceb8e1d697"
 
+  # rbconfig-update is used to munge rbconfigs after the fact.
+  pkg.add_source("file://resources/files/rbconfig-update.rb")
 
   # PDK packages multiple rubies and we need to tweak some settings
   # if this is not the *primary* ruby.
@@ -28,85 +30,6 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   # Most ruby configuration happens in the base ruby config:
   instance_eval File.read('configs/components/_base-ruby.rb')
   # Configuration below should only be applicable to ruby 2.1.9
-
-  # Cross-compiles require a hand-built rbconfig from the target system as does Solaris, AIX and Windies
-  if platform.is_cross_compiled_linux? || platform.is_solaris? || platform.is_aix? || platform.is_windows?
-    pkg.add_source "file://resources/files/ruby_#{ruby_version_condensed}/rbconfig/rbconfig-#{ruby_version_condensed}-#{settings[:platform_triple]}.rb"
-  end
-
-  ###########
-  # RBCONFIGS
-  ###########
-
-  # These are a pretty smelly hack, and they run the risk of letting tests
-  # based on the generated data (that should otherwise fail) pass
-  # erroneously. We should probably fix the "not shipping our compiler"
-  # problem that led us to do this sooner rather than later.
-  #   Ryan McKern, 26/09/2015
-  #   Reference notes:
-  #   - 6b089ed2: Provide a sane rbconfig for AIX
-  #   - 8e88a51a: (RE-5401) Add rbconfig for solaris 11 sparc
-  #   - 8f10f5f8: (RE-5400) Roll rbconfig for solaris 11 back to 2.1.6
-  #   - 741d18b1: (RE-5400) Update ruby for solaris 11 i386
-  #   - d09ed06f: (RE-5290) Update ruby to replace rbconfig for all solaris
-  #   - bba35c1e: (RE-5290) Update ruby for a cross-compile on solaris 10
-  rbconfig_info = {
-    'powerpc-ibm-aix6.1.0.0' => {
-      :sum => "82ee3719187cba9bbf6f4b7088b52305",
-      :target_double => "powerpc-aix6.1.0.0",
-    },
-    'powerpc-ibm-aix7.1.0.0' => {
-      :sum => "960fb03d7818fec612f3be598c6964d2",
-      :target_double => "powerpc-aix7.1.0.0",
-     },
-    'aarch64-redhat-linux' => {
-      :sum => "d7d0b046cdd1766e989da542e3fd3043",
-      :target_double => "aarch64-linux",
-    },
-    'ppc64le-redhat-linux' => {
-      :sum => "97f599edab5dec39b3231fc67b7208b5",
-      :target_double => "powerpc64le-linux",
-    },
-    'powerpc64le-suse-linux' => {
-      :sum => "ce3b130c6c5eb7ff4e8af5ad2191d1ba",
-      :target_double => "powerpc64le-linux",
-    },
-    'powerpc64le-linux-gnu' => {
-      :sum => "bde91496039b1b621becded574a4c5ab",
-      :target_double => "powerpc64le-linux",
-    },
-    's390x-linux-gnu' => {
-      :sum => "dc6341fff1d00b3ba22dc1b9e6d5532f",
-      :target_double => "s390x-linux",
-    },
-    'i386-pc-solaris2.10' => {
-      :sum => "9078034711ef1b047dcb7416134c55ae",
-      :target_double => 'i386-solaris2.10',
-    },
-    'sparc-sun-solaris2.10' => {
-      :sum => "3fbceb4f70e086a6df52c206ca17211b",
-      :target_double => 'sparc-solaris2.10',
-    },
-    'i386-pc-solaris2.11' => {
-      :sum => "224822682a570aceec965c75ca00d882",
-      :target_double => 'i386-solaris2.11',
-    },
-    'sparc-sun-solaris2.11' => {
-      :sum => "f2a40c4bff028dffc880a40b2806a361",
-      :target_double => 'sparc-solaris2.11',
-    },
-    'arm-linux-gnueabihf' => {
-      :target_double => 'arm-linux-eabihf'
-    },
-    'x86_64-w64-mingw32' => {
-      :sum => "fe5656cd5fcba0a63b18857275e03808",
-      :target_double => 'x64-mingw32',
-    },
-    'i686-w64-mingw32' => {
-      :sum => "795fd622cca6459146cfb226c74ba058",
-      :target_double => 'i386-mingw32',
-    },
-  }
 
   #########
   # PATCHES
@@ -190,32 +113,49 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   #########
   # INSTALL
   #########
+  target_doubles = {
+    'powerpc-ibm-aix6.1.0.0' => 'powerpc-aix6.1.0.0',
+    'aarch64-redhat-linux' => 'aarch64-linux',
+    'ppc64le-redhat-linux' => 'powerpc64le-linux',
+    'powerpc64le-suse-linux' => 'powerpc64le-linux',
+    'powerpc64le-linux-gnu' => 'powerpc64le-linux',
+    's390x-linux-gnu' => 's390x-linux',
+    'i386-pc-solaris2.10' => 'i386-solaris2.10',
+    'sparc-sun-solaris2.10' => 'sparc-solaris2.10',
+    'i386-pc-solaris2.11' => 'i386-solaris2.11',
+    'sparc-sun-solaris2.11' => 'sparc-solaris2.11',
+    'arm-linux-gnueabihf' => 'arm-linux-eabihf',
+    'arm-linux-gnueabi' => 'arm-linux-eabi',
+    'x86_64-w64-mingw32' => 'x64-mingw32',
+    'i686-w64-mingw32' => 'i386-mingw32'
+  }
+  if target_doubles.has_key?(settings[:platform_triple])
+    rbconfig_topdir = File.join(ruby_dir, 'lib', 'ruby', '2.1.0', target_doubles[settings[:platform_triple]])
+  else
+    rbconfig_topdir = "$$(#{settings[:ruby_bindir]}/ruby -e \"puts RbConfig::CONFIG[\\\"topdir\\\"]\")"
+  end
 
-  if platform.is_cross_compiled_linux? || platform.is_solaris? || platform.is_aix?
-    # Here we replace the rbconfig from our ruby compiled with our toolchain
-    # with an rbconfig from a ruby of the same version compiled with the system
-    # gcc. Without this, the rbconfig will be looking for a gcc that won't
-    # exist on a user system and will also pass flags which may not work on
-    # that system.
-    # We also disable a safety check in the rbconfig to prevent it from being
-    # loaded from a different ruby, because we're going to do that later to
-    # install compiled gems.
-    #
-    # On AIX we build everything using our own GCC. This means that gem
-    # installing a compiled gem would not work without us shipping that gcc.
-    # This tells the ruby setup that it can use the default system gcc rather
-    # than our own.
-    target_dir = File.join(ruby_dir, 'lib', 'ruby', '2.1.0', rbconfig_info[settings[:platform_triple]][:target_double])
-    sed = "sed"
-    sed = "gsed" if platform.is_solaris?
-    sed = "/opt/freeware/bin/sed" if platform.is_aix?
+  rbconfig_changes = {}
+  if platform.is_aix?
+    rbconfig_changes["CC"] = "gcc"
+  elsif platform.is_cross_compiled? || platform.is_solaris?
+    rbconfig_changes["CC"] = "gcc"
+    rbconfig_changes["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
+    if platform.name =~ /el-7-ppc64le/
+      # EL 7 on POWER will fail with -Wl,--compress-debug-sections=zlib so this
+      # will remove that entry
+      rbconfig_changes["DLDFLAGS"] = "-Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/puppetlabs/puppet/lib  -Wl,-rpath,/opt/puppetlabs/puppet/lib"
+    end
+  elsif platform.is_windows?
+    rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
+  end
 
+  unless rbconfig_changes.empty?
     pkg.install do
       [
-        "#{sed} -i 's|raise|warn|g' #{target_dir}/rbconfig.rb",
-        "mkdir -p #{settings[:datadir]}/doc",
-        "cp #{target_dir}/rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.1.9-orig.rb",
-        "cp ../rbconfig-219-#{settings[:platform_triple]}.rb #{target_dir}/rbconfig.rb",
+        "#{settings[:host_ruby]} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
+        "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.1.9-orig.rb",
+        "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
       ]
     end
   end

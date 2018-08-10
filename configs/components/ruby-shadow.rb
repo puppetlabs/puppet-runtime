@@ -1,9 +1,4 @@
 component "ruby-shadow" do |pkg, settings, platform|
-  # pkg.version "2.3.3"
-  # pkg.md5sum "c9fec6b2a18d673322a6d3d83870e122"
-  # # I am unable to find ruby-shadow-2.3.3 source anywhere other than our own website. Upstream appears to be dead.
-  # pkg.url "https://downloads.puppetlabs.com/enterprise/sources/3.8.3/solaris/11/source/ruby-shadow-#{pkg.get_version}.tar.gz"
-  # pkg.mirror "#{settings[:buildsources_url]}/ruby-shadow-#{pkg.get_version}.tar.gz"
   pkg.url "git://github.com/apalmblad/ruby-shadow"
   pkg.ref "refs/tags/2.5.0"
 

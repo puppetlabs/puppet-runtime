@@ -22,6 +22,7 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
 
   if platform.is_cross_compiled?
     pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator.patch"
+    pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
   end
 
   if platform.is_aix?
@@ -45,6 +46,8 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
     pkg.environment 'optflags', settings[:cflags]
   elsif platform.is_windows?
     pkg.environment 'optflags', settings[:cflags] + ' -O3'
+  elsif platform.is_cross_compiled?
+    pkg.environment 'CROSS_COMPILING', 'true'
   else
     pkg.environment 'optflags', '-O2'
   end
@@ -88,7 +91,6 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
   #########
   # INSTALL
   #########
-
   target_doubles = {
     'powerpc-ibm-aix6.1.0.0' => 'powerpc-aix6.1.0.0',
     'aarch64-redhat-linux' => 'aarch64-linux',
@@ -112,17 +114,27 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
   end
 
   rbconfig_changes = {}
-  if platform.is_aix? || platform.is_solaris? || platform.is_cross_compiled_linux?
+  if platform.is_aix?
     rbconfig_changes["CC"] = "gcc"
+  elsif platform.is_cross_compiled? || platform.is_solaris?
+    rbconfig_changes["CC"] = "gcc"
+    rbconfig_changes["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
+    if platform.name =~ /el-7-ppc64le/
+      # EL 7 on POWER will fail with -Wl,--compress-debug-sections=zlib so this
+      # will remove that entry
+      rbconfig_changes["DLDFLAGS"] = "-Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/puppetlabs/puppet/lib  -Wl,-rpath,/opt/puppetlabs/puppet/lib"
+    end
   elsif platform.is_windows?
     rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
   end
 
-  pkg.install do
-    [
-      "#{settings[:ruby_bindir]}/ruby ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
-      "cp #{rbconfig_topdir}/rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.5.1-orig.rb",
-      "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
-    ]
+  unless rbconfig_changes.empty?
+    pkg.install do
+      [
+        "#{settings[:host_ruby]} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
+        "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.5.1-orig.rb",
+        "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
+      ]
+    end
   end
 end
