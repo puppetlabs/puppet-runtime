@@ -11,19 +11,19 @@
 # lost the next time ruby is built.
 
 module RbConfig
-  RUBY_VERSION.start_with?("2.4.") or
-    raise "ruby lib version (2.4.4) doesn't match executable version (#{RUBY_VERSION})"
+  RUBY_VERSION.start_with?("2.5.") or
+    raise "ruby lib version (2.5.1) doesn't match executable version (#{RUBY_VERSION})"
 
   # Ruby installed directory.
-  TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/2.4.0/x64-mingw32")
+  TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/2.5.0/x64-mingw32")
   # DESTDIR on make install.
   DESTDIR = TOPDIR && TOPDIR[/\A[a-z]:/i] || '' unless defined? DESTDIR
   # The hash configurations stored.
   CONFIG = {}
   CONFIG["DESTDIR"] = DESTDIR
   CONFIG["MAJOR"] = "2"
-  CONFIG["MINOR"] = "4"
-  CONFIG["TEENY"] = "4"
+  CONFIG["MINOR"] = "5"
+  CONFIG["TEENY"] = "1"
   CONFIG["PATCHLEVEL"] = "296"
   CONFIG["INSTALL"] = '/bin/install -c'
   CONFIG["EXEEXT"] = ".exe"
@@ -32,7 +32,7 @@ module RbConfig
   CONFIG["RUBY_INSTALL_NAME"] = "$(RUBY_BASE_NAME)"
   CONFIG["RUBY_SO_NAME"] = "x64-msvcrt-$(RUBY_BASE_NAME)$(MAJOR)$(MINOR)0"
   CONFIG["exec"] = "exec"
-  CONFIG["ruby_pc"] = "ruby-2.4.pc"
+  CONFIG["ruby_pc"] = "ruby-2.5.pc"
   CONFIG["PACKAGE"] = "ruby"
   CONFIG["BUILTIN_TRANSSRCS"] = " enc/trans/newline.c"
   CONFIG["USE_RUBYGEMS"] = "YES"
@@ -57,7 +57,7 @@ module RbConfig
   CONFIG["sitedir"] = "$(rubylibprefix)/site_ruby"
   CONFIG["rubyarchdir"] = "$(rubylibdir)/$(arch)"
   CONFIG["rubylibdir"] = "$(rubylibprefix)/$(ruby_version)"
-  CONFIG["ruby_version"] = "2.4.0"
+  CONFIG["ruby_version"] = "2.5.0"
   CONFIG["sitearch"] = "x64-msvcrt"
   CONFIG["arch"] = "x64-mingw32"
   CONFIG["sitearchincludedir"] = "$(includedir)/$(sitearch)"
@@ -200,7 +200,7 @@ module RbConfig
   CONFIG["build_vendor"] = "unknown"
   CONFIG["build_cpu"] = "x86_64"
   CONFIG["build"] = "x86_64-unknown-cygwin"
-  CONFIG["RUBY_PROGRAM_VERSION"] = "2.4.4"
+  CONFIG["RUBY_PROGRAM_VERSION"] = "2.5.1"
   CONFIG["cxxflags"] = "$(optflags) $(debugflags) $(warnflags)"
   CONFIG["cppflags"] = ""
   CONFIG["cflags"] = "$(optflags) $(debugflags) $(warnflags)"
@@ -239,10 +239,12 @@ module RbConfig
   CONFIG["PACKAGE_TARNAME"] = ""
   CONFIG["PACKAGE_NAME"] = ""
   CONFIG["PATH_SEPARATOR"] = ":"
+  CONFIG["RUBY_API_VERSION"] = "$(MAJOR).$(MINOR)"
   CONFIG["SHELL"] = "/bin/sh"
   CONFIG["UNICODE_VERSION"] = "9.0.0"
   CONFIG["archdir"] = "$(rubyarchdir)"
   CONFIG["topdir"] = File.dirname(__FILE__)
+
   # Almost same with CONFIG. MAKEFILE_CONFIG has other variable
   # reference like below.
   #
