@@ -1,7 +1,8 @@
 project 'pe-installer-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'pe-installer')
-  proj.setting :ruby_version, '2.4.4'
+  proj.setting(:ruby_version, '2.4.4')
+  proj.setting(:openssl_version, '1.1.0')
   platform = proj.get_platform
 
   proj.version_from_git
@@ -95,7 +96,6 @@ project 'pe-installer-runtime' do |proj|
     'no-dtls1',
     'no-idea',
     'no-seed',
-    'no-ssl2-method',
     'no-weak-ssl-ciphers',
     '-DOPENSSL_NO_HEARTBEATS',
   ])
@@ -104,7 +104,7 @@ project 'pe-installer-runtime' do |proj|
   # --------------
 
   # Ruby and deps
-  proj.component "openssl"
+  proj.component "openssl-#{proj.openssl_version}"
   proj.component "runtime-pe-installer"
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
