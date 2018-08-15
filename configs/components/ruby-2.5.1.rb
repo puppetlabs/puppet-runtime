@@ -95,6 +95,20 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
   #########
   # INSTALL
   #########
+
+  if platform.is_windows?
+    # With ruby 2.5, ruby will generate cmd files instead of bat files; These
+    # cmd wrappers work fine in our environment if they're just renamed as batch
+    # files. Rake is omitted here on purpose - it retains the old batch wrapper.
+    #
+    # Note that this step must happen after the install step above.
+    pkg.install do
+      %w{erb gem irb rdoc ri}.map do |name|
+        "mv #{settings[:ruby_bindir]}/#{name}.cmd #{settings[:ruby_bindir]}/#{name}.bat"
+      end
+    end
+  end
+
   target_doubles = {
     'powerpc-ibm-aix6.1.0.0' => 'powerpc-aix6.1.0.0',
     'aarch64-redhat-linux' => 'aarch64-linux',
