@@ -105,7 +105,7 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
     # Note that this step must happen before the install step below.
     pkg.install do
       %w{erb gem irb rake rdoc ri}.map do |name|
-        "cp ../windows_ruby_gem_wrapper.bat #{ruby_bindir}/#{name}.bat"
+        "cp ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/#{name}.bat"
       end
     end
   end
