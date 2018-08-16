@@ -1,0 +1,29 @@
+From 34a847d9f0b350298acaa96b386aad51be38969e Mon Sep 17 00:00:00 2001
+From: "Sean P. McDonald" <sean.mcdonald@puppetlabs.com>
+Date: Tue, 7 Aug 2018 15:13:09 -0700
+Subject: [PATCH] aix fix libpath in configure
+# Prior to this commit, builds of Ruby on AIX with the --with-opt-dir
+# configure flag fails due to whitespace in the -blibpath arguments
+# arguments passed to the linker. (This patch uses a fragment derived
+# from the "non-portable sed" patch we used for Ruby 1.9.3.)
+
+---
+ configure.ac | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/configure.ac b/configure.ac
+index 8d877e7a0c..cf2602325f 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -3336,7 +3336,7 @@ AS_IF([test "x$OPT_DIR" != x], [
+         for dir in $OPT_DIR; do
+             echo x ${LIBPATHFLAG} ${RPATHFLAG} |
+             sed "s/^x *//;s${IFS}"'%1\\$-s'"${IFS}${dir}/lib${IFS}g;s${IFS}%s${IFS}${dir}/lib${IFS}g"
+-        done | tr '\012' ' ' | sed 's/ *$//'`
++        done | tr '\012' ' ' | sed "s% \+% %g;s% /%${IFS}/%g"`
+     AS_IF([test x"$val" != x], [
+ 	test x"${LDFLAGS}" = x || LDFLAGS="$LDFLAGS "
+ 	LDFLAGS="$LDFLAGS$val"
+--
+2.18.0.windows.1
+

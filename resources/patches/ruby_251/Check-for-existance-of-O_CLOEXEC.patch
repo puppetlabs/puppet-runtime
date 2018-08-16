@@ -1,0 +1,33 @@
+From e2a2629c7239e1b8e231444372ec7f54647f6432 Mon Sep 17 00:00:00 2001
+From: "Sean P. McDonald" <sean.mcdonald@puppetlabs.com>
+Date: Wed, 8 Aug 2018 10:23:32 -0700
+Subject: [PATCH] Check for existance of O_CLOEXEC
+
+the O_CLOEXEC flag is unavailable in Enterprise Linux 5 (it was introduced in
+linux Kernel Linux 2.6.23, after the release of EL 5). This patch updates the
+opendir_flags used in nogvl_opendir_at to check for the existance of O_CLOEXEC
+before attempting to add it to the flags. This will allow builds for EL 5 to
+continue to work since USE_OPENDIR_AT will be defined but O_CLOEXEC will not
+---
+ dir.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/dir.c b/dir.c
+index 99b9b53bf9..19c6e1140d 100644
+--- a/dir.c
++++ b/dir.c
+@@ -1432,7 +1432,10 @@ nogvl_opendir_at(void *ptr)
+     DIR *dirp;
+ 
+ #if USE_OPENDIR_AT
+-    const int opendir_flags = (O_RDONLY|O_CLOEXEC|
++    const int opendir_flags = (O_RDONLY|
++#  ifdef O_CLOEXEC
++                   O_CLOEXEC|
++#  endif /* O_CLOEXEC */
+ #  ifdef O_DIRECTORY
+ 			       O_DIRECTORY|
+ #  endif /* O_DIRECTORY */
+-- 
+2.18.0.windows.1
+
