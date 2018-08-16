@@ -141,6 +141,11 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
       # EL 7 on POWER will fail with -Wl,--compress-debug-sections=zlib so this
       # will remove that entry
       rbconfig_changes["DLDFLAGS"] = "-Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/puppetlabs/puppet/lib  -Wl,-rpath,/opt/puppetlabs/puppet/lib"
+    elsif platform.name =~ /solaris-10-sparc/
+      # ld on solaris 10 sparc does not understand `-Wl,-E` - this is what remains after removing it:
+      rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector"
+      # `-Wl,--compress-debug-sections=zlib` is also a problem here:
+      rbconfig_changes["DLDFLAGS"] = "-Wl,-rpath=/opt/puppetlabs/puppet/lib"
     end
   elsif platform.is_windows?
     rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
