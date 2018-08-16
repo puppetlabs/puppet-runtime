@@ -3,9 +3,9 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   pkg.md5sum "d9d2109d3827789344cc3aceb8e1d697"
 
   # rbconfig-update is used to munge rbconfigs after the fact.
-  pkg.add_source("file://resources/files/rbconfig-update.rb")
+  pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
   if platform.is_windows?
-    pkg.add_source "file://resources/files/ruby_#{ruby_version_condensed}/windows_ruby_gem_wrapper.bat"
+    pkg.add_source "file://resources/files/ruby/windows_ruby_gem_wrapper.bat"
   end
 
   # PDK packages multiple rubies and we need to tweak some settings

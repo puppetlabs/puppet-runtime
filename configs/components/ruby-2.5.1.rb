@@ -3,7 +3,7 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
   pkg.md5sum "23867bc8c16c55e43b14dfe0614bcfa8"
 
   # rbconfig-update is used to munge rbconfigs after the fact.
-  pkg.add_source("file://resources/files/rbconfig-update.rb")
+  pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
 
   # Most ruby configuration happens in the base ruby config:
   instance_eval File.read('configs/components/_base-ruby.rb')

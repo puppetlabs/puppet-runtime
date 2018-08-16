@@ -3,9 +3,9 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
   pkg.md5sum "d50e00ccc1c9cf450f837b92d3ed3e88"
 
   # rbconfig-update is used to munge rbconfigs after the fact.
-  pkg.add_source("file://resources/files/rbconfig-update.rb")
+  pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
   if platform.is_windows?
-    pkg.add_source "file://resources/files/ruby_#{ruby_version_condensed}/windows_ruby_gem_wrapper.bat"
+    pkg.add_source "file://resources/files/ruby/windows_ruby_gem_wrapper.bat"
   end
 
   # Most ruby configuration happens in the base ruby config:
