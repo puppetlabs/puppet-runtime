@@ -7,3 +7,4 @@ Gemfile.lock
 ext/packaging
 ext/build_metadata.json
 pkg
+*.swp

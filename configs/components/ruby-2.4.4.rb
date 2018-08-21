@@ -8,6 +8,28 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
     pkg.add_source "file://resources/files/ruby/windows_ruby_gem_wrapper.bat"
   end
 
+  # PDK packages multiple rubies and we need to tweak some settings
+  # if this is not the *primary* ruby.
+  if (pkg.get_version != settings[:ruby_version])
+    # not primary ruby
+
+    # ensure we have config for this ruby
+    unless settings.has_key?(:additional_rubies) && settings[:additional_rubies].has_key?(pkg.get_version)
+      raise "missing config for additional ruby #{pkg.get_version}"
+    end
+
+    ruby_settings = settings[:additional_rubies][pkg.get_version]
+
+    ruby_dir = ruby_settings[:ruby_dir]
+    ruby_bindir = ruby_settings[:ruby_bindir]
+    host_ruby = ruby_settings[:host_ruby]
+  else
+    # primary ruby
+    ruby_dir = settings[:ruby_dir]
+    ruby_bindir = settings[:ruby_bindir]
+    host_ruby = settings[:host_ruby]
+  end
+
   # Most ruby configuration happens in the base ruby config:
   instance_eval File.read('configs/components/_base-ruby.rb')
   # Configuration below should only be applicable to ruby 2.4.4
@@ -17,13 +39,13 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
   #########
 
   base = 'resources/patches/ruby_244'
-  pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator.patch"
+  pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator_r2.4.patch"
   # This patch creates our server/client shared Gem path, used for all gems
   # that are dependencies of the shared Ruby code.
-  pkg.apply_patch "#{base}/rubygems_add_puppet_vendor_dir.patch"
+  pkg.apply_patch "#{base}/rubygems_add_puppet_vendor_dir_r2.4.patch"
 
   if platform.is_cross_compiled?
-    pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator.patch"
+    pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.4.patch"
   end
 
   if platform.is_aix?
@@ -31,16 +53,16 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/aix_revert_configure_in_changes.patch"
 
     pkg.apply_patch "#{base}/aix_ruby_libpath_with_opt_dir.patch"
-    pkg.apply_patch "#{base}/aix_use_pl_build_tools_autoconf.patch"
-    pkg.apply_patch "#{base}/aix_ruby_2.1_fix_make_test_failure.patch"
-    pkg.apply_patch "#{base}/Remove-O_CLOEXEC-check-for-AIX-builds.patch"
+    pkg.apply_patch "#{base}/aix_use_pl_build_tools_autoconf_r2.4.patch"
+    pkg.apply_patch "#{base}/aix_ruby_2.1_fix_make_test_failure_r2.4.patch"
+    pkg.apply_patch "#{base}/Remove-O_CLOEXEC-check-for-AIX-builds_r2.4.patch"
   end
 
   if platform.is_windows?
     pkg.apply_patch "#{base}/windows_fixup_generated_batch_files.patch"
     pkg.apply_patch "#{base}/update_rbinstall_for_windows.patch"
     pkg.apply_patch "#{base}/PA-1124_add_nano_server_com_support-8feb9779182bd4285f3881029fe850dac188c1ac.patch"
-    pkg.apply_patch "#{base}/windows_socket_compat_error.patch"
+    pkg.apply_patch "#{base}/windows_socket_compat_error_r2.4.patch"
   end
 
   ####################
@@ -55,18 +77,18 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
     pkg.environment 'optflags', '-O2'
   end
 
-  special_flags = " --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
+  special_flags = " --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
 
   if platform.is_aix?
     # This normalizes the build string to something like AIX 7.1.0.0 rather
     # than AIX 7.1.0.2 or something
     special_flags += " --build=#{settings[:platform_triple]} "
   elsif platform.is_cross_compiled_linux?
-    special_flags += " --with-baseruby=#{settings[:host_ruby]} "
+    special_flags += " --with-baseruby=#{host_ruby} "
   elsif platform.is_solaris? && platform.architecture == "sparc"
-    special_flags += " --with-baseruby=#{settings[:host_ruby]} --enable-close-fds-by-recvmsg-with-peek "
+    special_flags += " --with-baseruby=#{host_ruby} --enable-close-fds-by-recvmsg-with-peek "
   elsif platform.is_windows?
-    special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{settings[:ruby_dir]} --with-opt-dir=#{settings[:prefix]} "
+    special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
   end
 
   ###########
@@ -105,7 +127,7 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
     # Note that this step must happen before the install step below.
     pkg.install do
       %w{erb gem irb rake rdoc ri}.map do |name|
-        "cp -f ../windows_ruby_gem_wrapper.bat #{settings[:ruby_bindir]}/#{name}.bat"
+        "cp -f ../windows_ruby_gem_wrapper.bat #{ruby_bindir}/#{name}.bat"
       end
     end
   end
@@ -127,9 +149,9 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
     'i686-w64-mingw32' => 'i386-mingw32'
   }
   if target_doubles.has_key?(settings[:platform_triple])
-    rbconfig_topdir = File.join(settings[:ruby_dir], 'lib', 'ruby', '2.4.0', target_doubles[settings[:platform_triple]])
+    rbconfig_topdir = File.join(ruby_dir, 'lib', 'ruby', '2.4.0', target_doubles[settings[:platform_triple]])
   else
-    rbconfig_topdir = "$$(#{settings[:ruby_bindir]}/ruby -e \"puts RbConfig::CONFIG[\\\"topdir\\\"]\")"
+    rbconfig_topdir = "$$(#{ruby_bindir}/ruby -e \"puts RbConfig::CONFIG[\\\"topdir\\\"]\")"
   end
 
   rbconfig_changes = {}
@@ -163,7 +185,7 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
   unless rbconfig_changes.empty?
     pkg.install do
       [
-        "#{settings[:host_ruby]} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
+        "#{host_ruby} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
         "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.4.4-orig.rb",
         "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
       ]

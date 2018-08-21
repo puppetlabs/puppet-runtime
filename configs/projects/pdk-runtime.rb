@@ -76,6 +76,12 @@ project 'pdk-runtime' do |proj|
       ruby_api: "2.1.0",
       ruby_dir: File.join(proj.privatedir, "ruby", "2.1.9"),
       latest_puppet: "4.10.10",
+    },
+    "2.5.1" => {
+      ruby_version: "2.5.1",
+      ruby_api: "2.5.0",
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.1"),
+      latest_puppet: "6.0.0",
     }
   }
 
@@ -176,16 +182,15 @@ project 'pdk-runtime' do |proj|
   proj.component "rubygem-gettext-setup"
   proj.component "rubygem-minitar"
 
+  # Additional Rubies
   if proj.respond_to?(:additional_rubies)
     proj.additional_rubies.keys.each do |rubyver|
       proj.component "ruby-#{rubyver}"
-
-      ruby_minor = rubyver.split('.')[0,2].join('.')
-
-      proj.component "ruby-#{ruby_minor}-augeas" unless platform.is_windows?
-      proj.component "ruby-#{ruby_minor}-selinux" if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
-      proj.component "ruby-#{ruby_minor}-stomp"
     end
+
+    proj.component "ruby-multi-augeas" unless platform.is_windows?
+    proj.component "ruby-multi-selinux" if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
+    proj.component "ruby-multi-stomp"
   end
 
   # Platform specific deps
