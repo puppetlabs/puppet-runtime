@@ -50,7 +50,7 @@ component 'augeas' do |pkg, settings, platform|
   end
 
   if platform.is_rpm? && !platform.is_aix?
-    if platform.architecture =~ /aarch64|ppc64le|s390x/
+    if platform.architecture =~ /aarch64|ppc64|ppc64le|s390x/
       pkg.build_requires "runtime-#{settings[:runtime_project]}"
       pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
       pkg.environment "CFLAGS", settings[:cflags]
