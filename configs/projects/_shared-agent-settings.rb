@@ -42,7 +42,6 @@ if platform.is_windows?
   proj.setting(:install_root, File.join("C:", proj.base_dir, proj.company_id, proj.product_id))
   proj.setting(:sysconfdir, File.join("C:", "CommonAppDataFolder", proj.company_id))
   proj.setting(:tmpfilesdir, "C:/Windows/Temp")
-  proj.setting(:windows_tools, File.join(proj.install_root, "sys/tools/bin"))
 else
   proj.setting(:install_root, "/opt/puppetlabs")
   if platform.is_eos?
@@ -61,23 +60,29 @@ end
 proj.setting(:miscdir, File.join(proj.install_root, "misc"))
 proj.setting(:prefix, File.join(proj.install_root, "puppet"))
 proj.setting(:bindir, File.join(proj.prefix, "bin"))
+proj.setting(:libdir, File.join(proj.prefix, "lib"))
 proj.setting(:link_bindir, File.join(proj.install_root, "bin"))
 proj.setting(:includedir, File.join(proj.prefix, "include"))
 proj.setting(:datadir, File.join(proj.prefix, "share"))
 proj.setting(:mandir, File.join(proj.datadir, "man"))
 
 if platform.is_windows?
-  proj.setting(:ruby_dir, File.join(proj.install_root, "sys/ruby"))
-  proj.setting(:ruby_bindir, File.join(proj.ruby_dir, "bin"))
-  proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
-  proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem.bat"))
-  proj.setting(:libdir, File.join(proj.ruby_dir, "lib"))
+  if proj.settings[:legacy_windows_paths]
+    # These ruby paths are used in puppet 4/5; puppet6+ can use the defaults we just set above
+    proj.setting(:ruby_dir, File.join(proj.install_root, "sys/ruby"))
+    proj.setting(:ruby_bindir, File.join(proj.ruby_dir, "bin"))
+    # The libdir should match ruby's libdir here, too
+    proj.setting(:libdir, File.join(proj.ruby_dir, "lib"))
+
+    proj.setting(:windows_tools, File.join(proj.install_root, "sys/tools/bin"))
+  else
+    proj.setting(:windows_tools, proj.bindir)
+    proj.setting(:ruby_dir, proj.prefix)
+    proj.setting(:ruby_bindir, proj.bindir)
+  end
 else
-  proj.setting(:ruby_dir, proj.settings[:prefix])
-  proj.setting(:ruby_bindir, File.join(proj.settings[:ruby_dir], 'bin'))
-  proj.setting(:host_ruby, File.join(proj.bindir, "ruby"))
-  proj.setting(:host_gem, File.join(proj.bindir, "gem"))
-  proj.setting(:libdir, File.join(proj.prefix, "lib"))
+  proj.setting(:ruby_dir, proj.prefix)
+  proj.setting(:ruby_bindir, proj.bindir)
 end
 
 raise "Couldn't find a :ruby_version setting in the project file" unless proj.ruby_version
@@ -94,30 +99,32 @@ platform_triple = "arm-linux-gnueabihf" if platform.name == 'debian-8-armhf'
 platform_triple = "arm-linux-gnueabi" if platform.name == 'debian-8-armel'
 platform_triple = "aarch64-redhat-linux" if platform.name == 'el-7-aarch64'
 
-if platform.is_cross_compiled_linux?
-  host = "--host #{platform_triple}"
-
-  # Use a standalone ruby for cross-compilation
-  proj.setting(:host_ruby, "/opt/pl-build-tools/bin/ruby")
-  proj.setting(:host_gem, "/opt/pl-build-tools/bin/gem")
+if platform.is_windows?
+  proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
+  proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem.bat"))
+elsif platform.is_cross_compiled_linux? || (platform.is_solaris? && platform.architecture == 'sparc')
+  # Install a standalone ruby for cross-compiled platforms
+  if platform.name =~ /solaris-10-sparc/
+    proj.setting(:host_ruby, "/opt/csw/bin/ruby")
+    proj.setting(:host_gem, "/opt/csw/bin/gem2.0")
+  else
+    proj.setting(:host_ruby, "/opt/pl-build-tools/bin/ruby")
+    proj.setting(:host_gem, "/opt/pl-build-tools/bin/gem")
+  end
+else
+  proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby"))
+  proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
 end
 
-# For solaris, we build cross-compilers
-if platform.is_solaris?
+if platform.is_cross_compiled_linux?
+  host = "--host #{platform_triple}"
+elsif platform.is_solaris?
+  # For solaris, we build cross-compilers
   if platform.architecture == 'i386'
     platform_triple = "#{platform.architecture}-pc-solaris2.#{platform.os_version}"
   else
     platform_triple = "#{platform.architecture}-sun-solaris2.#{platform.os_version}"
     host = "--host #{platform_triple}"
-
-    # For cross-compiling, we have a standalone ruby
-    if platform.os_version == "10"
-      proj.setting(:host_ruby, "/opt/csw/bin/ruby")
-      proj.setting(:host_gem, "/opt/csw/bin/gem2.0")
-    else
-      proj.setting(:host_ruby, "/opt/pl-build-tools/bin/ruby")
-      proj.setting(:host_gem, "/opt/pl-build-tools/bin/gem")
-    end
   end
 elsif platform.is_windows?
   # For windows, we need to ensure we are building for mingw not cygwin
@@ -126,7 +133,9 @@ elsif platform.is_windows?
 end
 
 proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local ")
-if platform.is_windows?
+
+if platform.is_windows? && proj.settings[:legacy_windows_paths]
+  # The ruby bindir is different from the usual bindir when using the old windows layout
   proj.setting(:gem_install, "#{proj.gem_install} --bindir #{proj.ruby_bindir} ")
 end
 
