@@ -32,6 +32,7 @@ project 'agent-runtime-master' do |proj|
   proj.component 'rubygem-trollop'
   proj.component 'rubygem-hiera-eyaml'
   proj.component 'rubygem-httpclient'
-  proj.component 'boost'
-  proj.component 'yaml-cpp'
+  # SLES 15 uses the OS distro versions of boost and yaml-cpp:
+  proj.component 'boost' unless platform.name =~ /sles-15/
+  proj.component 'yaml-cpp' unless platform.name =~ /sles-15/
 end
