@@ -5,6 +5,10 @@ project 'agent-runtime-5.3.x' do |proj|
   proj.setting :rubygem_semantic_puppet_version, '0.1.2'
   proj.setting :openssl_version, '1.0.2'
 
+  # In puppet-agent#master, install paths have been updated to more closely
+  # match those used for *nix agents -- Use the old path style for this project:
+  proj.setting :legacy_windows_paths, true
+
   platform = proj.get_platform
 
   # This modification to the platform definition is for compatibility with
