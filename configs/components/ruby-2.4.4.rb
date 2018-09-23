@@ -59,7 +59,7 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
   end
 
   if platform.is_windows?
-    pkg.apply_patch "#{base}/windows_fixup_generated_batch_files.patch"
+    pkg.apply_patch "#{base}/windows_ruby_2.4_fixup_generated_batch_files.patch"
     pkg.apply_patch "#{base}/update_rbinstall_for_windows.patch"
     pkg.apply_patch "#{base}/PA-1124_add_nano_server_com_support-8feb9779182bd4285f3881029fe850dac188c1ac.patch"
     pkg.apply_patch "#{base}/windows_socket_compat_error_r2.4.patch"
