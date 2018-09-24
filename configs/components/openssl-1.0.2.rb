@@ -30,9 +30,9 @@ component 'openssl' do |pkg, settings, platform|
                'linux-aarch64'
              elsif platform.name =~ /debian-8-arm/
                'linux-armv4'
-             elsif platform.architecture =~ /ppc64le/
+             elsif platform.architecture =~ /ppc64le|ppc64el/ # Litte-endian
                'linux-ppc64le'
-             elsif platform.architecture =~ /ppc64/
+             elsif platform.architecture =~ /ppc64/ # Big-endian
                'linux-ppc64'
              elsif platform.architecture == 's390x'
                'linux64-s390x'
