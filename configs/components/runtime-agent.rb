@@ -4,8 +4,11 @@ component "runtime-agent" do |pkg, settings, platform|
   pkg.add_source "file://resources/files/runtime/runtime.sh"
 
   if platform.is_cross_compiled?
-    libdir = File.join("/opt/pl-build-tools", settings[:platform_triple], "lib")
-    libdir = File.join("/opt/pl-build-tools", settings[:platform_triple], "lib64") if platform.architecture =~ /aarch64|s390x|ppc64|ppc64le/
+    if platform.architecture =~ /aarch64|s390x|ppc64$|ppc64le/
+      libdir = File.join("/opt/pl-build-tools", settings[:platform_triple], "lib64")
+    else
+      libdir = File.join("/opt/pl-build-tools", settings[:platform_triple], "lib")
+    end
   elsif platform.is_aix?
     libdir = "/opt/pl-build-tools/lib/gcc/powerpc-ibm-aix#{platform.os_version}.0.0/5.2.0/"
   elsif platform.is_solaris? || platform.architecture =~ /i\d86/
