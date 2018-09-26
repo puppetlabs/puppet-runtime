@@ -1,8 +1,8 @@
 project 'bolt-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'bolt')
-  proj.setting(:ruby_version, '2.4.4')
-  proj.setting(:openssl_version, '1.0.2')
+  proj.setting(:ruby_version, '2.5.1')
+  proj.setting(:openssl_version, '1.1.0')
   platform = proj.get_platform
 
   proj.version_from_git
@@ -96,7 +96,6 @@ project 'bolt-runtime' do |proj|
     'no-dtls1',
     'no-idea',
     'no-seed',
-    'no-ssl2-method',
     'no-weak-ssl-ciphers',
     '-DOPENSSL_NO_HEARTBEATS',
   ])
