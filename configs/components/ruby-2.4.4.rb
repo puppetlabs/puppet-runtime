@@ -53,7 +53,6 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/aix_revert_configure_in_changes.patch"
 
     pkg.apply_patch "#{base}/aix_ruby_libpath_with_opt_dir.patch"
-    pkg.apply_patch "#{base}/aix_use_pl_build_tools_autoconf_r2.4.patch"
     pkg.apply_patch "#{base}/aix_ruby_2.1_fix_make_test_failure_r2.4.patch"
     pkg.apply_patch "#{base}/Remove-O_CLOEXEC-check-for-AIX-builds_r2.4.patch"
   end
@@ -97,7 +96,7 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
 
   # TODO: Remove this once PA-1607 is resolved.
   # TODO: Can we use native autoconf? The dependencies seemed a little too extensive
-  pkg.configure { ["/opt/pl-build-tools/bin/autoconf"] } if platform.is_aix?
+  pkg.configure { ["/opt/freeware/bin/autoconf"] } if platform.is_aix?
 
   # Here we set --enable-bundled-libyaml to ensure that the libyaml included in
   # ruby is used, even if the build system has a copy of libyaml available

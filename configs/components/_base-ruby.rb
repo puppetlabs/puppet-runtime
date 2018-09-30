@@ -22,8 +22,6 @@ ruby_bindir ||= settings[:ruby_bindir]
 #############
 
 if platform.is_aix?
-  # We still use pl-gcc for AIX 7.1
-  pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
   pkg.environment 'LDFLAGS', "#{settings[:ldflags]} -Wl,-bmaxdata:0x80000000"
 elsif platform.is_solaris?
   pkg.environment 'PATH', "#{settings[:bindir]}:/usr/ccs/bin:/usr/sfw/bin:$$PATH:/opt/csw/bin"

@@ -38,8 +38,6 @@ component 'openssl' do |pkg, settings, platform|
                 'linux64-s390x'
               end
   elsif platform.is_aix?
-    pkg.environment 'CC', '/opt/pl-build-tools/bin/gcc'
-
     cflags = '$${CFLAGS} -static-libgcc'
     target = 'aix-gcc'
   elsif platform.is_solaris?
