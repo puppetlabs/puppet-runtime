@@ -27,7 +27,7 @@ proj.component 'libxslt' unless platform.is_windows?
 proj.component 'ruby-augeas' unless platform.is_windows?
 proj.component 'ruby-shadow' unless platform.is_aix? || platform.is_windows?
 # We only build ruby-selinux for EL 5-7
-if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
+if platform.name =~ platform.is_el? || platform.is_fedora?
   proj.component 'ruby-selinux'
 end
 

@@ -15,7 +15,7 @@ component 'augeas' do |pkg, settings, platform|
     when '1.10.1'
       pkg.md5sum '6c0b2ea6eec45e8bc374b283aedf27ce'
 
-      if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
+      if platform.name =~ platform.is_el? || platform.is_fedora?
         # Augeas 1.10.1 needs a libselinux pkgconfig file on these platforms:
         pkg.build_requires 'ruby-selinux'
       elsif platform.name =~ /solaris-10-sparc/
