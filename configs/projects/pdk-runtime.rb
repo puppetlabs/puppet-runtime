@@ -167,7 +167,7 @@ project 'pdk-runtime' do |proj|
   proj.component "ruby-augeas" unless platform.is_windows?
 
   # We only build ruby-selinux for EL 5-7
-  if platform.name =~ platform.is_el? || platform.is_fedora?
+  if platform.is_el? || platform.is_fedora?
     proj.component "ruby-selinux"
   end
 
