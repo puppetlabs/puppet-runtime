@@ -1,26 +1,12 @@
-From 91287532614937a13af146f94c83b487141452d2 Mon Sep 17 00:00:00 2001
-From: Geoff Nichols <geoff.nichols@puppetlabs.com>
-Date: Wed, 4 Nov 2015 12:05:37 -0800
-Subject: [PATCH] (PUP-4077) Use Ruby in CWD, but fallback to PATH
+2018/10/04 - Bryan Jen, Puppet Inc.
 
- - Previously the .bat shims generated when executing a gem install on
-   Windows were changed in our custom built Ruby to always prefer the
-   ruby.exe in the same working directory as the binary shims.  This
-   worked as desired to ensure that the vendored gems / binary shims
-   shipped with Puppet on Windows would always use the vendored Ruby
-   that we ship.
-
-   However, we've recently created a need in our CI environment to also
-   use the Ruby version that we build custom / vendor (partially due
-   to our custom Ruby supporting Windows 2003 with Ruby 2.1.5 whereas
-   the RubyInstaller version does not).  In the spec running environment
-   Pik is used to select a Ruby and inject it into PATH.  When gems are
-   installed via bundle install --path .bundle/gems, the expectation is
-   that the Ruby being used is the Pik'd version.  In other words, the
-   use case is slightly different from the vendored Ruby shipped and
-   packaged in the MSI.  Therefore, the batch file generation has been
-   modified to first favor a ruby.exe in the current working directory,
-   but to fallback to using PATH otherwise.
+This patch to the Ruby batch file generation is necessary when packaging
+Ruby with Puppet's vanagon package builder, as used by Puppet agent,
+Bolt, and PDK. When the msi installer is built, the path generated for
+the installed Ruby cannot be assumed to be the same as the path in
+the build environment. For that reason, we need this patch to use the
+executables from the current working directory, so that it is always
+using the vendored ruby installation.
 ---
  lib/rubygems/commands/setup_command.rb | 13 +++++++++----
  lib/rubygems/installer.rb              | 13 +++++++++----
@@ -44,11 +30,7 @@ index ee6ce88eae..2cda5866de 100644
    :WinNT
 -  @"#{File.basename(Gem.ruby).chomp('"')}" "%~dpn0" %*
 -  TEXT
-+  IF EXIST "%~dp0ruby.exe" (
 +  SET RUBY_EXE_PATH="%~dp0ruby.exe"
-+  ) ELSE (
-+    SET RUBY_EXE_PATH="ruby.exe"
-+  )
 +  @%RUBY_EXE_PATH% "%~dpn0" %*
 +  SCRIPT
              end
@@ -72,11 +54,7 @@ index ee5fedeb64..e0a228f9b5 100644
  :WinNT
 -@"#{ruby}" "%~dpn0" %*
 -TEXT
-+IF EXIST "%~dp0ruby.exe" (
 +  SET RUBY_EXE_PATH="%~dp0ruby.exe"
-+) ELSE (
-+  SET RUBY_EXE_PATH="ruby.exe"
-+)
 +@%RUBY_EXE_PATH% "%~dpn0" %*
 +SCRIPT
    end
