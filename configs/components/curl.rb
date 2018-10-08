@@ -28,11 +28,21 @@ component 'curl' do |pkg, settings, platform|
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
   end
 
+  configure_options = []
+  unless settings[:system_openssl]
+     configure_options << "--with-ssl=#{settings[:prefix]}"
+  end
+
+  if (platform.is_solaris? && platform.os_version == "11") || platform.is_aix?
+    # Makefile generation with automatic dependency tracking fails on these platforms
+    configure_options << "--disable-dependency-tracking"
+  end
+
   pkg.configure do
     ["CPPFLAGS='#{settings[:cppflags]}' \
       LDFLAGS='#{settings[:ldflags]}' \
      ./configure --prefix=#{settings[:prefix]} \
-        --with-ssl=#{settings[:prefix]} \
+        #{configure_options.join(" ")} \
         --enable-threaded-resolver \
         --disable-ldap \
         --disable-ldaps \
