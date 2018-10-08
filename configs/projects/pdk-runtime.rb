@@ -186,11 +186,13 @@ project 'pdk-runtime' do |proj|
   if proj.respond_to?(:additional_rubies)
     proj.additional_rubies.keys.each do |rubyver|
       proj.component "ruby-#{rubyver}"
-    end
 
-    proj.component "ruby-multi-augeas" unless platform.is_windows?
-    proj.component "ruby-multi-selinux" if platform.name =~ /^el-(5|6|7)-.*/ || platform.is_fedora?
-    proj.component "ruby-multi-stomp"
+      ruby_minor = rubyver.split('.')[0,2].join('.')
+
+      proj.component "ruby-#{ruby_minor}-augeas" unless platform.is_windows?
+      proj.component "ruby-#{ruby_minor}-selinux" if platform.is_el? || platform.is_fedora?
+      proj.component "ruby-#{ruby_minor}-stomp"
+    end
   end
 
   # Platform specific deps
