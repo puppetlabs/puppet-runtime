@@ -75,13 +75,13 @@ project 'pdk-runtime' do |proj|
       ruby_version: "2.1.9",
       ruby_api: "2.1.0",
       ruby_dir: File.join(proj.privatedir, "ruby", "2.1.9"),
-      latest_puppet: "4.10.10",
+      latest_puppet: "4.10.12",
     },
     "2.5.1" => {
       ruby_version: "2.5.1",
       ruby_api: "2.5.0",
       ruby_dir: File.join(proj.privatedir, "ruby", "2.5.1"),
-      latest_puppet: "6.0.0",
+      latest_puppet: "6.0.2",
     }
   }
 
