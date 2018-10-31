@@ -39,4 +39,5 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.component 'rubygem-trollop'
   proj.component 'rubygem-hiera-eyaml'
   proj.component 'ruby-stomp'
+  proj.component 'yaml-cpp' if platform.name =~ /osx-10.12/
 end
