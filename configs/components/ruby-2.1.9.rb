@@ -41,6 +41,9 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   base = 'resources/patches/ruby_219'
   pkg.apply_patch "#{base}/libyaml_cve-2014-9130.patch"
 
+  # Patches from Ruby 2.5 security fixes
+  pkg.apply_patch "#{base}/cve-2018-16395.patch"
+
   # Patches from Ruby 2.4 security fixes. See the description and
   # comments of RE-9323 for more details.
   pkg.apply_patch "#{base}/cve-2017-0898.patch"

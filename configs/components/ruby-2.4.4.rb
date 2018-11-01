@@ -39,7 +39,10 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
   #########
 
   base = 'resources/patches/ruby_244'
+
+  pkg.apply_patch "#{base}/cve-2018-16395.patch"
   pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator_r2.4.patch"
+
   # This patch creates our server/client shared Gem path, used for all gems
   # that are dependencies of the shared Ruby code.
   pkg.apply_patch "#{base}/rubygems_add_puppet_vendor_dir_r2.4.patch"
