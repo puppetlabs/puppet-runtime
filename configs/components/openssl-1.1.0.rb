@@ -62,7 +62,7 @@ component 'openssl' do |pkg, settings, platform|
     if platform.architecture =~ /86$/
       target = 'linux-elf'
       sslflags = '386'
-    elsif platform.architecture =~ /64$/
+    elsif platform.architecture =~ /64(_generic)?$/
       target = 'linux-x86_64'
     end
   end
