@@ -12,7 +12,7 @@ component "git" do |pkg, settings, platform|
   if platform.is_windows?
     pkg.environment "PATH", [
       "$(shell cygpath -u \"C:\\ProgramData\\chocolatey\\bin\")",
-      "$(PATH)",
+      "${PATH}",
     ].join(':')
   end
 

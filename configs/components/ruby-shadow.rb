@@ -3,7 +3,7 @@ component "ruby-shadow" do |pkg, settings, platform|
   pkg.ref "refs/tags/2.5.0"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
-  pkg.environment "PATH", "$(PATH):/usr/ccs/bin:/usr/sfw/bin"
+  pkg.environment "PATH", "${PATH}:/usr/ccs/bin:/usr/sfw/bin"
   pkg.environment "CONFIGURE_ARGS", '--vendor'
 
   if platform.is_solaris?

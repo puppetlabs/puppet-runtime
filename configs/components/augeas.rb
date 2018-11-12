@@ -52,7 +52,7 @@ component 'augeas' do |pkg, settings, platform|
   if platform.is_rpm? && !platform.is_aix?
     if platform.architecture =~ /aarch64|ppc64|ppc64le|s390x/
       pkg.build_requires "runtime-#{settings[:runtime_project]}"
-      pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
+      pkg.environment "PATH", "/opt/pl-build-tools/bin:${PATH}:#{settings[:bindir]}"
       pkg.environment "CFLAGS", settings[:cflags]
       pkg.environment "LDFLAGS", settings[:ldflags]
     end
@@ -64,13 +64,13 @@ component 'augeas' do |pkg, settings, platform|
     end
 
     if platform.is_cross_compiled_linux?
-      pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
+      pkg.environment "PATH", "/opt/pl-build-tools/bin:${PATH}:#{settings[:bindir]}"
       pkg.environment "CFLAGS", settings[:cflags]
       pkg.environment "LDFLAGS", settings[:ldflags]
     end
 
   elsif platform.is_solaris?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:${PATH}:/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
     pkg.environment "CFLAGS", settings[:cflags]
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.build_requires 'libedit'

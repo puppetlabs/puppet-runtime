@@ -4,7 +4,7 @@ component 'libedit' do |pkg, settings, platform|
   pkg.url "http://thrysoee.dk/editline/libedit-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/libedit-#{pkg.get_version}.tar.gz"
 
-  pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
+  pkg.environment "PATH", "/opt/pl-build-tools/bin:${PATH}"
 
   if platform.is_solaris?
     pkg.environment "CC", "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"

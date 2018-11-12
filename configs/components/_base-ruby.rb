@@ -34,7 +34,7 @@ elsif platform.is_cross_compiled_linux? || platform.is_solaris?
   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
   pkg.environment 'LDFLAGS', "-Wl,-rpath=#{settings[:libdir]}"
 elsif platform.is_windows?
-  pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:tools_root]}/bin):$(shell cygpath -u #{settings[:tools_root]}/include):$(shell cygpath -u #{settings[:bindir]}):$(shell cygpath -u #{ruby_bindir}):$(shell cygpath -u #{settings[:includedir]}):$(PATH)"
+  pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:tools_root]}/bin):$(shell cygpath -u #{settings[:tools_root]}/include):$(shell cygpath -u #{settings[:bindir]}):$(shell cygpath -u #{ruby_bindir}):$(shell cygpath -u #{settings[:includedir]}):${PATH}"
   pkg.environment 'CYGWIN', settings[:cygwin]
   pkg.environment 'LDFLAGS', settings[:ldflags]
   pkg.environment 'optflags', settings[:cflags] + ' -O3'

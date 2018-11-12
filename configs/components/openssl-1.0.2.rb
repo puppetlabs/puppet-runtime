@@ -11,7 +11,7 @@ component 'openssl' do |pkg, settings, platform|
   target = cflags = ldflags = sslflags = ''
 
   if platform.is_windows?
-    pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
+    pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):${PATH}"
     pkg.environment 'CYGWIN', settings[:cygwin]
     pkg.environment 'CC', settings[:cc]
     pkg.environment 'CXX', settings[:cxx]
@@ -42,19 +42,19 @@ component 'openssl' do |pkg, settings, platform|
     cflags = '$${CFLAGS} -static-libgcc'
     target = 'aix-gcc'
   elsif platform.is_solaris?
-    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin'
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:${PATH}:/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin'
     pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
 
     cflags = "#{settings[:cflags]} -fPIC"
     ldflags = "-R/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
     target = platform.architecture =~ /86/ ? 'solaris-x86-gcc' : 'solaris-sparcv9-gcc'
   elsif platform.is_macos?
-    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:${PATH}:/usr/local/bin'
 
     cflags = settings[:cflags]
     target = 'darwin64-x86_64-cc'
   elsif platform.is_linux?
-    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:${PATH}:/usr/local/bin'
 
     cflags = settings[:cflags]
     ldflags = "#{settings[:ldflags]} -Wl,-z,relro"

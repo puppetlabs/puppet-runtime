@@ -27,15 +27,15 @@ component 'libicu' do |pkg, settings, platform|
 
   ## BUILD CONFIGURATION
   if platform.is_windows?
-    pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:chocolatey_bin]}):$(PATH)"
+    pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:chocolatey_bin]}):${PATH}"
     pkg.environment 'CYGWIN', settings[:cygwin]
     pkg.environment 'CC', settings[:cc]
     pkg.environment 'CXX', settings[:cxx]
     pkg.environment 'MAKE', platform[:make]
   elsif platform.is_macos?
-    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:${PATH}:/usr/local/bin'
   else
-    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:${PATH}:/usr/local/bin'
   end
 
   ## BUILD COMMANDS
