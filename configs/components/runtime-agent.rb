@@ -44,7 +44,7 @@ component "runtime-agent" do |pkg, settings, platform|
     pkg.install_file "#{settings[:tools_root]}/bin/libgdbm_compat-4.dll", "#{settings[:ruby_bindir]}/libgdbm_compat-4.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libiconv-2.dll", "#{settings[:ruby_bindir]}/libiconv-2.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libffi-6.dll", "#{settings[:ruby_bindir]}/libffi-6.dll"
-  else # Linux and Solaris systems
+  elsif not platform.name =~ /generic/ # Linux and Solaris systems
     pkg.install do
       "bash runtime.sh #{libdir} puppet"
     end
