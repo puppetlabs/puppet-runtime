@@ -32,4 +32,5 @@ platform "el-7-x86_64" do |plat|
   plat.provision_with("yum install -y --nogpgcheck  #{packages.join(' ')}")
   plat.install_build_dependencies_with "yum install --assumeyes"
   plat.vmpooler_template "centos-7-x86_64"
+  plat.base_docker_image "centos:7"
 end
