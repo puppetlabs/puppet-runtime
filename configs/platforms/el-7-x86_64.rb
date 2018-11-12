@@ -26,6 +26,7 @@ platform "el-7-x86_64" do |plat|
     "rpm-sign",
     "rpmdevtools",
     "swig",
+    "which",
     "yum-utils",
     "zlib-devel",
   ]
