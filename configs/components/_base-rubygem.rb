@@ -18,5 +18,5 @@ pkg.environment "GEM_HOME", settings[:gem_home]
 # hiera/version and puppet/version requires. Without this the gem install
 # will fail by blowing out the stack.
 if settings[:ruby_vendordir]
-  pkg.environment "RUBYLIB", "#{settings[:ruby_vendordir]}:$(RUBYLIB)"
+  pkg.environment "RUBYLIB", "#{settings[:ruby_vendordir]}:${RUBYLIB}"
 end
