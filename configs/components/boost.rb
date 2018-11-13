@@ -107,6 +107,8 @@ component "boost" do |pkg, settings, platform|
   # Set user-config.jam
   if platform.is_windows?
     userconfigjam = %Q{using gcc : : #{gpp} ;}
+  elsif platform.name =~ /generic/
+    userconfigjam = %Q{using gcc : : : <linkflags>"#{linkflags}" <cflags>"#{cflags}" <cxxflags>"#{cxxflags}" ;}
   else
     if platform.architecture =~ /arm|s390x/ || platform.is_aix?
       userconfigjam = %Q{using gcc : 5.2.0 : #{gpp} : <linkflags>"#{linkflags}" <cflags>"#{cflags}" <cxxflags>"#{cxxflags}" ;}
