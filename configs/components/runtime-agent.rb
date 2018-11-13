@@ -46,7 +46,7 @@ component "runtime-agent" do |pkg, settings, platform|
     pkg.install_file "#{settings[:tools_root]}/bin/libffi-6.dll", "#{settings[:ruby_bindir]}/libffi-6.dll"
   elsif not platform.name =~ /generic/ # Linux and Solaris systems
     pkg.install do
-      "bash /root/runtime.sh #{libdir} puppet"
+      "bash /build/runtime.sh #{libdir} puppet"
     end
   end
 end
