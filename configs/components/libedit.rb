@@ -22,11 +22,11 @@ component 'libedit' do |pkg, settings, platform|
   end
 
   pkg.build do
-    "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"
+    "#{platform[:make]} -j$(($(#{platform[:num_cores]}) + 1))"
   end
 
   pkg.install do
-    "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install"
+    "#{platform[:make]} -j$(($(#{platform[:num_cores]}) + 1)) install"
   end
 
   pkg.link File.join(settings[:libdir], 'libedit.so'), File.join(settings[:libdir], 'libreadline.so')

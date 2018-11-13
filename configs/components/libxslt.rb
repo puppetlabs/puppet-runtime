@@ -40,12 +40,12 @@ component "libxslt" do |pkg, settings, platform|
   end
 
   pkg.build do
-    ["#{platform[:make]} VERBOSE=1 -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"]
+    ["#{platform[:make]} VERBOSE=1 -j$(($(#{platform[:num_cores]}) + 1))"]
   end
 
   pkg.install do
     [
-      "#{platform[:make]} VERBOSE=1 -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install",
+      "#{platform[:make]} VERBOSE=1 -j$(($(#{platform[:num_cores]}) + 1)) install",
       "rm -rf #{settings[:datadir]}/gtk-doc",
       "rm -rf #{settings[:datadir]}/doc/#{pkg.get_name}*"
     ]

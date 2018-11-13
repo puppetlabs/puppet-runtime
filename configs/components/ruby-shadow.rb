@@ -43,11 +43,11 @@ component "ruby-shadow" do |pkg, settings, platform|
 
   pkg.build do
     ["#{ruby} extconf.rb",
-     "#{platform[:make]} -e -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"]
+     "#{platform[:make]} -e -j$(($(#{platform[:num_cores]}) + 1))"]
   end
 
   pkg.install do
-    ["#{platform[:make]} -e -j$(shell expr $(shell #{platform[:num_cores]}) + 1) DESTDIR=/ install"]
+    ["#{platform[:make]} -e -j$(($(#{platform[:num_cores]}) + 1)) DESTDIR=/ install"]
   end
 
   # Undo the gross hack from the configure step

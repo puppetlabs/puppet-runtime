@@ -44,7 +44,7 @@ component "yaml-cpp" do |pkg, settings, platform|
       -DYAML_CPP_BUILD_TESTS=0 \
       -DBUILD_SHARED_LIBS=ON \
       .. ",
-      "#{make} VERBOSE=1 -j$(shell expr $(shell #{platform[:num_cores]}) + 1)",
+      "#{make} VERBOSE=1 -j$(($(#{platform[:num_cores]}) + 1))",
     ]
   end
 

@@ -69,7 +69,7 @@ end
 pkg.build do
   build_commands = []
   build_commands << "#{ruby} ext/augeas/extconf.rb"
-  build_commands << "#{platform[:make]} -e -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"
+  build_commands << "#{platform[:make]} -e -j$(($(#{platform[:num_cores]}) + 1))"
 
   build_commands
 end
@@ -86,7 +86,7 @@ pkg.install_file 'lib/augeas.rb', augeas_rb_target
 
 pkg.install do
   [
-    "#{platform[:make]} -e -j$(shell expr $(shell #{platform[:num_cores]}) + 1) DESTDIR=/ install",
+    "#{platform[:make]} -e -j$(($(#{platform[:num_cores]}) + 1)) DESTDIR=/ install",
   ]
 end
 

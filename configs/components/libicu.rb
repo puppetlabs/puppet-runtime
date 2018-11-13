@@ -63,11 +63,11 @@ component 'libicu' do |pkg, settings, platform|
   end
 
   pkg.build do
-    ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"]
+    ["#{platform[:make]} -j$(($(#{platform[:num_cores]}) + 1))"]
   end
 
   pkg.install do
-    install_cmds = ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install"]
+    install_cmds = ["#{platform[:make]} -j$(($(#{platform[:num_cores]}) + 1)) install"]
     # ICU incorrectly installs its .dlls to lib instead of bin on windows, so
     # we have to move them...
     if platform.is_windows?

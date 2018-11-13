@@ -50,7 +50,7 @@ component "git" do |pkg, settings, platform|
   execdir = File.join(prefix, 'lib', 'git-core')
 
   make_flags = [
-    "-j$(shell expr $(shell #{platform[:num_cores]}) + 1)",
+    "-j$(($(#{platform[:num_cores]}) + 1))",
     "prefix=#{prefix}",
     "gitexecdir=#{execdir}",
     "libexecdir=#{execdir}",

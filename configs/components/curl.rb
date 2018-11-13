@@ -51,11 +51,11 @@ component 'curl' do |pkg, settings, platform|
   end
 
   pkg.build do
-    ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"]
+    ["#{platform[:make]} -j$(($(#{platform[:num_cores]}) + 1))"]
   end
 
   install_steps = [
-    "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install",
+    "#{platform[:make]} -j$(($(#{platform[:num_cores]}) + 1)) install",
   ]
 
   unless settings[:runtime_project] == 'agent'
