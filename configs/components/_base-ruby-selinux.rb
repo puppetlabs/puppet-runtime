@@ -42,9 +42,9 @@ end
 
 pkg.build do
   [
-    "export RUBYHDRDIR=$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"rubyhdrdir\"]')",
-    "export VENDORARCHDIR=$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"vendorarchdir\"]')",
-    "export ARCHDIR=$${RUBYHDRDIR}/$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"arch\"]')",
+    "export RUBYHDRDIR=$(#{ruby} -e 'puts RbConfig::CONFIG[\"rubyhdrdir\"]')",
+    "export VENDORARCHDIR=$(#{ruby} -e 'puts RbConfig::CONFIG[\"vendorarchdir\"]')",
+    "export ARCHDIR=$${RUBYHDRDIR}/$(#{ruby} -e 'puts RbConfig::CONFIG[\"arch\"]')",
     "export INCLUDESTR=\"-I#{settings[:includedir]} -I$${RUBYHDRDIR} -I$${ARCHDIR}\"",
     "cp -pr src/{selinuxswig_ruby.i,selinuxswig.i} .",
     "swig -Wall -ruby #{system_include} -o selinuxswig_ruby_wrap.c -outdir ./ selinuxswig_ruby.i",
@@ -55,7 +55,7 @@ end
 
 pkg.install do
   [
-    "export VENDORARCHDIR=$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"vendorarchdir\"]')",
+    "export VENDORARCHDIR=$(#{ruby} -e 'puts RbConfig::CONFIG[\"vendorarchdir\"]')",
     "install -d $${VENDORARCHDIR}",
     "install -p -m755 _rubyselinux.so $${VENDORARCHDIR}/selinux.so",
     "#{platform[:make]} -e clean",

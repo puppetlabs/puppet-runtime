@@ -32,7 +32,7 @@ pkg.build_requires "ruby-#{ruby_version}"
 pkg.environment "GEM_HOME", gem_home
 
 if platform.is_windows?
-  pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{ruby_bindir}):$(shell cygpath -u #{settings[:bindir]}):/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0"
+  pkg.environment "PATH", "$(cygpath -u #{settings[:gcc_bindir]}):$(cygpath -u #{ruby_bindir}):$(cygpath -u #{settings[:bindir]}):/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0"
 end
 
 # PA-25 in order to install gems in a cross-compiled environment we need to

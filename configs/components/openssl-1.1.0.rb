@@ -11,7 +11,7 @@ component 'openssl' do |pkg, settings, platform|
   target = cflags = ldflags = sslflags = ''
 
   if platform.is_windows?
-    pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):${PATH}"
+    pkg.environment 'PATH', "$(cygpath -u #{settings[:gcc_bindir]}):${PATH}"
     pkg.environment 'CYGWIN', settings[:cygwin]
     pkg.environment 'CC', settings[:cc]
     pkg.environment 'CXX', settings[:cxx]
