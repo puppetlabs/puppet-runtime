@@ -19,20 +19,20 @@ end
 
 unless platform.name =~ /generic/
   proj.component 'puppet-ca-bundle'
+  # We only build ruby-selinux for EL 5-7
+  if platform.is_el? || platform.is_fedora?
+    proj.component 'ruby-selinux'
+  end
+  proj.component 'augeas' unless platform.is_windows?
+  proj.component 'ruby-augeas' unless platform.is_windows?
 end
 
 proj.component 'curl'
 proj.component "ruby-#{proj.ruby_version}"
-proj.component 'augeas' unless platform.is_windows?
 proj.component 'libxml2' unless platform.is_windows?
 proj.component 'libxslt' unless platform.is_windows?
 
-proj.component 'ruby-augeas' unless platform.is_windows?
 proj.component 'ruby-shadow' unless platform.is_aix? || platform.is_windows?
-# We only build ruby-selinux for EL 5-7
-if platform.is_el? || platform.is_fedora?
-  proj.component 'ruby-selinux'
-end
 
 # libedit is used instead of readline on these platforms
 if platform.is_solaris? || platform.is_aix?

@@ -12,6 +12,9 @@ component "yaml-cpp" do |pkg, settings, platform|
     # We're using the x86_64 version of cmake
     cmake = "/opt/pl-build-tools/bin/cmake"
     cmake_toolchain_file = "-DPL_TOOLS_ROOT=/opt/freeware -DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/#{settings[:platform_triple]}/pl-build-toolchain.cmake"
+  elsif platform.name =~ /generic/
+    cmake = 'cmake'
+    cmake_toolchain_file = ''
   elsif platform.is_solaris?
     if platform.os_version == "11"
       make = '/usr/bin/gmake'
