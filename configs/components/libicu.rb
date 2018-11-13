@@ -58,7 +58,7 @@ component 'libicu' do |pkg, settings, platform|
      # Removing these makefiles prevents building conversion tables for
      # encodings we don't need, reducing the resulting filesize
      "rm data/mappings/ucmfiles.mk data/mappings/ucmebcdic.mk",
-     "for file in ../../*_reslocal.mk; do mv $$file data/$$(basename $$file _reslocal.mk)/reslocal.mk; done",
+     "for file in ../../*_reslocal.mk; do mv $file data/$(basename $file _reslocal.mk)/reslocal.mk; done",
      "LDFLAGS='#{settings[:ldflags]}' CXXFLAGS='#{cxx_flags}' ./runConfigureICU #{icu_platform} #{icu_flags} --prefix=#{settings[:prefix]}"]
   end
 

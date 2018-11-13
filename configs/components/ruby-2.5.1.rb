@@ -152,7 +152,7 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
   if target_doubles.has_key?(settings[:platform_triple])
     rbconfig_topdir = File.join(ruby_dir, 'lib', 'ruby', '2.5.0', target_doubles[settings[:platform_triple]])
   else
-    rbconfig_topdir = "$$(#{ruby_bindir}/ruby -e \"puts RbConfig::CONFIG[\\\"topdir\\\"]\")"
+    rbconfig_topdir = "$(#{ruby_bindir}/ruby -e \"puts RbConfig::CONFIG[\\\"topdir\\\"]\")"
   end
 
   rbconfig_changes = {}

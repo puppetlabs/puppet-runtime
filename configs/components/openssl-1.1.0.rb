@@ -21,7 +21,7 @@ component 'openssl' do |pkg, settings, platform|
     cflags = settings[:cflags]
     ldflags = settings[:ldflags]
   elsif platform.is_cross_compiled_linux?
-    pkg.environment 'PATH', "/opt/pl-build-tools/bin:$$PATH"
+    pkg.environment 'PATH', "/opt/pl-build-tools/bin:$PATH"
     pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
 
     cflags = "#{settings[:cflags]} -fPIC"
@@ -40,7 +40,7 @@ component 'openssl' do |pkg, settings, platform|
   elsif platform.is_aix?
     pkg.environment 'CC', '/opt/pl-build-tools/bin/gcc'
 
-    cflags = '$${CFLAGS} -static-libgcc'
+    cflags = '${CFLAGS} -static-libgcc'
     target = 'aix-gcc'
   elsif platform.is_solaris?
     pkg.environment 'PATH', '/opt/pl-build-tools/bin:${PATH}:/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin'

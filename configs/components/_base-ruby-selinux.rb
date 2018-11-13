@@ -44,20 +44,20 @@ pkg.build do
   [
     "export RUBYHDRDIR=$(#{ruby} -e 'puts RbConfig::CONFIG[\"rubyhdrdir\"]')",
     "export VENDORARCHDIR=$(#{ruby} -e 'puts RbConfig::CONFIG[\"vendorarchdir\"]')",
-    "export ARCHDIR=$${RUBYHDRDIR}/$(#{ruby} -e 'puts RbConfig::CONFIG[\"arch\"]')",
-    "export INCLUDESTR=\"-I#{settings[:includedir]} -I$${RUBYHDRDIR} -I$${ARCHDIR}\"",
+    "export ARCHDIR=${RUBYHDRDIR}/$(#{ruby} -e 'puts RbConfig::CONFIG[\"arch\"]')",
+    "export INCLUDESTR=\"-I#{settings[:includedir]} -I${RUBYHDRDIR} -I${ARCHDIR}\"",
     "cp -pr src/{selinuxswig_ruby.i,selinuxswig.i} .",
     "swig -Wall -ruby #{system_include} -o selinuxswig_ruby_wrap.c -outdir ./ selinuxswig_ruby.i",
-    "#{cc} $${INCLUDESTR} #{system_include} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -fPIC -DSHARED -c -o selinuxswig_ruby_wrap.lo selinuxswig_ruby_wrap.c",
-    "#{cc} $${INCLUDESTR} #{system_include} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -shared -o _rubyselinux.so selinuxswig_ruby_wrap.lo -lselinux -Wl,-soname,_rubyselinux.so",
+    "#{cc} ${INCLUDESTR} #{system_include} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -fPIC -DSHARED -c -o selinuxswig_ruby_wrap.lo selinuxswig_ruby_wrap.c",
+    "#{cc} ${INCLUDESTR} #{system_include} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -shared -o _rubyselinux.so selinuxswig_ruby_wrap.lo -lselinux -Wl,-soname,_rubyselinux.so",
   ]
 end
 
 pkg.install do
   [
     "export VENDORARCHDIR=$(#{ruby} -e 'puts RbConfig::CONFIG[\"vendorarchdir\"]')",
-    "install -d $${VENDORARCHDIR}",
-    "install -p -m755 _rubyselinux.so $${VENDORARCHDIR}/selinux.so",
+    "install -d ${VENDORARCHDIR}",
+    "install -p -m755 _rubyselinux.so ${VENDORARCHDIR}/selinux.so",
     "#{platform[:make]} -e clean",
   ]
 end
