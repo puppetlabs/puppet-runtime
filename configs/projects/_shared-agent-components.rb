@@ -17,8 +17,11 @@ unless proj.settings[:system_openssl]
   proj.component "openssl-#{proj.openssl_version}"
 end
 
+unless platform.name =~ /generic/
+  proj.component 'puppet-ca-bundle'
+end
+
 proj.component 'curl'
-proj.component 'puppet-ca-bundle'
 proj.component "ruby-#{proj.ruby_version}"
 proj.component 'augeas' unless platform.is_windows?
 proj.component 'libxml2' unless platform.is_windows?
