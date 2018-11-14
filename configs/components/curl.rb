@@ -13,9 +13,7 @@ component 'curl' do |pkg, settings, platform|
     pkg.build_requires "openssl-#{settings[:openssl_version]}"
   end
 
-  unless platform.name =~ /generic/
-    pkg.build_requires "puppet-ca-bundle"
-  end
+  pkg.build_requires "puppet-ca-bundle"
 
   if platform.is_cross_compiled_linux?
     pkg.build_requires "runtime-#{settings[:runtime_project]}"
@@ -35,10 +33,6 @@ component 'curl' do |pkg, settings, platform|
      configure_options << "--with-ssl=#{settings[:prefix]}"
   end
 
-  unless platform.name =~ /generic/
-    configure_options << "--with-ca-bundle=#{settings[:prefix]}/ssl/cert.pem"
-  end
-
   if (platform.is_solaris? && platform.os_version == "11") || platform.is_aix?
     # Makefile generation with automatic dependency tracking fails on these platforms
     configure_options << "--disable-dependency-tracking"
@@ -52,6 +46,7 @@ component 'curl' do |pkg, settings, platform|
         --enable-threaded-resolver \
         --disable-ldap \
         --disable-ldaps \
+        --with-ca-bundle=#{settings[:prefix]}/ssl/cert.pem \
         #{settings[:host]}"]
   end
 

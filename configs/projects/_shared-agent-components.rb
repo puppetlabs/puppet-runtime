@@ -18,7 +18,6 @@ unless proj.settings[:system_openssl]
 end
 
 unless platform.name =~ /generic/
-  proj.component 'puppet-ca-bundle'
   # We only build ruby-selinux for EL 5-7
   if platform.is_el? || platform.is_fedora?
     proj.component 'ruby-selinux'
@@ -28,6 +27,7 @@ unless platform.name =~ /generic/
 end
 
 proj.component 'curl'
+proj.component 'puppet-ca-bundle'
 proj.component "ruby-#{proj.ruby_version}"
 proj.component 'libxml2' unless platform.is_windows?
 proj.component 'libxslt' unless platform.is_windows?
