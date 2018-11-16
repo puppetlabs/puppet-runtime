@@ -102,6 +102,7 @@ component "boost" do |pkg, settings, platform|
   else
     pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
     linkflags = "-Wl,-rpath=#{settings[:libdir]},-rpath=#{settings[:libdir]}64"
+    gpp = "/usr/bin/g++" if platform.name =~ /fedora-29/
   end
 
   # Set user-config.jam

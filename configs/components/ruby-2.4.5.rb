@@ -176,7 +176,7 @@ component 'ruby-2.4.5' do |pkg, settings, platform|
     end
   elsif platform.is_windows?
     rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
-  elsif platform.name =~ /^fedora-28/
+  elsif platform.name =~ /fedora-28|fedora-29/
     # Fedora 28 uses native GCC 8.0.1. When building ruby C extensions (in
     # ruby-augeas, for example) mkmf will fail when ruby 2.4.5's
     # CONFIG['warnflags'] are applied to a conftest with -Werror before

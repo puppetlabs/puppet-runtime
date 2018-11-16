@@ -40,6 +40,8 @@ if platform.is_cross_compiled_linux?
   ruby = "#{host_ruby} -r#{settings[:datadir]}/doc/rbconfig-#{ruby_version}-orig.rb"
 end
 
+cc = '/usr/bin/gcc' if platform.name =~ /fedora-29/
+
 pkg.build do
   [
     "export RUBYHDRDIR=$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"rubyhdrdir\"]')",
