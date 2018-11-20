@@ -1,6 +1,6 @@
-component 'ruby-2.4.4' do |pkg, settings, platform|
-  pkg.version '2.4.4'
-  pkg.md5sum "d50e00ccc1c9cf450f837b92d3ed3e88"
+component 'ruby-2.4.5' do |pkg, settings, platform|
+  pkg.version '2.4.5'
+  pkg.md5sum '4e6b030af3897b811059e1289fc75b31'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
@@ -32,13 +32,13 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
 
   # Most ruby configuration happens in the base ruby config:
   instance_eval File.read('configs/components/_base-ruby.rb')
-  # Configuration below should only be applicable to ruby 2.4.4
+  # Configuration below should only be applicable to ruby 2.4.5
 
   #########
   # PATCHES
   #########
 
-  base = 'resources/patches/ruby_244'
+  base = 'resources/patches/ruby_245'
   pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator_r2.4.patch"
   # This patch creates our server/client shared Gem path, used for all gems
   # that are dependencies of the shared Ruby code.
@@ -176,7 +176,7 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
     rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
   elsif platform.name =~ /^fedora-28/
     # Fedora 28 uses native GCC 8.0.1. When building ruby C extensions (in
-    # ruby-augeas, for example) mkmf will fail when ruby 2.4.4's
+    # ruby-augeas, for example) mkmf will fail when ruby 2.4.5's
     # CONFIG['warnflags'] are applied to a conftest with -Werror before
     # generating the Makefile. This patch removes a few flags from
     # CONFIG['warnflags'] that are no longer valid and ignores a few new
@@ -188,7 +188,7 @@ component 'ruby-2.4.4' do |pkg, settings, platform|
     pkg.install do
       [
         "#{host_ruby} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
-        "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.4.4-orig.rb",
+        "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.4.5-orig.rb",
         "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
       ]
     end

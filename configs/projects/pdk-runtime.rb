@@ -47,7 +47,7 @@ project 'pdk-runtime' do |proj|
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:bindir, File.join(proj.prefix, "bin"))
 
-  proj.setting(:ruby_version, "2.4.4")
+  proj.setting(:ruby_version, "2.4.5")
   proj.setting(:ruby_api, "2.4.0")
 
   proj.setting(:privatedir, File.join(proj.prefix, "private"))
