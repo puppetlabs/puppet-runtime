@@ -1,6 +1,6 @@
-component 'ruby-2.5.1' do |pkg, settings, platform|
-  pkg.version '2.5.1'
-  pkg.md5sum "23867bc8c16c55e43b14dfe0614bcfa8"
+component 'ruby-2.5.3' do |pkg, settings, platform|
+  pkg.version '2.5.3'
+  pkg.md5sum '20c85b67846d49622ef3b24230803fef'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
@@ -29,13 +29,13 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
 
   # Most ruby configuration happens in the base ruby config:
   instance_eval File.read('configs/components/_base-ruby.rb')
-  # Configuration below should only be applicable to ruby 2.5.1
+  # Configuration below should only be applicable to ruby 2.5.3
 
   #########
   # PATCHES
   #########
 
-  base = 'resources/patches/ruby_251'
+  base = 'resources/patches/ruby_253'
   pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator_r2.5.patch"
   pkg.apply_patch "#{base}/Check-for-existance-of-O_CLOEXEC.patch"
   # This patch creates our server/client shared Gem path, used for all gems
@@ -180,7 +180,7 @@ component 'ruby-2.5.1' do |pkg, settings, platform|
     pkg.install do
       [
         "#{host_ruby} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
-        "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.5.1-orig.rb",
+        "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.5.3-orig.rb",
         "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
       ]
     end
