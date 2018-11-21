@@ -1,0 +1,33 @@
+From 5014f77f3055e1fabfe7067cd6535ee26b026b1e Mon Sep 17 00:00:00 2001
+From: Casey Williams <caseywilliams@users.noreply.github.com>
+Date: Wed, 21 Nov 2018 10:13:16 -0800
+Subject: [PATCH 1/1] Fix document end markers in bundled libyaml 0.1.7
+
+See https://github.com/yaml/libyaml/issues/60 - this has been resolved
+in libyaml, but v0.1.7 in Ruby 2.4.5 and 2.5.3 are still affected.
+---
+ ext/psych/yaml/emitter.c | 8 --------
+ 1 file changed, 8 deletions(-)
+
+diff --git a/ext/psych/yaml/emitter.c b/ext/psych/yaml/emitter.c
+index 580a8d2123..75add76271 100644
+--- a/ext/psych/yaml/emitter.c
++++ b/ext/psych/yaml/emitter.c
+@@ -649,14 +649,6 @@ yaml_emitter_emit_document_start(yaml_emitter_t *emitter,
+ 
+     else if (event->type == YAML_STREAM_END_EVENT)
+     {
+-        if (emitter->open_ended)
+-        {
+-            if (!yaml_emitter_write_indicator(emitter, "...", 1, 0, 0))
+-                return 0;
+-            if (!yaml_emitter_write_indent(emitter))
+-                return 0;
+-        }
+-
+         if (!yaml_emitter_flush(emitter))
+             return 0;
+ 
+-- 
+2.17.1
+
