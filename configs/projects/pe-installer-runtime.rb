@@ -2,7 +2,7 @@ project 'pe-installer-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'pe-installer')
   proj.setting(:ruby_version, '2.4.5')
-  proj.setting(:openssl_version, '1.1.0')
+  proj.setting(:openssl_version, '1.1.1')
   platform = proj.get_platform
 
   proj.version_from_git

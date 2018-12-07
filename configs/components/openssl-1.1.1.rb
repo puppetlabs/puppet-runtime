@@ -1,6 +1,6 @@
 component 'openssl' do |pkg, settings, platform|
-  pkg.version '1.1.0h'
-  pkg.md5sum '5271477e4d93f4ea032b665ef095ff24'
+  pkg.version '1.1.1a'
+  pkg.md5sum '963deb2272d6be7d4c2458afd2517b73'
   pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
@@ -25,6 +25,12 @@ component 'openssl' do |pkg, settings, platform|
     pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
 
     cflags = "#{settings[:cflags]} -fPIC"
+    if platform.architecture =~ /aarch/
+      # OpenSSL fails to work on aarch unless we turn down the compiler optimization.
+      # See PA-2135 for details
+      cflags += " -O2"
+    end
+
     ldflags = "-Wl,-rpath=/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
     target = if platform.architecture == 'aarch64'
                 'linux-aarch64'
@@ -77,10 +83,19 @@ component 'openssl' do |pkg, settings, platform|
   # CONFIGURE
   ###########
 
-  # OpenSSL fails to work on aarch unless we turn down the compiler optimization.
-  # See PA-2135 for details
-  if platform.architecture =~ /aarch/
-    pkg.apply_patch 'resources/patches/openssl/turn-down-optimization-on-aarch.patch'
+  if platform.is_solaris? && platform.name =~ /10/
+    # We need to link the rt library on Solaris 10 in order to access the clock_gettime
+    # function.
+    cflags += " -lrt"
+
+    # Additionally when we're building on SPARC, we need to revert
+    # https://github.com/openssl/openssl/commit/7a061312 because for
+    # some reason, the linker fails to generate the .map files (like
+    # e.g. libcrypto.map). Strangely, this is not an issue for Solaris
+    # 11 SPARC despite it using an older version of ld (2.25 vs. 2.27).
+    if platform.is_cross_compiled?
+      pkg.apply_patch 'resources/patches/openssl/openssl-1.1.1a-revert-7a061312.patch'
+    end
   end
 
   # OpenSSL Configure doesn't honor CFLAGS or LDFLAGS as environment variables.

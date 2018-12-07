@@ -2,7 +2,7 @@ project 'bolt-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'bolt')
   proj.setting(:ruby_version, '2.5.3')
-  proj.setting(:openssl_version, '1.1.0')
+  proj.setting(:openssl_version, '1.1.1')
   proj.setting(:rubygem_net_ssh_version, '5.0.2')
   platform = proj.get_platform
 
