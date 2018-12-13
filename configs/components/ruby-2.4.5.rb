@@ -41,7 +41,7 @@ component 'ruby-2.4.5' do |pkg, settings, platform|
   base = 'resources/patches/ruby_245'
   pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator_r2.4.patch"
   # Fix errant document end markers in libyaml 0.1.7; This is fixed in later versions
-  pkg.apply_patch "#{base}/libyaml_document_end.patch"
+  pkg.apply_patch "#{base}/libyaml_document_end_r2.4.patch"
   # This patch creates our server/client shared Gem path, used for all gems
   # that are dependencies of the shared Ruby code.
   pkg.apply_patch "#{base}/rubygems_add_puppet_vendor_dir_r2.4.patch"
