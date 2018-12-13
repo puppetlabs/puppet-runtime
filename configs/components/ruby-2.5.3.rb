@@ -39,7 +39,7 @@ component 'ruby-2.5.3' do |pkg, settings, platform|
   pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator_r2.5.patch"
   pkg.apply_patch "#{base}/Check-for-existance-of-O_CLOEXEC.patch"
   # Fix errant document end markers in libyaml 0.1.7; This is fixed in later versions
-  pkg.apply_patch "#{base}/libyaml_document_end.patch"
+  pkg.apply_patch "#{base}/libyaml_document_end_r2.5.patch"
   # This patch creates our server/client shared Gem path, used for all gems
   # that are dependencies of the shared Ruby code.
   pkg.apply_patch "#{base}/rubygems_add_puppet_vendor_dir_r2.5.patch"

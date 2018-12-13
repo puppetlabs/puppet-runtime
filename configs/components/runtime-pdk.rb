@@ -33,7 +33,15 @@ component "runtime-pdk" do |pkg, settings, platform|
     # Do nothing
 
   else # Linux and Solaris systems
-    libdir = "/opt/pl-build-tools/lib64"
+    if platform.name =~ /fedora-29/
+      # On newer linux platforms we are no longer using the pl-build-tools
+      # package and instead relying on standard distribution versions of
+      # gcc, etc.
+      libdir = "/usr/lib64"
+    else
+      libdir = "/opt/pl-build-tools/lib64"
+    end
+
     pkg.add_source "file://resources/files/runtime/runtime.sh"
     pkg.install do
       "bash runtime.sh #{libdir}"
