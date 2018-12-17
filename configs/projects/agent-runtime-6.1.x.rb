@@ -2,7 +2,7 @@ project 'agent-runtime-6.1.x' do |proj|
   # Set preferred component versions if they differ from defaults:
   proj.setting :ruby_version, '2.5.3'
   proj.setting :augeas_version, '1.10.1'
-  proj.setting :openssl_version, '1.1.0'
+  proj.setting :openssl_version, '1.1.1'
 
   ########
   # Load shared agent settings
