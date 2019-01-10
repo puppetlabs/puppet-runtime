@@ -202,7 +202,6 @@ proj.timeout 7200 if platform.is_windows?
 proj.setting(:boost_libs, ["chrono", "date_time", "filesystem", "locale", "log", "program_options",
                            "random", "regex", "system", "thread"])
 
-
 # Most branches of puppet-agent use these openssl flags in addition to the defaults in configs/components/openssl.rb -
 # Individual projects can override these if necessary.
 proj.setting(:openssl_extra_configure_flags, [
@@ -228,6 +227,4 @@ proj.directory proj.install_root
 proj.directory proj.prefix
 proj.directory proj.sysconfdir
 proj.directory proj.link_bindir
-if platform.is_windows? || platform.is_macos?
-  proj.directory proj.bindir
-end
+proj.directory proj.bindir if platform.is_windows? || platform.is_macos?
