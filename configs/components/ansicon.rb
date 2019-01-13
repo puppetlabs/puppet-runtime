@@ -1,6 +1,6 @@
 component "ansicon" do |pkg, settings, platform|
-  pkg.version '1.71'
-  pkg.md5sum '0e052ad64167f6e57baebcae1b7eef42'
+  pkg.version '1.86'
+  pkg.md5sum 'f2e822dc4ad69959d61b6e09d0a56a30'
   pkg.url "#{settings[:buildsources_url]}/ansicon-#{pkg.get_version}.tar.gz"
 
   # This component should only be included on Windows
