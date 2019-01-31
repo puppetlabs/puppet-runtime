@@ -4,32 +4,37 @@ component 'augeas' do |pkg, settings, platform|
   pkg.version version
 
   case version
-    when '1.4.0'
-      pkg.md5sum 'a2536a9c3d744dc09d234228fe4b0c93'
+  when '1.4.0'
+    pkg.md5sum 'a2536a9c3d744dc09d234228fe4b0c93'
 
-      pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-osx-stub-needed-readline-functions.patch'
-      pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-sudoers-negated-command-alias.patch'
-      pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-src-pathx.c-parse_name-correctly-handle-trailing-ws.patch'
-    when '1.8.1'
-      pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
-    when '1.10.1'
-      pkg.md5sum '6c0b2ea6eec45e8bc374b283aedf27ce'
+    pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-osx-stub-needed-readline-functions.patch'
+    pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-sudoers-negated-command-alias.patch'
+    pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-src-pathx.c-parse_name-correctly-handle-trailing-ws.patch'
+  when '1.8.1'
+    pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
+  when '1.10.1'
+    pkg.md5sum '6c0b2ea6eec45e8bc374b283aedf27ce'
+  when '1.11.0'
+    pkg.md5sum 'abf51f4c0cf3901d167f23687f60434a'
+  else
+    raise "augeas version #{version} has not been configured; Cannot continue."
+  end
 
-      if platform.is_el? || platform.is_fedora?
-        # Augeas 1.10.1 needs a libselinux pkgconfig file on these platforms:
-        pkg.build_requires 'ruby-selinux'
-      elsif platform.name =~ /solaris-10-sparc/
-        # This patch to gnulib fixes a linking error around symbol versioning in pthread.
-        pkg.add_source 'file://resources/patches/augeas/augeas-1.10.1-gnulib-pthread-in-use.patch'
+  if ['1.10.1', '1.11.0'].include?(version)
+    if platform.is_el? || platform.is_fedora?
+      # Augeas 1.10.1/1.11.0 needs a libselinux pkgconfig file on these platforms:
+      pkg.build_requires 'ruby-selinux'
+    end
 
-        pkg.configure do
-          # gnulib is a submodule, and its files don't exist until after configure,
-          # so we apply the patch manually here instead of using pkg.apply_patch.
-          ["/usr/bin/gpatch -p0 < ../augeas-1.10.1-gnulib-pthread-in-use.patch"]
-        end
+    if platform.name =~ /solaris-10-sparc/
+      # This patch to gnulib fixes a linking error around symbol versioning in pthread.
+      pkg.add_source "file://resources/patches/augeas/augeas-#{version}-gnulib-pthread-in-use.patch"
+      pkg.configure do
+        # gnulib is a submodule, and its files don't exist until after configure,
+        # so we apply the patch manually here instead of using pkg.apply_patch.
+        ["/usr/bin/gpatch -p0 < ../augeas-#{version}-gnulib-pthread-in-use.patch"]
       end
-    else
-      raise "augeas version #{version} has not been configured; Cannot continue."
+    end
   end
 
   pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
