@@ -11,7 +11,7 @@ platform "sles-11-s390x" do |plat|
     "autoconf",
     "automake",
     "gcc",
-    "java-1_7_0-ibm-devel",
+    "java-1_7_1-ibm-devel",
     "libbz2-devel",
     "make",
     "pkgconfig",
