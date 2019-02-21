@@ -35,6 +35,7 @@ project 'agent-runtime-5.5.x' do |proj|
 
   proj.component 'rubygem-gettext-setup'
   proj.component 'rubygem-multi_json'
+  proj.component 'rubygem-optimist'
   proj.component 'rubygem-highline'
   proj.component 'rubygem-trollop'
   proj.component 'rubygem-hiera-eyaml'
