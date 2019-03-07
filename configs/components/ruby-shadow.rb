@@ -31,7 +31,7 @@ component "ruby-shadow" do |pkg, settings, platform|
   # strace logs, and we need to move forward on this platform.
   # FIXME: Scott Garman Jun 2016
   # Added to ppc64
-  if platform.architecture == "s390x" || platform.architecture == "ppc64"
+  if platform.architecture == "ppc64"
     pkg.configure do
       [
         "mkdir #{settings[:libdir]}/hide",
@@ -51,7 +51,7 @@ component "ruby-shadow" do |pkg, settings, platform|
   end
 
   # Undo the gross hack from the configure step
-  if platform.architecture == "s390x" || platform.architecture == "ppc64"
+  if platform.architecture == "ppc64"
     pkg.install do
       [
         "mv #{settings[:libdir]}/hide/* #{settings[:libdir]}/",

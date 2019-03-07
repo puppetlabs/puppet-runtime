@@ -141,7 +141,6 @@ component 'ruby-2.4.5' do |pkg, settings, platform|
     'ppc64le-redhat-linux' => 'powerpc64le-linux',
     'powerpc64le-suse-linux' => 'powerpc64le-linux',
     'powerpc64le-linux-gnu' => 'powerpc64le-linux',
-    's390x-linux-gnu' => 's390x-linux',
     'i386-pc-solaris2.10' => 'i386-solaris2.10',
     'sparc-sun-solaris2.10' => 'sparc-solaris2.10',
     'i386-pc-solaris2.11' => 'i386-solaris2.11',

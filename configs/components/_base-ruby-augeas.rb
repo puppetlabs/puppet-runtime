@@ -56,7 +56,7 @@ end
 # This seems to apply directly to Linux on ppc64 - I've gotten successful builds
 # with this change.
 # FIXME: Scott Garman Jun 2016
-if platform.architecture == "s390x" || platform.architecture == "ppc64"
+if platform.architecture == "ppc64"
   pkg.configure do
     [
       "mkdir #{settings[:libdir]}/hide",
@@ -97,7 +97,7 @@ if platform.is_solaris? || platform.is_cross_compiled_linux?
 end
 
 # Undo the gross hack from the configure step
-if platform.architecture == "s390x" || platform.architecture == "ppc64"
+if platform.architecture == "ppc64"
   pkg.install do
     [
       "mv #{settings[:libdir]}/hide/* #{settings[:libdir]}/",
