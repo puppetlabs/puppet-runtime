@@ -3,7 +3,7 @@ project 'bolt-runtime' do |proj|
   proj.setting(:runtime_project, 'bolt')
   proj.setting(:ruby_version, '2.5.3')
   proj.setting(:openssl_version, '1.1.1')
-  proj.setting(:rubygem_net_ssh_version, '5.1.0')
+  proj.setting(:rubygem_net_ssh_version, '5.2.0')
   proj.setting(:rubygem_minitar_version, '0.8')
   platform = proj.get_platform
 
