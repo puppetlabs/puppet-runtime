@@ -40,6 +40,7 @@ component 'openssl' do |pkg, settings, platform|
                 'linux-ppc64le'
               elsif platform.architecture =~ /ppc64/ # Big-endian
                 'linux-ppc64'
+              end
   elsif platform.is_aix?
     pkg.environment 'CC', '/opt/pl-build-tools/bin/gcc'
 
