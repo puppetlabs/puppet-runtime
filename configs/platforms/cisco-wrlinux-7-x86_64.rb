@@ -9,7 +9,6 @@ platform "cisco-wrlinux-7-x86_64" do |plat|
     "make",
     "pkgconfig",
     "pl-cmake",
-    "pl-gcc",
     "readline-devel",
     "zlib-devel",
   ]
