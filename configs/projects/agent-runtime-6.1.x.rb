@@ -29,7 +29,7 @@ project 'agent-runtime-6.1.x' do |proj|
 
   proj.component 'rubygem-multi_json'
   proj.component 'rubygem-highline'
-  proj.component 'rubygem-trollop'
+  proj.component 'rubygem-optimist'
   proj.component 'rubygem-hiera-eyaml'
   proj.component 'rubygem-httpclient'
   # SLES 15 uses the OS distro versions of boost and yaml-cpp:

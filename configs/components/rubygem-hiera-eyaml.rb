@@ -8,7 +8,6 @@ component 'rubygem-hiera-eyaml' do |pkg, settings, platform|
 
   pkg.build_requires 'rubygem-optimist'
   pkg.build_requires 'rubygem-highline'
-  pkg.build_requires 'rubygem-trollop'
 
   # Overwrite the base rubygem's default GEM_HOME with the vendor gem directory
   # shared by puppet and puppetserver. Fall-back to gem_home for other projects.
