@@ -7,8 +7,8 @@ component 'rubygem-highline' do |pkg, settings, _platform|
   pkg.mirror "#{settings[:buildsources_url]}/highline-#{pkg.get_version}.gem"
 
   # Overwrite the base rubygem's default GEM_HOME with the vendor gem directory
-  # shared by puppet and puppetserver:
-  pkg.environment 'GEM_HOME', settings[:puppet_gem_vendor_dir]
+  # shared by puppet and puppetserver. Fall-back to gem_home for other projects.
+  pkg.environment "GEM_HOME", (settings[:puppet_gem_vendor_dir] || settings[:gem_home])
 
   pkg.install do
     ["#{settings[:gem_install]} highline-#{pkg.get_version}.gem"]
