@@ -16,11 +16,14 @@ component "runtime-client-tools" do |pkg, settings, platform|
     # Do nothing
 
   else # Linux and Solaris systems
-    libbase = platform.architecture =~ /64/ ? 'lib64' : 'lib'
-    libdir = "/opt/pl-build-tools/#{libbase}"
-    pkg.add_source "file://resources/files/runtime/runtime.sh"
-    pkg.install do
-      "bash runtime.sh #{libdir}"
+    if platform.name !~ /el-8-x86_64/
+      libbase = platform.architecture =~ /64/ ? 'lib64' : 'lib'
+      libdir = "/opt/pl-build-tools/#{libbase}"
+      pkg.add_source "file://resources/files/runtime/runtime.sh"
+      pkg.install do
+        "bash runtime.sh #{libdir}"
+      end
+    # Nothing needed for platforms without pl-build-tools
     end
   end
 end

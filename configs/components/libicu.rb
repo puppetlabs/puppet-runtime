@@ -19,7 +19,11 @@ component 'libicu' do |pkg, settings, platform|
   end
 
   if platform.is_linux?
-    pkg.build_requires 'pl-gcc'
+    if platform.name =~ /el-8-x86_64/
+      pkg.build_requires 'gcc'
+    else
+      pkg.build_requires 'pl-gcc'
+    end
     pkg.build_requires 'unzip'
   elsif platform.is_windows?
     pkg.build_requires '7zip.commandline'
