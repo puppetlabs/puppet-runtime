@@ -122,6 +122,11 @@ project 'bolt-runtime' do |proj|
   # R10k dependencies
   proj.component 'rubygem-gettext-setup'
 
+  # hiera-eyaml and it's dependencies
+  proj.component 'rubygem-highline'
+  proj.component 'rubygem-optimist'
+  proj.component 'rubygem-hiera-eyaml'
+
   # Core dependencies
   proj.component 'rubygem-ffi'
   proj.component 'rubygem-minitar'

@@ -37,7 +37,6 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.component 'rubygem-multi_json'
   proj.component 'rubygem-optimist'
   proj.component 'rubygem-highline'
-  proj.component 'rubygem-trollop'
   proj.component 'rubygem-hiera-eyaml'
   proj.component 'ruby-stomp'
   proj.component 'yaml-cpp' if platform.name =~ /fedora-29|el-8/ || platform.is_macos?
