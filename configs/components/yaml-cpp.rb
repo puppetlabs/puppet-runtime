@@ -23,7 +23,7 @@ component "yaml-cpp" do |pkg, settings, platform|
   elsif platform.is_macos?
     cmake_toolchain_file = ""
     cmake = "/usr/local/bin/cmake"
-  elsif platform.name =~ /fedora-29|el-8/
+  elsif platform.name =~ /fedora-29|el-8|debian-10/
     cmake_toolchain_file = ''
     cmake = '/usr/bin/cmake'
   elsif platform.is_windows?

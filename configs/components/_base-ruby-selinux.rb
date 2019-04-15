@@ -40,7 +40,7 @@ if platform.is_cross_compiled_linux?
   ruby = "#{host_ruby} -r#{settings[:datadir]}/doc/rbconfig-#{ruby_version}-orig.rb"
 end
 
-cc = '/usr/bin/gcc' if platform.name =~ /fedora-29|el-8/
+cc = '/usr/bin/gcc' if platform.name =~ /fedora-29|el-8|debian-10/
 
 pkg.build do
   [
