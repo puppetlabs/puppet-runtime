@@ -23,6 +23,6 @@ platform 'osx-10.13-x86_64' do |plat|
   
   plat.provision_with "su test -c '/usr/local/bin/brew install #{packages.join(' ')}'"
 
-  plat.vmpooler_template 'osx-1012-x86_64'
+  plat.vmpooler_template 'osx-1013-x86_64'
   plat.output_dir File.join('apple', '10.13', 'PC1', 'x86_64')
 end
