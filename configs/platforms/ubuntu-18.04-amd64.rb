@@ -15,7 +15,8 @@ platform "ubuntu-18.04-amd64" do |plat|
     "pkg-config",
     "pl-cmake",
     "pl-gcc",
-    "zlib1g-dev"
+    "zlib1g-dev",
+    "systemtap-sdt-dev"
   ]
 
   plat.provision_with "export DEBIAN_FRONTEND=noninteractive; apt-get install -qy --no-install-recommends #{packages.join(' ')}"

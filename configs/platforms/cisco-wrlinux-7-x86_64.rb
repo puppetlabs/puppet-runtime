@@ -12,6 +12,7 @@ platform "cisco-wrlinux-7-x86_64" do |plat|
     "pl-gcc",
     "readline-devel",
     "zlib-devel",
+    "systemtap-sdt-devel"
   ]
   plat.provision_with("yum install -y --nogpgcheck  #{packages.join(' ')}")
   plat.install_build_dependencies_with "yum install -y"

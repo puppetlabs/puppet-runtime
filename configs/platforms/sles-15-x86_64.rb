@@ -18,7 +18,9 @@ platform "sles-15-x86_64" do |plat|
     "readline-devel",
     "rpm-build",
     "rsync",
-    "zlib-devel"
+    "zlib-devel",
+    "systemtap-sdt-devel"
+
   ]
   plat.provision_with("zypper -n --no-gpg-checks install -y #{packages.join(' ')}")
   plat.install_build_dependencies_with "zypper -n --no-gpg-checks install -y"

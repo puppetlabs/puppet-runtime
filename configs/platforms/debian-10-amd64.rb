@@ -19,7 +19,8 @@ platform "debian-10-amd64" do |plat|
       'rsync',
       'fakeroot',
       'cmake',
-      'build-essential'
+      'build-essential',
+      'systemtap-sdt-dev'
   ]
 
   plat.provision_with "export DEBIAN_FRONTEND=noninteractive; apt-get update -qq; apt-get install -qy --no-install-recommends #{packages.join(' ')}"
