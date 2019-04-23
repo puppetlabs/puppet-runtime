@@ -57,4 +57,5 @@ project 'agent-runtime-1.10.x' do |proj|
 
   proj.component 'rubygem-gettext-setup'
   proj.component 'ruby-stomp'
+  proj.component 'rubygem-win32-eventlog' if platform.is_windows?
 end
