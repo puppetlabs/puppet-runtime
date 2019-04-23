@@ -11,13 +11,8 @@ component "rubygem-semantic_puppet" do |pkg, settings, platform|
   else
     raise "rubygem-semantic_puppet version #{version} has not been configured; Cannot continue."
   end
+
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
-  pkg.url "https://rubygems.org/downloads/semantic_puppet-#{pkg.get_version}.gem"
-  pkg.mirror "#{settings[:buildsources_url]}/semantic_puppet-#{pkg.get_version}.gem"
   pkg.environment "GEM_HOME", (settings[:puppet_gem_vendor_dir] || settings[:gem_home])
-
-  pkg.install do
-    ["#{settings[:gem_install]} semantic_puppet-#{pkg.get_version}.gem"]
-  end
 end
