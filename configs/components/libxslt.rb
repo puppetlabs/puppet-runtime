@@ -1,13 +1,12 @@
 component "libxslt" do |pkg, settings, platform|
-  pkg.version "1.1.29"
-  pkg.md5sum "a129d3c44c022de3b9dcf6d6f288d72e"
+  pkg.version "1.1.33"
+  pkg.md5sum "b3bd254a03e46d58f8ad1e4559cd2c2f"
   pkg.url "http://xmlsoft.org/sources/#{pkg.get_name}-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/libxslt-#{pkg.get_version}.tar.gz"
 
   pkg.build_requires "libxml2"
 
-  pkg.apply_patch 'resources/patches/libxslt/fix-heap-overread.patch'
-  pkg.apply_patch 'resources/patches/libxslt/check-for-integer-overflow.patch'
+  pkg.apply_patch 'resources/patches/libxslt/CVE-2019-11068.patch'
 
   if platform.is_aix?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
