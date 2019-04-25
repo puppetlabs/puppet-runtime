@@ -114,7 +114,7 @@ project 'bolt-runtime' do |proj|
 
   # Puppet dependencies
   proj.component 'rubygem-hocon'
-  proj.component 'rubygem-deep-merge'
+  proj.component 'rubygem-deep_merge'
   proj.component 'rubygem-text'
   proj.component 'rubygem-locale'
   proj.component 'rubygem-gettext'
