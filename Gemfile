@@ -16,3 +16,5 @@ gem 'packaging', *location_for(ENV['PACKAGING_LOCATION'] || '~> 0.99.8')
 gem 'rake', '~> 12.0'
 
 #gem 'rubocop', "~> 0.34.2"
+
+eval_gemfile("#{__FILE__}.local") if File.exist?("#{__FILE__}.local")
