@@ -15,7 +15,7 @@ component "ruby-shadow" do |pkg, settings, platform|
     pkg.environment "RUBY", settings[:host_ruby]
     ruby = "#{settings[:host_ruby]} -r#{settings[:datadir]}/doc/rbconfig-#{settings[:ruby_version]}-orig.rb"
   else
-    ruby = File.join(settings[:bindir], 'ruby')
+    ruby = File.join(settings[:ruby_bindir], 'ruby')
   end
 
   # This is a disturbing workaround needed for s390x based systems, that

@@ -7,7 +7,7 @@ platform "ubuntu-14.04-amd64" do |plat|
   plat.add_build_repository "http://pl-build-tools.delivery.puppetlabs.net/debian/pl-build-tools-release-#{plat_get_codename}.deb"
   plat.provision_with "curl http://apt.puppetlabs.com/pubkey.gpg | apt-key add - "
   plat.provision_with "export DEBIAN_FRONTEND=noninteractive; apt-get update -qq; apt-get install -qy --no-install-recommends build-essential devscripts make quilt pkg-config debhelper fakeroot"
-  plat.install_build_dependencies_with "DEBIAN_FRONTEND=noninteractive; apt-get install -qy --no-install-recommends "
+  plat.install_build_dependencies_with "DEBIAN_FRONTEND=noninteractive; apt-get install -qy --no-install-recommends --force-yes"
 
   packages = [
     "libbz2-dev",
