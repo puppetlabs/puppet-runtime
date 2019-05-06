@@ -15,11 +15,4 @@ component "rubygem-net-ssh" do |pkg, settings, platform|
   end
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
-
-  pkg.url "https://rubygems.org/downloads/net-ssh-#{pkg.get_version}.gem"
-  pkg.mirror "#{settings[:buildsources_url]}/net-ssh-#{pkg.get_version}.gem"
-
-  pkg.install do
-    ["#{settings[:gem_install]} net-ssh-#{pkg.get_version}.gem"]
-  end
 end

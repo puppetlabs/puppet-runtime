@@ -13,11 +13,4 @@ component "rubygem-minitar" do |pkg, settings, platform|
   end
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
-
-  pkg.url "https://rubygems.org/downloads/minitar-#{pkg.get_version}.gem"
-  pkg.mirror "#{settings[:buildsources_url]}/minitar-#{pkg.get_version}.gem"
-
-  pkg.install do
-    ["#{settings[:gem_install]} minitar-#{pkg.get_version}.gem"]
-  end
 end

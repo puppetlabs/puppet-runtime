@@ -37,7 +37,7 @@ if platform.is_solaris? || platform.is_aix?
 end
 
 proj.component 'rubygem-hocon'
-proj.component 'rubygem-deep-merge'
+proj.component 'rubygem-deep_merge'
 proj.component 'rubygem-net-ssh'
 proj.component 'rubygem-semantic_puppet'
 proj.component 'rubygem-text'

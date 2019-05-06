@@ -110,7 +110,7 @@ project 'pe-installer-runtime' do |proj|
   proj.component "ruby-#{proj.ruby_version}"
 
   # Puppet dependencies
-  proj.component 'rubygem-deep-merge'
+  proj.component 'rubygem-deep_merge'
   proj.component 'rubygem-text'
   proj.component 'rubygem-locale'
   proj.component 'rubygem-gettext'
