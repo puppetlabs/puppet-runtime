@@ -1,0 +1,25 @@
+--- gnulib/lib/glthread/lock.h  2019-05-10 16:06:52.000000000 +0300
++++ lock_patched.h  2019-05-10 16:19:35.000000000 +0300
+@@ -148,22 +148,7 @@
+ #   pragma weak pthread_self
+ #  endif
+
+-#  if !PTHREAD_IN_USE_DETECTION_HARD
+-    /* Considering all platforms with USE_POSIX_THREADS_WEAK, only few symbols
+-       can be used to determine whether libpthread is in use.  These are:
+-         pthread_mutexattr_gettype
+-         pthread_rwlockattr_destroy
+-         pthread_rwlockattr_init
+-     */
+-#   pragma weak pthread_mutexattr_gettype
+-#   define pthread_in_use() (pthread_mutexattr_gettype != NULL)
+-#  endif
+-
+-# else
+-
+-#  if !PTHREAD_IN_USE_DETECTION_HARD
+-#   define pthread_in_use() 1
+-#  endif
++#  define pthread_in_use() 1
+
+ # endif

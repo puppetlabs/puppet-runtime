@@ -16,11 +16,13 @@ component 'augeas' do |pkg, settings, platform|
     pkg.md5sum '6c0b2ea6eec45e8bc374b283aedf27ce'
   when '1.11.0'
     pkg.md5sum 'abf51f4c0cf3901d167f23687f60434a'
+  when '1.12.0'
+    pkg.md5sum '74f1c7b8550f4e728486091f6b907175'
   else
     raise "augeas version #{version} has not been configured; Cannot continue."
   end
 
-  if ['1.10.1', '1.11.0'].include?(version)
+  if ['1.10.1', '1.11.0', '1.12.0'].include?(version)
     if platform.is_el? || platform.is_fedora?
       # Augeas 1.10.1/1.11.0 needs a libselinux pkgconfig file on these platforms:
       pkg.build_requires 'ruby-selinux'
@@ -35,6 +37,8 @@ component 'augeas' do |pkg, settings, platform|
         ["/usr/bin/gpatch -p0 < ../augeas-#{version}-gnulib-pthread-in-use.patch"]
       end
     end
+
+    extra_config_flags = platform.name =~ /solaris-11|aix/ ? " --disable-dependency-tracking" : ""
   end
 
   pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
@@ -93,7 +97,7 @@ component 'augeas' do |pkg, settings, platform|
   end
 
   pkg.configure do
-    ["./configure --prefix=#{settings[:prefix]} #{settings[:host]}"]
+    ["./configure #{extra_config_flags} --prefix=#{settings[:prefix]} #{settings[:host]}"]
   end
 
   pkg.build do

@@ -1,6 +1,6 @@
 project 'agent-runtime-5.5.x' do |proj|
   # Set preferred component versions if they differ from defaults:
-  proj.setting :augeas_version, '1.11.0'
+  proj.setting :augeas_version, '1.12.0'
   proj.setting :ruby_version, '2.4.5'
   proj.setting :rubygem_net_ssh, '4.1.0'
   proj.setting :rubygem_semantic_puppet_version, '0.1.2'
