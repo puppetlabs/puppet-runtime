@@ -112,6 +112,13 @@ project 'bolt-runtime' do |proj|
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
 
+  # Building native gems on Windows has some issues right now.
+  # Include for non-Windows platforms only.
+  unless platform.is_windows?
+    proj.component 'rubygem-bcrypt_pbkdf'
+    proj.component 'rubygem-ed25519'
+  end
+
   # Puppet dependencies
   proj.component 'rubygem-hocon'
   proj.component 'rubygem-deep_merge'
