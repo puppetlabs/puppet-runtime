@@ -1,6 +1,6 @@
 component "rubygem-win32-service" do |pkg, settings, platform|
-  pkg.version "0.8.8"
-  pkg.md5sum "24cc05fed398eb931e14b8ee22196634"
+  pkg.version "2.1.4"
+  pkg.md5sum "757db04649b7032ee5975467d81e43ab"
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end

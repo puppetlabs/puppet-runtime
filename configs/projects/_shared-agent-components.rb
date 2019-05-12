@@ -47,6 +47,7 @@ proj.component 'rubygem-fast_gettext'
 
 if platform.is_windows?
   proj.component 'rubygem-ffi'
+  proj.component 'rubygem-ffi-win32-extensions'
   proj.component 'rubygem-win32-dir'
   proj.component 'rubygem-win32-process'
   proj.component 'rubygem-win32-security'

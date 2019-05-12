@@ -152,6 +152,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-faraday'
   proj.component 'rubygem-faraday_middleware'
   proj.component 'rubygem-ffi'
+  proj.component 'rubygem-ffi-win32-extensions'
   proj.component 'rubygem-gssapi'
   proj.component 'rubygem-gyoku'
   proj.component 'rubygem-hiera'
@@ -178,7 +179,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-terminal-table'
   proj.component 'rubygem-unicode-display_width'
 
-  # Core Windows dependencies
+  # Core Windows dependenciesq
   proj.component 'rubygem-win32-dir'
   proj.component 'rubygem-win32-process'
   proj.component 'rubygem-win32-security'
