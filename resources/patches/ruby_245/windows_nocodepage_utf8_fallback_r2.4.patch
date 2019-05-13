@@ -1,0 +1,27 @@
+2010/05/13 - John O'Connor, Puppet Inc.
+
+This patch to Ruby is necessary to handle languages/regions on windows
+where the codepage is not supported by Ruby such as Arabic which uses 
+codepage 720.
+If the codepage is not found, the Locale falls back to UTF8.
+This is a well known Ruby/Ruby on Rails issue which is described at
+https://stackoverflow.com/questions/22815542/rails4-unknown-encoding-name-cp720
+---
+
+diff --git a/ext/win32/lib/win32/registry.rb b/ext/win32/lib/win32/registry.rb
+index a88d7e63d0..87c8f87614 100644
+--- a/ext/win32/lib/win32/registry.rb
++++ b/ext/win32/lib/win32/registry.rb
+@@ -69,7 +69,11 @@ module Win32
+   WCHAR_NUL = "\0".encode(WCHAR).freeze
+   WCHAR_CR = "\r".encode(WCHAR).freeze
+   WCHAR_SIZE = WCHAR_NUL.bytesize
+-  LOCALE = Encoding.find(Encoding.locale_charmap)
++  begin
++    LOCALE = Encoding.find(Encoding.locale_charmap)
++  rescue ArgumentError
++    LOCALE = Encoding::UTF_8
++  end
+ 
+   class Registry
+ 
