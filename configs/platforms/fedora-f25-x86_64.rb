@@ -21,7 +21,8 @@ platform "fedora-f25-x86_64" do |plat|
     "rpmdevtools",
     "rsync",
     "swig",
-    "zlib-devel"
+    "zlib-devel",
+    "systemtap-sdt-devel"
   ]
   plat.provision_with("/usr/bin/dnf install -y --best --allowerasing #{packages.join(' ')}")
   plat.install_build_dependencies_with "/usr/bin/dnf install -y --best --allowerasing"

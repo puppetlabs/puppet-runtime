@@ -97,6 +97,30 @@ component 'ruby-2.4.5' do |pkg, settings, platform|
     special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
   end
 
+  without_dtrace = [
+    'aix-6.1-ppc',
+    'aix-7.1-ppc',
+    'cisco-wrlinux-5-x86_64',
+    'el-7-ppc64le',
+    'el-7-aarch64',
+    'eos-4-i386',
+    'redhatfips-7-x86_64',
+    'sles-11-x86_64',
+    'sles-11-i386',
+    'sles-12-ppc64le',
+    'solaris-10-sparc',
+    'solaris-11-sparc',
+    'ubuntu-14.04-amd64',
+    'ubuntu-14.04-i386',
+    'ubuntu-16.04-ppc64el',
+    'windows-2012r2-x64',
+    'windows-2012r2-x86'
+  ]
+
+  unless without_dtrace.include? platform.name
+    special_flags += ' --enable-dtrace '
+  end
+
   ###########
   # CONFIGURE
   ###########
@@ -194,7 +218,7 @@ component 'ruby-2.4.5' do |pkg, settings, platform|
       [
         "#{host_ruby} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
         "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.4.5-orig.rb",
-        "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
+        "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb"
       ]
     end
   end
