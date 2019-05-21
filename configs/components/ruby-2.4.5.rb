@@ -100,6 +100,7 @@ component 'ruby-2.4.5' do |pkg, settings, platform|
     'aix-6.1-ppc',
     'aix-7.1-ppc',
     'cisco-wrlinux-5-x86_64',
+    'cisco-wrlinux-7-x86_64',
     'el-7-ppc64le',
     'el-7-aarch64',
     'eos-4-i386',
