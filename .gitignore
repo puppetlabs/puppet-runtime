@@ -2,6 +2,7 @@ vendor/*
 output/*
 .bundle
 gems
+Gemfile.local
 Gemfile.lock
 *.log
 ext/packaging
