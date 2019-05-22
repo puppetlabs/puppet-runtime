@@ -40,9 +40,6 @@ component 'ruby-2.5.3' do |pkg, settings, platform|
   pkg.apply_patch "#{base}/Check-for-existance-of-O_CLOEXEC.patch"
   # Fix errant document end markers in libyaml 0.1.7; This is fixed in later versions
   pkg.apply_patch "#{base}/libyaml_document_end_r2.5.patch"
-  # This patch creates our server/client shared Gem path, used for all gems
-  # that are dependencies of the shared Ruby code.
-  pkg.apply_patch "#{base}/rubygems_add_puppet_vendor_dir_r2.5.patch"
   # Patches for rubygems security fixes from March 2019.
   # See RE-12095 for more details.
   pkg.apply_patch "#{base}/cve-2019-8320_to_8325_r2.5.patch"
@@ -205,6 +202,11 @@ component 'ruby-2.5.3' do |pkg, settings, platform|
   elsif platform.is_windows?
     rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
   end
+
+  pkg.add_source("file://resources/files/ruby_vendor_gems/operating_system.rb")
+  defaults_dir = File.join(settings[:libdir], "ruby/2.5.0/rubygems/defaults")
+  pkg.directory(defaults_dir)
+  pkg.install_file "../operating_system.rb", File.join(defaults_dir, 'operating_system.rb')
 
   unless rbconfig_changes.empty?
     pkg.install do
