@@ -70,6 +70,10 @@ component "git" do |pkg, settings, platform|
     make_flags << "NO_APPLE_COMMON_CRYPTO=1"
   end
 
+  if settings[:git_sysconfdir]
+    make_flags << "sysconfdir=#{settings[:git_sysconfdir]}"
+  end
+
   make_argv = make_flags.join(' ')
 
   pkg.build do
