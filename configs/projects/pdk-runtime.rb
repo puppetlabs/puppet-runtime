@@ -143,6 +143,8 @@ project 'pdk-runtime' do |proj|
     proj.setting(:ldflags, "-L#{proj.libdir} ")
   end
 
+  # We want PDK's vendored Git binary to use system-wide gitconfig.
+  proj.setting(:git_sysconfdir, "/etc")
 
   # What to build?
   # --------------
