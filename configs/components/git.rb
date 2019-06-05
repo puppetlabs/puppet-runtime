@@ -42,6 +42,10 @@ component "git" do |pkg, settings, platform|
     ]
   end
 
+  if platform.name == 'el-8-x86_64'
+    build_deps.reject! { |r| r == 'dh-autoreconf' }
+  end
+
   build_deps.each do |dep|
     pkg.build_requires dep
   end
