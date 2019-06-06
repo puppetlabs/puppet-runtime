@@ -7,8 +7,11 @@ script:
     for plat in el-7-x86_64 ubuntu-18.04-amd64 osx-10.13-x86_64 windows-2012r2-x64; do
       proj=$(basename -s .rb $projfile)
       echo Inspecting ${proj} on ${plat}
-      if ! bundle exec inspect $proj $plat | jq '.[].name' ; then
+      output=$(bundle exec inspect $proj $plat)
+      if [ $? -ne 0 ]; then
         stat=1
+      else
+        echo $output | jq '.[].name'
       fi
     done
   done
