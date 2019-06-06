@@ -39,6 +39,6 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.component 'rubygem-highline'
   proj.component 'rubygem-hiera-eyaml'
   proj.component 'ruby-stomp'
-  proj.component 'yaml-cpp' if platform.name =~ /fedora-29|el-8|debian-10/ || platform.is_macos?
-  proj.component 'boost' if platform.name =~ /fedora-29|el-8|debian-10/ || platform.is_macos?
+  proj.component 'yaml-cpp' if platform.name =~ /fedora-(29|30)|el-8|debian-10/ || platform.is_macos?
+  proj.component 'boost' if platform.name =~ /fedora-(29|30)|el-8|debian-10/ || platform.is_macos?
 end
