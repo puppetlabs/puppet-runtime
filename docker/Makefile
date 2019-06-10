@@ -1,4 +1,4 @@
-BASE_NAMESPACE ?= pcr-internal.puppet.net/pe-and-platform
+NAMESPACE ?= pcr-internal.puppet.net/pe-and-platform
 git_describe = $(shell git describe)
 vcs_ref := $(shell git rev-parse HEAD)
 build_date := $(shell date -u +%FT%T)
@@ -31,7 +31,16 @@ build-agent-runtimes: prep
 			--build-arg build_date=$(build_date) \
 			--build-arg version=$(version) \
 			--build-arg "project_branch=$$branch" \
-	  	--build-arg "project=agent" \
-			--tag $(BASE_NAMESPACE)/agent-runtime-$$branch:$(version) \
+			--build-arg "project=agent" \
+			--tag $(NAMESPACE)/agent-runtime-$$branch:$(version) \
 			runtime; \
 		done
+
+publish: prep publish-agent-runtimes
+
+publish-agent-runtimes: prep
+	@for branch in $(agent_branches); do \
+		docker push $(NAMESPACE)/agent-runtime-$$branch:$(version); \
+	done
+
+.PHONY: prep lint build build-agent-runtimes publish publish-agent-runtimes
