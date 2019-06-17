@@ -1,6 +1,6 @@
 component 'rubygem-net-http-persistent' do |pkg, settings, platform|
-  pkg.version '3.0.0'
-  pkg.md5sum 'd1a893382b6eaa91a846e0f270ff3b37'
+  pkg.version '3.0.1'
+  pkg.md5sum '3053970975727c7d8326b76b59e0a7a8'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
