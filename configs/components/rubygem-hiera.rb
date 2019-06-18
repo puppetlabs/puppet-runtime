@@ -1,6 +1,6 @@
 component 'rubygem-hiera' do |pkg, settings, platform|
-  pkg.version '3.4.5'
-  pkg.md5sum 'a248dbdd636a6a15cea5dd92b005af4c'
+  pkg.version '3.5.0'
+  pkg.md5sum '9faba256f127996825b2a73a33b62982'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
