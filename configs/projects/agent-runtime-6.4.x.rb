@@ -1,7 +1,7 @@
 project 'agent-runtime-6.4.x' do |proj|
   # Set preferred component versions if they differ from defaults:
   proj.setting :ruby_version, '2.5.3'
-  proj.setting :augeas_version, '1.11.0'
+  proj.setting :augeas_version, '1.12.0'
   proj.setting :openssl_version, '1.1.1'
 
   ########
