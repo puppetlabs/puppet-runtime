@@ -1,27 +1,43 @@
 sudo: false
 language: ruby
-script:
-- |
-  stat=0
-  for projfile in $(ls configs/projects/[a-z]*.rb); do
-    for plat in el-7-x86_64 ubuntu-18.04-amd64 osx-10.13-x86_64 windows-2012r2-x64; do
-      proj=$(basename -s .rb $projfile)
-      if [[ "$proj" =~ ^pe- && "$plat" =~ ^(windows|osx) ]]; then
-        echo Skipping ${proj} on ${plat}, pe projects don\'t support windows or osx
-        continue
-      fi
-      echo Inspecting ${proj} on ${plat}
-      output=$(bundle exec inspect $proj $plat)
-      if [ $? -ne 0 ]; then
-        stat=1
-      else
-        echo $output | jq '.[].name'
-      fi
-    done
-  done
-  # fail this step if there were any failures
-  if [ $stat -eq 1 ]; then
-    false
-  fi
+matrix:
+  include:
+    - stage: runtime tests
+      script:
+        - |
+          stat=0
+          for projfile in $(ls configs/projects/[a-z]*.rb); do
+            for plat in el-7-x86_64 ubuntu-18.04-amd64 osx-10.13-x86_64 windows-2012r2-x64; do
+              proj=$(basename -s .rb $projfile)
+              if [[ "$proj" =~ ^pe- && "$plat" =~ ^(windows|osx) ]]; then
+                echo Skipping ${proj} on ${plat}, pe projects don\'t support windows or osx
+                continue
+              fi
+              echo Inspecting ${proj} on ${plat}
+              output=$(bundle exec inspect $proj $plat)
+              if [ $? -ne 0 ]; then
+                stat=1
+              else
+                echo $output | jq '.[].name'
+              fi
+            done
+          done
+          # fail this step if there were any failures
+          if [ $stat -eq 1 ]; then
+            false
+          fi
+    - stage: runtime container tests
+      script:
+        - |
+          if [ -n "$TRAVIS_COMMIT_RANGE" ]; then
+            git diff --name-only $TRAVIS_COMMIT_RANGE | grep docker || {
+              echo "No changes made to 'docker' directory, skipping container tests"
+              exit
+            }
+          fi
+          set -ex
+          cd docker
+          make lint build test
+          set +x
 notifications:
   email: false
