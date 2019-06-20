@@ -27,6 +27,7 @@ matrix:
             false
           fi
     - stage: runtime container tests
+      rvm: 2.5.5
       script:
         - |
           if [ -n "$TRAVIS_COMMIT_RANGE" ]; then
