@@ -103,11 +103,20 @@ project 'bolt-runtime' do |proj|
     '-DOPENSSL_NO_HEARTBEATS',
   ])
 
+  if platform.name =~ /^redhatfips-7-.*/
+    # Link against the system openssl instead of our vendored version:
+    proj.setting(:system_openssl, true)
+  end
+
   # What to build?
   # --------------
 
   # Ruby and deps
-  proj.component "openssl-#{proj.openssl_version}"
+  # BOLT-1339 use system SSL for FIPS
+  unless proj.settings[:system_openssl]
+    proj.component "openssl-#{proj.openssl_version}"
+  end
+  
   proj.component "runtime-bolt"
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
