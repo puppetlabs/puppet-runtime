@@ -33,11 +33,11 @@ steps:
     Build-Container -Name puppet-runtime -Namespace $ENV:NAMESPACE
   displayName: Build Container
   name: build_container
- - powershell: |
-     . "$(bundle show pupperware)/ci/build.ps1"
-     Initialize-TestEnv
-   displayName: Prepare Test Environment
-   name: test_prepare
+- powershell: |
+    . "$(bundle show pupperware)/ci/build.ps1"
+    Initialize-TestEnv
+  displayName: Prepare Test Environment
+  name: test_prepare
 - powershell: |
     . "$(bundle show pupperware)/ci/build.ps1"
     Invoke-ContainerTest -Name puppet-runtime -Namespace $ENV:NAMESPACE
