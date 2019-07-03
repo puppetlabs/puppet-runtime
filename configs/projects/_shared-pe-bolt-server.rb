@@ -34,6 +34,9 @@ proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
 proj.setting(:runtime_project, 'pe-bolt-server')
 
 # Set desired versions for gem components that offer multiple versions:
+# TODO: Can runtime projects use these updated versions?
+proj.setting(:rubygem_gettext_version, '3.2.9')
+proj.setting(:rubygem_deep_merge_version, '1.2.1')
 proj.setting(:rubygem_minitar_version, '0.8')
 
 # (pe-bolt-server does not run on Windows, so only the *nix path is here)
