@@ -19,10 +19,10 @@ prep:
 
 lint:
 ifeq ($(hadolint_available),0)
-	@$(hadolint_command) runtime/Dockerfile
+	@$(hadolint_command) puppet-runtime/Dockerfile
 else
 	@docker pull $(hadolint_container)
-	@docker run --rm -v $(PWD)/runtime/Dockerfile:/Dockerfile \
+	@docker run --rm -v $(PWD)/puppet-runtime/Dockerfile:/Dockerfile \
 		-i $(hadolint_container) $(hadolint_command) Dockerfile
 endif
 
@@ -38,7 +38,7 @@ build-agent-runtimes: prep
 			--build-arg "project_branch=$$branch" \
 			--build-arg "project=agent" \
 			--tag $(NAMESPACE)/agent-runtime-$$branch:$(version) \
-			runtime; \
+			puppet-runtime; \
 		done
 
 test: prep test-agent-runtimes
@@ -48,7 +48,7 @@ test-agent-runtimes: prep
 	@for branch in $(agent_branches); do \
 		PUPPET_TEST_DOCKER_IMAGE=$(NAMESPACE)/agent-runtime-$$branch:$(version) \
 			bundle exec --gemfile $$GEMFILE \
-			rspec runtime/spec; \
+			rspec puppet-runtime/spec; \
 	done
 
 publish: prep publish-agent-runtimes
