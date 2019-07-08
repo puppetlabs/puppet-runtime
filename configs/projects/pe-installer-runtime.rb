@@ -124,6 +124,8 @@ project 'pe-installer-runtime' do |proj|
   proj.component 'rubygem-ffi'
   proj.component 'rubygem-minitar'
   proj.component 'rubygem-multi_json'
+
+  proj.setting(:rubygem_net_ssh_version, '5.2.0')
   proj.component 'rubygem-net-ssh'
 
   # Core Windows dependencies
