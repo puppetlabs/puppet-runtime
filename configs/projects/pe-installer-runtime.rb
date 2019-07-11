@@ -128,6 +128,14 @@ project 'pe-installer-runtime' do |proj|
   proj.setting(:rubygem_net_ssh_version, '5.2.0')
   proj.component 'rubygem-net-ssh'
 
+  # net-ssh dependencies for el8's OpenSSH default key format
+  # since we do not need these for Windows (`puppet infra run` does not work for Windows platforms),
+  #   and building these can finicky, don't install for Windows
+  unless platform.is_windows?
+    proj.component 'rubygem-bcrypt_pbkdf'
+    proj.component 'rubygem-ed25519'
+  end
+
   # Core Windows dependencies
   proj.component 'rubygem-win32-dir'
   proj.component 'rubygem-win32-process'
