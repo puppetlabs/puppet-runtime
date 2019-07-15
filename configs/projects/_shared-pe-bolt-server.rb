@@ -71,6 +71,11 @@ proj.component('rubygem-gettext-setup')
 
 # Core dependencies
 proj.component('rubygem-addressable')
+proj.component 'rubygem-aws-eventstream'
+proj.component 'rubygem-aws-partitions'
+proj.component 'rubygem-aws-sdk-core'
+proj.component 'rubygem-aws-sdk-ec2'
+proj.component 'rubygem-aws-sigv4'
 proj.component('rubygem-bcrypt_pbkdf')
 proj.component('rubygem-bindata')
 proj.component('rubygem-builder')
@@ -92,6 +97,7 @@ proj.component('rubygem-gyoku')
 proj.component('rubygem-hiera')
 proj.component('rubygem-hocon')
 proj.component('rubygem-httpclient')
+proj.component 'rubygem-jmespath'
 proj.component('rubygem-little-plugger')
 proj.component('rubygem-log4r')
 proj.component('rubygem-logging')
