@@ -34,7 +34,8 @@ component "runtime-pdk" do |pkg, settings, platform|
 
   else # Linux and Solaris systems
     if (platform.is_fedora? && platform.os_version.to_i >= 29) ||
-        (platform.is_el? && platform.os_version.to_i >= 8)
+        (platform.is_el? && platform.os_version.to_i >= 8) ||
+        (platform.os_name == 'debian' && platform.os_version.to_i >= 10)
       # On newer linux platforms we are no longer using the pl-build-tools
       # package and instead relying on standard distribution versions of
       # gcc, etc.
