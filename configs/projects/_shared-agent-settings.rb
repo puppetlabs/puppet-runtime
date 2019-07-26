@@ -53,7 +53,11 @@ else
     proj.setting(:sysconfdir, "/etc/puppetlabs")
   end
   proj.setting(:logdir, "/var/log/puppetlabs")
-  proj.setting(:piddir, "/var/run/puppetlabs")
+  if platform.is_linux? && platform.name !~ /sles-11|el-(5|6)/
+    proj.setting(:piddir, "/run/puppetlabs")
+  else
+    proj.setting(:piddir, "/var/run/puppetlabs")
+  end
   proj.setting(:tmpfilesdir, "/usr/lib/tmpfiles.d")
 end
 
