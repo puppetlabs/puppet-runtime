@@ -1,15 +1,26 @@
+# Don't run Azure when a branch is updated, only when a PR is updated.
+# Prevents double builds when a PR is made from the main repo and not a fork.
+trigger: none
+pr:
+  autoCancel: true
+  branches:
+    include:
+    - '*'
+
 pool:
-  # self-hosted agent on Windows 10 1809+ environment
+  # self-hosted agent on Windows 10 1903 environment
   # includes newer Docker engine with LCOW enabled, new build of LCOW image
-  # includes Ruby 2.5, Go 1.10, Node.js 10.10, hadolint
+  # includes Ruby 2.5, Go 1.10, Node.js 10.10
   name: Default
 
 variables:
   NAMESPACE: puppet
+  CONTAINER_NAME: puppet-runtime
 
 steps:
 - checkout: self  # self represents the repo where the initial Pipelines YAML file was found
   clean: true  # whether to fetch clean each time
+
 - powershell: |
     $gemfile = Join-Path -Path (Get-Location) -ChildPath 'docker/Gemfile'
     $gempath = Join-Path -Path (Get-Location) -ChildPath 'docker/.bundle/gems'
@@ -18,39 +29,47 @@ steps:
     bundle install
   displayName: Fetch Dependencies
   name: fetch_deps
+
 - powershell: |
     . "$(bundle show pupperware)/ci/build.ps1"
     Write-HostDiagnostics
   displayName: Diagnostic Host Information
   name: hostinfo
+
 - powershell: |
     . "$(bundle show pupperware)/ci/build.ps1"
-    Lint-Dockerfile -Name puppet-runtime
-  displayName: Lint Dockerfile
+    Lint-Dockerfile -Name $ENV:CONTAINER_NAME
+  displayName: Lint $(CONTAINER_NAME) Dockerfile
   name: lint_dockerfile
+
 - powershell: |
     . "$(bundle show pupperware)/ci/build.ps1"
-    Build-Container -Name puppet-runtime -Namespace $ENV:NAMESPACE
-  displayName: Build Container
+    Build-Container -Name $ENV:CONTAINER_NAME -Namespace $ENV:NAMESPACE
+  displayName: Build $(CONTAINER_NAME) Container
   name: build_container
+
 - powershell: |
     . "$(bundle show pupperware)/ci/build.ps1"
     Initialize-TestEnv
   displayName: Prepare Test Environment
   name: test_prepare
+
 - powershell: |
     . "$(bundle show pupperware)/ci/build.ps1"
-    Invoke-ContainerTest -Name puppet-runtime -Namespace $ENV:NAMESPACE
-  displayName: Test Puppet Runtime
+    Invoke-ContainerTest -Name $ENV:CONTAINER_NAME -Namespace $ENV:NAMESPACE
+  displayName: Test $(CONTAINER_NAME)
   name: test_container
+
 - task: PublishTestResults@2
-  displayName: Publish Test Results
+  displayName: Publish $(CONTAINER_NAME) test results
   inputs:
     testResultsFormat: 'JUnit'
     testResultsFiles: 'docker/TEST-*.xml'
-    testRunTitle: Puppet Runtime Test Results
+    testRunTitle: $(CONTAINER_NAME) Test Results
+
 - powershell: |
     . "$(bundle show pupperware)/ci/build.ps1"
-    Clear-ContainerBuilds -Name puppet-runtime -Namespace $ENV:NAMESPACE
+    Clear-BuildState -Name $ENV:CONTAINER_NAME -Namespace $ENV:NAMESPACE
   displayName: Container Cleanup
+  timeoutInMinutes: 3
   condition: always()
