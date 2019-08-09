@@ -17,7 +17,7 @@ platform "ubuntu-18.04-amd64" do |plat|
     "pl-gcc",
     "zlib1g-dev",
     "systemtap-sdt-dev",
-    "openjdk-11-jdk"
+    "openjdk-8-jre-headless"
   ]
 
   plat.provision_with "export DEBIAN_FRONTEND=noninteractive; apt-get install -qy --no-install-recommends #{packages.join(' ')}"
