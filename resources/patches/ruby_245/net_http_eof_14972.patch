@@ -3,10 +3,10 @@ Author: Josh Cooper <josh@puppet.com>
 Date:   Tue Jan 22 15:24:55 2019 -0800
 
     Raise EOF if response body content length is known
-    
+
     If response body content length is known, then read the complete
     response body or raise EOF if it is truncated.
-    
+
     [Bug #14972][ruby-core:88324]
 
 diff --git a/lib/net/http/response.rb b/lib/net/http/response.rb
@@ -14,7 +14,7 @@ index 66132985d9..7c744d02f4 100644
 --- a/lib/net/http/response.rb
 +++ b/lib/net/http/response.rb
 @@ -290,7 +290,7 @@ def read_body_0(dest)
- 
+
        clen = content_length()
        if clen
 -        @socket.read clen, dest, true   # ignore EOF
@@ -26,10 +26,10 @@ diff --git a/test/net/http/test_httpresponse.rb b/test/net/http/test_httprespons
 index a03bb2e152..9d00276514 100644
 --- a/test/net/http/test_httpresponse.rb
 +++ b/test/net/http/test_httpresponse.rb
-@@ -457,6 +457,20 @@ def test_inspect_response
-     assert_equal '#<Net::HTTPUnknownResponse ??? test response readbody=true>', res.inspect
+@@ -401,6 +401,21 @@
+     end
    end
- 
+
 +  def test_raise_eof
 +    io = dummy_io(<<EOS)
 +HTTP/1.1 200
@@ -43,7 +43,7 @@ index a03bb2e152..9d00276514 100644
 +    assert_raise EOFError do
 +      res.reading_body(io, true) {}
 +    end
-+  end
++
  private
- 
+
    def dummy_io(str)
