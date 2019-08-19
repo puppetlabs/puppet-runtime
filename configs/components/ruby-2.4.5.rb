@@ -45,8 +45,6 @@ component 'ruby-2.4.5' do |pkg, settings, platform|
   # Patches for rubygems security fixes from March 2019.
   # See RE-12095 for more details.
   pkg.apply_patch "#{base}/cve-2019-8320_to_8325_r2.4.patch"
-  # Patch for https://bugs.ruby-lang.org/issues/14972
-  pkg.apply_patch "#{base}/net_http_eof_14972.patch"
 
   if platform.is_cross_compiled?
     pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.4.patch"
