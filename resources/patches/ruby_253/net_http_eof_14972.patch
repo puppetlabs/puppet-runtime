@@ -1,0 +1,53 @@
+From d4d9d38216ce339a63e9ecb277f9ee3046876d93 Mon Sep 17 00:00:00 2001
+From: Josh Cooper <josh@puppet.com>
+Date: Mon, 19 Aug 2019 14:47:07 -0700
+Subject: [PATCH] (PA-2849) Raise EOF if response body content length is known
+
+If response body content length is known, then read the complete response body
+or raise EOF if it is truncated.
+
+[Bug #14972][ruby-core:88324]
+---
+ lib/net/http/response.rb           |  2 +-
+ test/net/http/test_httpresponse.rb | 15 +++++++++++++++
+ 2 files changed, 16 insertions(+), 1 deletion(-)
+
+diff --git a/lib/net/http/response.rb b/lib/net/http/response.rb
+index 6a78272..c36c8a2 100644
+--- a/lib/net/http/response.rb
++++ b/lib/net/http/response.rb
+@@ -290,7 +290,7 @@ def read_body_0(dest)
+ 
+       clen = content_length()
+       if clen
+-        @socket.read clen, dest, true   # ignore EOF
++        @socket.read clen, dest
+         return
+       end
+       clen = range_length()
+diff --git a/test/net/http/test_httpresponse.rb b/test/net/http/test_httpresponse.rb
+index d99c361..18c6718 100644
+--- a/test/net/http/test_httpresponse.rb
++++ b/test/net/http/test_httpresponse.rb
+@@ -427,6 +427,21 @@ def test_raises_exception_with_missing_reason
+     end
+   end
+ 
++  def test_raise_eof
++    io = dummy_io(<<EOS)
++HTTP/1.1 200
++Content-Length: 5
++Connection: close
++
++h
++EOS
++
++    res = Net::HTTPResponse.read_new(io)
++    assert_raise EOFError do
++      res.reading_body(io, true) {}
++    end
++  end
++
+ private
+ 
+   def dummy_io(str)
