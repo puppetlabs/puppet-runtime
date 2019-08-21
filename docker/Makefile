@@ -14,7 +14,7 @@ version = $(shell echo $(git_describe) | sed 's/-.*//')
 agent_branches := 1.10.x 5.5.x 6.0.x 6.4.x master
 
 prep:
-	@git fetch --unshallow ||:
+	@git fetch --unshallow 2> /dev/null ||:
 	@git fetch origin 'refs/tags/*:refs/tags/*'
 
 lint:
