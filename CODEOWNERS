@@ -1,0 +1,9 @@
+# This repository is jointly owned by the following teams:
+# * Night's Watch (puppet-agent)
+# * Bolt
+# * Skeletor (pe-bolt-server)
+# * PDK
+# * Installer and Management
+* @puppetlabs/night-s-watch @puppetlabs/bolt @puppetlabs/skeletor @puppetlabs/pdk @puppetlabs/installer-and-management
+
+/docker/ @puppetlabs/pupperware
