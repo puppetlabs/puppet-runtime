@@ -27,6 +27,7 @@ project 'agent-runtime-master' do |proj|
   # Components specific to the master branch
   ########
 
+  proj.component 'rubygem-concurrent-ruby'
   proj.component 'rubygem-multi_json'
   proj.component 'rubygem-optimist'
   proj.component 'rubygem-highline'
