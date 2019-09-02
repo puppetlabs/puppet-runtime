@@ -1,0 +1,20 @@
+--- a/fips/fipsld	2017-04-24 12:47:12.000000000 +0000
++++ b/fips/fipsld	2019-09-02 11:22:23.096586600 +0000
+@@ -134,7 +134,7 @@
+ 	fi
+
+ 	# generate signature...
+-	SIG=`"${PREMAIN_DSO}" "${TARGET}"`
++	SIG=`"${PREMAIN_DSO}" "${TARGET}" | tr -d '\r'`
+
+ 	/bin/rm -f "${TARGET}"
+ 	if [ -z "${SIG}" ]; then
+@@ -182,7 +182,7 @@
+ 	fi
+
+ 	# generate signature...
+-	SIG=`"${TARGET}"`
++	SIG=`"${TARGET}" | tr -d '\r'`
+
+ 	/bin/rm -f "${TARGET}"
+ 	if [ -z "${SIG}" ]; then
