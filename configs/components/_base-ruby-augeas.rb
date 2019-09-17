@@ -12,7 +12,7 @@ ruby_bindir ||= settings[:ruby_bindir]
 pkg.version "0.5.0"
 pkg.md5sum "a132eace43ce13ccd059e22c0b1188ac"
 pkg.url "http://download.augeas.net/ruby/ruby-augeas-#{pkg.get_version}.tgz"
-pkg.mirror "#{settings[:buildsources_url]}/ruby-augeas-#{pkg.get_version}.tar.gz"
+pkg.mirror "#{settings[:buildsources_url]}/ruby-augeas-#{pkg.get_version}.tgz"
 
 pkg.build_requires "ruby-#{ruby_version}"
 pkg.build_requires "augeas"
