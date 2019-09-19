@@ -11,7 +11,7 @@ diff --git a/tool/rbinstall.rb b/tool/rbinstall.rb
 index 4614c35..c2b395a 100755
 --- a/tool/rbinstall.rb
 +++ b/tool/rbinstall.rb
-@@ -486,19 +486,20 @@ def CONFIG.[](name, mandatory = false)
+@@ -497,19 +497,20 @@
      shebang.sub!(/\r$/, '')
      body.gsub!(/\r$/, '')
  
