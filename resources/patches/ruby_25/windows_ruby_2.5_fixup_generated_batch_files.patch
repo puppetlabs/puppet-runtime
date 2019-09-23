@@ -37,8 +37,8 @@ diff --git a/lib/rubygems/installer.rb b/lib/rubygems/installer.rb
 index ee5fedeb64..fff0578cd9 100644
 --- a/lib/rubygems/installer.rb
 +++ b/lib/rubygems/installer.rb
-@@ -754,14 +754,15 @@ def app_script_text(bin_file_name)
- 
+@@ -771,14 +771,15 @@
+
    def windows_stub_script(bindir, bin_file_name)
      ruby = Gem.ruby.gsub(/^\"|\"$/, "").tr(File::SEPARATOR, "\\")
 -    return <<-TEXT
