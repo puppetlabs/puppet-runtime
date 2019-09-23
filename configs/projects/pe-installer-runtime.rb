@@ -102,9 +102,16 @@ project 'pe-installer-runtime' do |proj|
 
   # What to build?
   # --------------
+  #
+  if platform.name =~ /^redhatfips-7-.*/
+    # Link against the system openssl instead of our vendored version.
+    # This is also used by components within this vanagon project (i.e. curl, ruby, ca-bundle)
+    proj.setting(:system_openssl, true)
+  else
+    proj.component "openssl-#{proj.openssl_version}"
+  end
 
   # Ruby and deps
-  proj.component "openssl-#{proj.openssl_version}"
   proj.component "runtime-pe-installer"
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
