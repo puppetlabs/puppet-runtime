@@ -41,7 +41,7 @@ component 'ruby-2.5.6' do |pkg, settings, platform|
   # Fix errant document end markers in libyaml 0.1.7; This is fixed in later versions
   pkg.apply_patch "#{base}/libyaml_document_end_r2.5.patch"
   # Patch for https://bugs.ruby-lang.org/issues/14972
-  pkg.apply_patch "#{base}/net_http_eof_14972.patch"
+  pkg.apply_patch "#{base}/net_http_eof_14972_r2.5.patch"
 
   if platform.is_cross_compiled?
     pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.5.patch"
