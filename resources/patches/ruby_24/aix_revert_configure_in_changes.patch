@@ -7,8 +7,8 @@ Subject: [PATCH] This patch reverts the changes to configure.in caused by
  is resolved.
 
 ---
---- configurer_a 2019-09-19 14:26:52.000000000 +0300
-+++ configurer_b.c  2019-09-19 15:24:24.000000000 +0300
+--- a/configure.in 2019-09-19 14:26:52.000000000 +0300
++++ b/configure.in 2019-09-19 15:24:24.000000000 +0300
 @@ -815,23 +815,6 @@
  ])
 
