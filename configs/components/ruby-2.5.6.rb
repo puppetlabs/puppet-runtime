@@ -111,7 +111,8 @@ component 'ruby-2.5.6' do |pkg, settings, platform|
     'solaris-11-sparc',
     'ubuntu-16.04-ppc64el',
     'windows-2012r2-x64',
-    'windows-2012r2-x86'
+    'windows-2012r2-x86',
+    'windowsfips-2012r2-x64'
   ]
 
   unless without_dtrace.include? platform.name

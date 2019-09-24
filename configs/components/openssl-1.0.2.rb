@@ -122,6 +122,8 @@ component 'openssl' do |pkg, settings, platform|
     'no-ssl3',
   ]
 
+  configure_flags += ['fips', "--with-fipsdir=#{settings[:prefix]}/usr/local/ssl/fips-2.0"] if platform.name =~ /windowsfips-2012r2/
+
   # Individual projects may provide their own openssl configure flags:
   project_flags = settings[:openssl_extra_configure_flags] || []
   configure_flags << project_flags << cflags << ldflags
