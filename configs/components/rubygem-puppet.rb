@@ -1,6 +1,6 @@
 component 'rubygem-puppet' do |pkg, settings, platform|
-  pkg.version '6.8.1'
-  pkg.md5sum '4a1b51862f64f7f60599a5551685bf1e'
+  pkg.version '6.9.0'
+  pkg.md5sum '2433eb12ad5c422baabd43987c7ca1a4'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
