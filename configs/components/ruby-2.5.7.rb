@@ -1,6 +1,6 @@
-component 'ruby-2.5.6' do |pkg, settings, platform|
-  pkg.version '2.5.6'
-  pkg.md5sum 'a49cd4628749f97ab6b38d18cffef714'
+component 'ruby-2.5.7' do |pkg, settings, platform|
+  pkg.version '2.5.7'
+  pkg.md5sum '31296036151f0d47e9ede7d395912b5f'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
@@ -210,7 +210,7 @@ component 'ruby-2.5.6' do |pkg, settings, platform|
     pkg.install do
       [
         "#{host_ruby} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
-        "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.5.6-orig.rb",
+        "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.5.7-orig.rb",
         "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
       ]
     end
