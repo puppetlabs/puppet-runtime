@@ -49,6 +49,7 @@ project 'pdk-runtime' do |proj|
 
   proj.setting(:ruby_version, "2.4.7")
   proj.setting(:ruby_api, "2.4.0")
+  proj.setting(:rubygem_minitar_version, '0.6.1')
 
   # this is the latest puppet that will be installed into the default ruby version above
   # newer versions of puppet will be installed into the Ruby 2.5.6 runtime
