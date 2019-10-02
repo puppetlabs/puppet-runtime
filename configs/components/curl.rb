@@ -1,6 +1,6 @@
 component 'curl' do |pkg, settings, platform|
-  pkg.version '7.65.1'
-  pkg.md5sum '6f31ec164741cc6aaac461d4b38ffdbe'
+  pkg.version '7.66.0'
+  pkg.md5sum '8cb2898a9adc106075ac3cdc2b965bf6'
   pkg.url "https://curl.haxx.se/download/curl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/curl-#{pkg.get_version}.tar.gz"
 
@@ -8,6 +8,8 @@ component 'curl' do |pkg, settings, platform|
     # Patch to disable _ALL_SOURCE when including select.h from multi.c. See patch for details.
     pkg.apply_patch 'resources/patches/curl/curl-7.55.1-aix-poll.patch'
   end
+
+  pkg.apply_patch 'resources/patches/curl/curl-7.66.0-solaris-aix-af-local.patch'
 
   unless settings[:system_openssl]
     pkg.build_requires "openssl-#{settings[:openssl_version]}"
