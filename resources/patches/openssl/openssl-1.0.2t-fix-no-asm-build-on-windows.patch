@@ -1,0 +1,27 @@
+From 1c10029a68e910d936f9bf011f8c3bb18a05ff8b Mon Sep 17 00:00:00 2001
+From: Bernd Edlinger <bernd.edlinger@hotmail.de>
+Date: Fri, 13 Sep 2019 06:37:50 +0200
+Subject: [PATCH] Fix no-asm build in windows
+
+Reviewed-by: Matt Caswell <matt@openssl.org>
+(Merged from https://github.com/openssl/openssl/pull/9885)
+---
+ crypto/cryptlib.c | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/crypto/cryptlib.c b/crypto/cryptlib.c
+index 5fab45b2ec8..8a793cad9b9 100644
+--- a/crypto/cryptlib.c
++++ b/crypto/cryptlib.c
+@@ -745,6 +745,11 @@ int OPENSSL_NONPIC_relocated = 0;
+ void OPENSSL_cpuid_setup(void)
+ {
+ }
++
++unsigned long OPENSSL_rdtsc(void)
++{
++    return 0;
++}
+ #endif
+ 
+ #if (defined(_WIN32) || defined(__CYGWIN__)) && defined(_WINDLL)
