@@ -47,7 +47,7 @@ project 'pdk-runtime' do |proj|
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:bindir, File.join(proj.prefix, "bin"))
 
-  proj.setting(:ruby_version, "2.4.7")
+  proj.setting(:ruby_version, "2.4.9")
   proj.setting(:ruby_api, "2.4.0")
 
   # this is the latest puppet that will be installed into the default ruby version above
@@ -82,10 +82,10 @@ project 'pdk-runtime' do |proj|
       # only set 'latest_puppet' if there is an uppper bound on compatible puppet version for this ruby version
       latest_puppet: "4.10.12",
     },
-    "2.5.6" => {
-      ruby_version: "2.5.6",
+    "2.5.7" => {
+      ruby_version: "2.5.7",
       ruby_api: "2.5.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.6"),
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.7"),
     }
   }
 

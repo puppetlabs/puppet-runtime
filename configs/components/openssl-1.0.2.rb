@@ -1,6 +1,6 @@
 component 'openssl' do |pkg, settings, platform|
-  pkg.version '1.0.2r'
-  pkg.md5sum '0d2baaf04c56d542f6cc757b9c2a2aac'
+  pkg.version '1.0.2t'
+  pkg.md5sum 'ef66581b80f06eae42f5268bc0b50c6d'
   pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
@@ -82,6 +82,7 @@ component 'openssl' do |pkg, settings, platform|
     # different compiler. Given our openssl should only be interacting with things that we build,
     # we can ensure everything is build with the same compiler.
     pkg.apply_patch 'resources/patches/openssl/openssl-mingw-do-not-build-applink.patch'
+    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.2t-fix-no-asm-build-on-windows.patch'
   elsif platform.is_aix?
     pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
     pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
