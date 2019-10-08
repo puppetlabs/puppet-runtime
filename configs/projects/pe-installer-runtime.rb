@@ -3,6 +3,7 @@ project 'pe-installer-runtime' do |proj|
   proj.setting(:runtime_project, 'pe-installer')
   proj.setting(:ruby_version, '2.5.7')
   proj.setting(:openssl_version, '1.1.1')
+  proj.setting(:augeas_version, '1.11.0')
   platform = proj.get_platform
 
   proj.version_from_git
@@ -148,6 +149,23 @@ project 'pe-installer-runtime' do |proj|
   proj.component 'rubygem-win32-process'
   proj.component 'rubygem-win32-security'
   proj.component 'rubygem-win32-service'
+
+  # Components from puppet-runtime included to support apply on localhost
+  # Only bundle SELinux gem for RHEL,Centos,Fedora
+  if platform.is_el? || platform.is_fedora?
+    proj.component 'ruby-selinux'
+  end
+
+  # Non-windows specific components
+  unless platform.is_windows?
+    # C Augeas + deps
+    proj.component 'augeas'
+    proj.component 'libxml2'
+    proj.component 'libxslt'
+    # Ruby Augeas and shadow
+    proj.component 'ruby-augeas'
+    proj.component 'ruby-shadow'
+  end
 
   # What to include in package?
   proj.directory proj.prefix
