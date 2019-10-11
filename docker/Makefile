@@ -44,7 +44,7 @@ build-agent-runtimes: prep
 test: prep test-agent-runtimes
 
 test-agent-runtimes: prep
-	@bundle install --path $$BUNDLE_PATH --gemfile $$GEMFILE
+	@bundle install --path $$BUNDLE_PATH --gemfile $$GEMFILE --with test
 	@bundle update
 	@for branch in $(agent_branches); do \
 		PUPPET_TEST_DOCKER_IMAGE=$(NAMESPACE)/agent-runtime-$$branch:$(version) \
