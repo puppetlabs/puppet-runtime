@@ -155,6 +155,13 @@ proj.setting(:host, host)
 # tweak or adjust them as needed.
 proj.setting(:cppflags, "-I#{proj.includedir} -I/opt/pl-build-tools/include")
 proj.setting(:cflags, "#{proj.cppflags}")
+if platform.is_solaris?
+    proj.setting(
+    :cflags,
+    "#{proj.cppflags}" \
+    ' -I/opt/csw/lib/libffi-3.2.1/include'
+  )
+end
 proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
 
 # Platform specific overrides or settings, which may override the defaults

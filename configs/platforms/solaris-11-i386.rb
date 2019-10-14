@@ -6,10 +6,11 @@ platform "solaris-11-i386" do |plat|
   plat.add_build_repository 'http://solaris-11-reposync.delivery.puppetlabs.net:81', 'puppetlabs.com'
 
   packages = [
+    "libffi",
     "pl-binutils-i386",
     "pl-cmake",
     "pl-gcc-i386",
-    "pl-pkg-config"
+    "pl-pkg-config",
   ]
 
   plat.provision_with("pkg install #{packages.join(' ')}")

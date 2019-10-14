@@ -14,7 +14,7 @@ platform "solaris-10-sparc" do |plat|
   build_pkgs = [
     "pl-binutils-2.27-2.sparc.pkg.gz",
     "pl-cmake-3.2.3-15.i386.pkg.gz",
-    "pl-gcc-4.8.2-9.sparc.pkg.gz"
+    "pl-gcc-4.8.2-9.sparc.pkg.gz",
   ]
   build_url = "http://pl-build-tools.delivery.puppetlabs.net/solaris/10"
 
@@ -53,6 +53,8 @@ basedir=default" > /var/tmp/vanagon-noask;
   ln -sf /opt/csw/bin/rsync /usr/bin/rsync;
   # RE-5250 - Solaris 10 templates are awful
   /opt/csw/bin/pkgutil -l gcc | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
+  /opt/csw/bin/pkgutil -l libffi6 | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
+  /opt/csw/bin/pkgutil -l libffi_dev | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l ruby18 | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l readline | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
 

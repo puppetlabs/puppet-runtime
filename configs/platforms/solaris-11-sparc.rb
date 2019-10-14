@@ -7,6 +7,7 @@ platform "solaris-11-sparc" do |plat|
   plat.add_build_repository 'http://solaris-11-reposync.delivery.puppetlabs.net:81', 'puppetlabs.com'
 
   packages = [
+    "libffi",
     "pl-binutils-sparc",
     "pl-cmake",
     "pl-gcc-sparc",

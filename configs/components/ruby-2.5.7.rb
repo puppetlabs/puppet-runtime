@@ -186,6 +186,13 @@ component 'ruby-2.5.7' do |pkg, settings, platform|
   elsif platform.is_cross_compiled? || platform.is_solaris?
     rbconfig_changes["CC"] = "gcc"
     rbconfig_changes["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
+    if platform.is_solaris?
+      rbconfig_changes["CC"] = "/opt/pl-build-tools/bin/gcc"
+      rbconfig_changes["LD"] = "ld"
+      rbconfig_changes["CPPFLAGS"] = "#{rbconfig_changes['CPPFLAGS']} -I/opt/csw/lib/libffi-3.2.1/include"
+      rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/csw/lib -fstack-protector"
+
+    end
     if platform.name =~ /el-7-ppc64/
       # EL 7 on POWER will fail with -Wl,--compress-debug-sections=zlib so this
       # will remove that entry
