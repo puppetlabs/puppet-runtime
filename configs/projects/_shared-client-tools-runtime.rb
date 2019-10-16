@@ -8,6 +8,11 @@ end
 
 proj.setting(:runtime_project, 'client-tools')
 proj.setting(:openssl_version, '1.0.2')
+if platform.name =~ /^redhatfips-7-.*/
+  # Link against the system openssl instead of our vendored version:
+  proj.setting(:system_openssl, true)
+end
+
 
 proj.generate_archives true
 proj.generate_packages false
@@ -79,7 +84,9 @@ end
 
 # Common deps
 proj.component "runtime-client-tools"
-proj.component "openssl-#{proj.openssl_version}"
+unless platform.name =~ /^redhatfips-7-.*/
+  proj.component "openssl-#{proj.openssl_version}"
+end
 proj.component "curl"
 proj.component "puppet-ca-bundle"
 proj.component "libicu"
