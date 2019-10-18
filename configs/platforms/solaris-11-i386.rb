@@ -3,6 +3,7 @@ platform "solaris-11-i386" do |plat|
   plat.defaultdir "/lib/svc/method"
   plat.servicetype "smf"
   plat.vmpooler_template "solaris-11-x86_64"
+  plat.provision_with("/usr/bin/pkg unset-publisher solarisstudio")
   plat.add_build_repository 'http://solaris-11-reposync.delivery.puppetlabs.net:81', 'puppetlabs.com'
 
   packages = [
