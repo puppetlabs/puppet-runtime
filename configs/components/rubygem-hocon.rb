@@ -1,6 +1,6 @@
 component "rubygem-hocon" do |pkg, settings, platform|
-  pkg.version "1.2.6"
-  pkg.md5sum "938b38e4029f024745cc9767ff0d94f4"
+  pkg.version "1.3.0"
+  pkg.md5sum "b76bcbc11fb2c76395d127a16d947645"
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
