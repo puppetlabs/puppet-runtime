@@ -34,8 +34,8 @@ component "boost" do |pkg, settings, platform|
                                          'graph', 'graph_parallel', 'iostreams', 'locale', 'log', 'math',
                                          'program_options', 'random', 'regex', 'serialization', 'signals', 'system',
                                          'test', 'thread', 'timer', 'wave']
-  cflags = "-fPIC -std=c99"
-  cxxflags = "-std=c++11 -fPIC"
+  cflags = settings[:cflags] + " -fPIC -std=c99"
+  cxxflags = settings[:cflags] + " -std=c++11 -fPIC"
 
   # These are all places where windows differs from *nix. These are the default *nix settings.
   toolset = 'gcc'
@@ -99,10 +99,13 @@ component "boost" do |pkg, settings, platform|
   elsif platform.is_aix?
     pkg.environment "PATH" => "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
+  elsif platform.name =~ /sles-15|fedora-(29|30)|el-8|debian-10/
+    pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
+    linkflags = "#{settings[:ldflags]},-rpath=#{settings[:libdir]}64"
+    gpp = '/usr/bin/g++'
   else
     pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
     linkflags = "-Wl,-rpath=#{settings[:libdir]},-rpath=#{settings[:libdir]}64"
-    gpp = "/usr/bin/g++" if platform.name =~ /fedora-(29|30)|el-8|debian-10/
   end
 
   # Set user-config.jam

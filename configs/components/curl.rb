@@ -49,6 +49,7 @@ component 'curl' do |pkg, settings, platform|
         --disable-ldap \
         --disable-ldaps \
         --with-ca-bundle=#{settings[:prefix]}/ssl/cert.pem \
+        CFLAGS='#{settings[:cflags]}' \
         #{settings[:host]}"]
   end
 

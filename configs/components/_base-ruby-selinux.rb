@@ -40,7 +40,11 @@ if platform.is_cross_compiled_linux?
   ruby = "#{host_ruby} -r#{settings[:datadir]}/doc/rbconfig-#{ruby_version}-orig.rb"
 end
 
-cc = '/usr/bin/gcc' if platform.name =~ /fedora-(29|30)|el-8|debian-10/
+cflags = ""
+if platform.name =~ /sles-15|fedora-(29|30)|el-8|debian-10/
+  cc = '/usr/bin/gcc'
+  cflags += "#{settings[:cppflags]} #{settings[:cflags]}"
+end
 
 pkg.build do
   [
@@ -50,8 +54,8 @@ pkg.build do
     "export INCLUDESTR=\"-I#{settings[:includedir]} -I$${RUBYHDRDIR} -I$${ARCHDIR}\"",
     "cp -pr src/{selinuxswig_ruby.i,selinuxswig.i} .",
     "swig -Wall -ruby #{system_include} -o selinuxswig_ruby_wrap.c -outdir ./ selinuxswig_ruby.i",
-    "#{cc} $${INCLUDESTR} #{system_include} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -fPIC -DSHARED -c -o selinuxswig_ruby_wrap.lo selinuxswig_ruby_wrap.c",
-    "#{cc} $${INCLUDESTR} #{system_include} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -shared -o _rubyselinux.so selinuxswig_ruby_wrap.lo -lselinux -Wl,-soname,_rubyselinux.so",
+    "#{cc} $${INCLUDESTR} #{system_include} #{cflags} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -fPIC -DSHARED -c -o selinuxswig_ruby_wrap.lo selinuxswig_ruby_wrap.c",
+    "#{cc} $${INCLUDESTR} #{system_include} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -shared -o _rubyselinux.so selinuxswig_ruby_wrap.lo -lselinux -Wl,-z,relro,-z,now,-soname,_rubyselinux.so",
   ]
 end
 
