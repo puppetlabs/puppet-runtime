@@ -153,7 +153,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-concurrent-ruby'
   proj.component 'rubygem-connection_pool'
   proj.component 'rubygem-cri'
-  proj.component 'rubygem-erubis'
+  proj.component 'rubygem-erubi'
   proj.component 'rubygem-facter'
   proj.component 'rubygem-faraday'
   proj.component 'rubygem-faraday_middleware'
