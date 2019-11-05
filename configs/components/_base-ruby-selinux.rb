@@ -41,7 +41,9 @@ if platform.is_cross_compiled_linux?
 end
 
 cflags = ""
-if platform.name =~ /sles-15|el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 29)
+
+# The platforms below use pl-build-tools
+unless platform.name =~ /el-(5|6|7)|fedora-28|debian-(8|9)|ubuntu-(16|18)/
   cc = '/usr/bin/gcc'
   cflags += "#{settings[:cppflags]} #{settings[:cflags]}"
 end

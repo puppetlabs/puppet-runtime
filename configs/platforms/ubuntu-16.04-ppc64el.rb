@@ -16,9 +16,9 @@ platform "ubuntu-16.04-ppc64el" do |plat|
     "pl-cmake",
     "pl-gcc-ppc64el",
     "pl-ruby",
+    "systemtap-sdt-dev",
     "xutils-dev",
-    "zlib1g-dev",
-    "systemtap-sdt-dev"
+    "zlib1g-dev"
   ]
 
   plat.provision_with "export DEBIAN_FRONTEND=noninteractive; apt-get install -qy --no-install-recommends #{packages.join(' ')}"
