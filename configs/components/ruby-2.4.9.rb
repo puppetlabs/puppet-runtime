@@ -81,7 +81,7 @@ component 'ruby-2.4.9' do |pkg, settings, platform|
 
   special_flags = " --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
 
-  if platform.name =~ /sles-15|fedora-(29|30)|el-8|debian-10/
+  if platform.name =~ /sles-15|el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 29)
     special_flags += " CFLAGS='#{settings[:cflags]}' LDFLAGS='#{settings[:ldflags]}' CPPFLAGS='#{settings[:cppflags]}' "
   end
 
@@ -203,7 +203,7 @@ component 'ruby-2.4.9' do |pkg, settings, platform|
     end
   elsif platform.is_windows?
     rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
-  elsif platform.name =~ /fedora-(28|29|30)|el-8|debian-10/
+  elsif platform.name =~ /el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 28)
     # When building ruby C extensions (in
     # ruby-augeas, for example) with Native GCC >= 8.0.1, mkmf will fail when ruby 2.4.5's
     # CONFIG['warnflags'] are applied to a conftest with -Werror before

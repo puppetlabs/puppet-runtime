@@ -99,7 +99,7 @@ component "boost" do |pkg, settings, platform|
   elsif platform.is_aix?
     pkg.environment "PATH" => "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
-  elsif platform.name =~ /sles-15|fedora-(29|30)|el-8|debian-10/
+  elsif platform.name =~ /sles-15|el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 29)
     pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
     linkflags = "#{settings[:ldflags]},-rpath=#{settings[:libdir]}64"
     gpp = '/usr/bin/g++'
