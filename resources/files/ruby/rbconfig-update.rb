@@ -23,6 +23,7 @@ def replace_line(changes, line, file)
       return line.sub(/CONFIG.*/, "CONFIG[\"#{change_key}\"] = \"#{change_value}\"")
     end
   end
+
   line
 end
 
@@ -34,8 +35,13 @@ end
 # and original_rbconfig.rb that is a copy of rbconfig with all exceptions changed
 # to warnings.
 begin
-  new_rbconfig = File.open("new_rbconfig.rb", "w")
-  copy_rbconfig = File.open("original_rbconfig.rb", "w")
+  if ARGV[2] == 'solaris'
+    new_rbconfig = File.open(File.join(ARGV[1], "new_rbconfig.rb"), "w")
+    copy_rbconfig = File.open(File.join(ARGV[1], "original_rbconfig.rb"), "w")
+  else
+    new_rbconfig = File.open("new_rbconfig.rb", "w")
+    copy_rbconfig = File.open("original_rbconfig.rb", "w")
+  end
   File.open(File.join(ARGV[1], "rbconfig.rb"), "r").readlines.each do |line|
     new_rbconfig.puts replace_line(instance_eval(ARGV[0]), line, new_rbconfig)
     copy_rbconfig.puts line.gsub('raise', 'warn')

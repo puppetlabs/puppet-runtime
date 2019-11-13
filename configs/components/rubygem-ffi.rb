@@ -27,12 +27,13 @@ component "rubygem-ffi" do |pkg, settings, platform|
     end
   end
 
-  pkg.environment "PATH", "/opt/pl-build-tools/bin:/usr/sbin:/usr/bin"
+  pkg.environment "PATH", "/opt/csw/gnu:/opt/pl-build-tools/bin:/usr/ccs/bin:/usr/java/bin:/usr/sbin:/usr/bin"
 
-  if platform.is_solaris?
-    pkg.build_requires 'libffi6'
-    pkg.build_requires 'libffi_dev'
-  end
+
+  # if platform.is_solaris?
+  #   pkg.build_requires 'libffi6'
+  #   pkg.build_requires 'libffi_dev'
+  # end
 
   pkg.url "https://rubygems.org/downloads/ffi-#{pkg.get_version}.gem"
 

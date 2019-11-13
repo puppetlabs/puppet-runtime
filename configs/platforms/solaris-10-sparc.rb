@@ -47,14 +47,17 @@ action=nocheck
 # Install to the default base directory.
 basedir=default" > /var/tmp/vanagon-noask;
   echo "mirror=https://artifactory.delivery.puppetlabs.net/artifactory/generic__remote_opencsw_mirror/testing" > /var/tmp/vanagon-pkgutil.conf;
-  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i rsync gmake pkgconfig ggrep ruby20 || exit 1;
+  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i rsync gmake pkgconfig ggrep ruby20 ruby20_dev libffi_dev gcc5core vim || exit 1;
   # RE-6121 openssl 1.0.2e requires functionality not in sytem grep
+  pkgutil --stream --download -T sparc:5.10 libffi6 -y
+  pkgtrans /var/opt/csw/pkgutil/packages/libffi6.sparc.5.10.pkg /opt/csw/lib all
+
   ln -sf /opt/csw/bin/ggrep /usr/bin/grep;
   ln -sf /opt/csw/bin/rsync /usr/bin/rsync;
+  ln -sf /usr/sfw/libexec/gcc/i386-pc-solaris2.10/3.4.3/cc1 /usr/bin/cc1;
+
   # RE-5250 - Solaris 10 templates are awful
   /opt/csw/bin/pkgutil -l gcc | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
-  /opt/csw/bin/pkgutil -l libffi6 | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
-  /opt/csw/bin/pkgutil -l libffi_dev | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l ruby18 | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l readline | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
 
@@ -69,6 +72,7 @@ basedir=default" > /var/tmp/vanagon-noask;
   done
 
   ntpdate pool.ntp.org]
-
   plat.output_dir File.join("solaris", "10", "PC1")
 end
+
+#/usr/sfw/bin/gcc

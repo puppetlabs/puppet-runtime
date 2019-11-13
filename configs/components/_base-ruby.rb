@@ -35,6 +35,7 @@ elsif platform.is_solaris?
     pkg.environment 'CONFIG_SHELL', '/bin/bash'
   end
 elsif platform.is_cross_compiled_linux? || platform.is_solaris?
+  puts 'xxxxxxxxxxxxxxxx'
   pkg.environment 'PATH', "#{settings[:bindir]}:$$PATH"
   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
   pkg.environment 'LDFLAGS', "-Wl,-rpath=#{settings[:libdir]}"

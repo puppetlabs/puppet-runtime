@@ -174,6 +174,7 @@ component 'ruby-2.5.7' do |pkg, settings, platform|
     'x86_64-w64-mingw32' => 'x64-mingw32',
     'i686-w64-mingw32' => 'i386-mingw32'
   }
+
   if target_doubles.has_key?(settings[:platform_triple])
     rbconfig_topdir = File.join(ruby_dir, 'lib', 'ruby', '2.5.0', target_doubles[settings[:platform_triple]])
   else
@@ -187,10 +188,10 @@ component 'ruby-2.5.7' do |pkg, settings, platform|
     rbconfig_changes["CC"] = "gcc"
     rbconfig_changes["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
     if platform.is_solaris?
+
       rbconfig_changes["CC"] = "/opt/pl-build-tools/bin/gcc"
-      rbconfig_changes["LD"] = "ld"
-      rbconfig_changes["CPPFLAGS"] = "#{rbconfig_changes['CPPFLAGS']} -I/opt/csw/lib/libffi-3.2.1/include"
-      rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/csw/lib -fstack-protector"
+      rbconfig_changes["CPPFLAGS"] = "#{settings[:cppflags]} -I/opt/csw/lib/libffi-3.2.1/include -I/opt/puppetlabs/puppet/include/ruby-2.5.0 -I/opt/csw/lib/libffi-3.2.1/include"
+      rbconfig_changes["  "] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/pl-build-tools/sparc-sun-solaris2.10/lib/sparcv9 -L/opt/csw/lib -fstack-protector"
 
     end
     if platform.name =~ /el-7-ppc64/
@@ -199,26 +200,49 @@ component 'ruby-2.5.7' do |pkg, settings, platform|
       # Matches both endians
       rbconfig_changes["DLDFLAGS"] = "-Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/puppetlabs/puppet/lib  -Wl,-rpath,/opt/puppetlabs/puppet/lib"
     elsif platform.name =~ /solaris-10-sparc/
+
+      rbconfig_changes["CC"] = "/opt/pl-build-tools/sparc-sun-solaris2.10/bin/gcc"
+      rbconfig_changes["CXX"] = "/opt/pl-build-tools/sparc-sun-solaris2.10/bin/g++"
+      rbconfig_changes["LD"] = "/opt/pl-build-tools/sparc-sun-solaris2.10/bin/ld"
+      rbconfig_changes["AR"] = "/opt/pl-build-tools/sparc-sun-solaris2.10/bin/ar"
+      rbconfig_changes["CPPFLAGS"] = "#{settings[:cppflags]} -I/opt/csw/lib/libffi-3.2.1/include -I/opt/puppetlabs/puppet/include/ruby-2.5.0 -L/opt/pl-build-tools/libexec/gcc/sparc-sun-solaris2.10/4.8.2"
+      rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/pl-build-tools/sparc-sun-solaris2.10/lib/sparcv9 -L/opt/csw/lib/amd64 -L/opt/pl-build-tools/libexec/gcc/sparc-sun-solaris2.10/4.8.2"
+      rbconfig_changes["CFLAGS"] = "-fPIC"
+
       # ld on solaris 10 sparc does not understand `-Wl,-E` - this is what remains after removing it:
-      rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector"
+      # rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector "
       # `-Wl,--compress-debug-sections=zlib` is also a problem here:
-      rbconfig_changes["DLDFLAGS"] = "-Wl,-rpath=/opt/puppetlabs/puppet/lib"
+      rbconfig_changes["DLDFLAGS"] = "-Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/pl-build-tools/libexec/gcc/sparc-sun-solaris2.10/4.8.2/"
+      # rbconfig_changes["configure_args"] = ""
+      pkg.environment "LD_LIBRARY_PATH", "/opt/pl-build-tools/libexec/gcc/sparc-sun-solaris2.10/4.8.2"
     end
   elsif platform.is_windows?
     rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
   end
 
+  # pkg.environment "warnflags", "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
+  # pkg.environment "CXX", "/opt/pl-build-tools/sparc-sun-solaris2.10/bin/gcc"
+  # pkg.environment "LD", "/usr/sfw/i386-sun-solaris2.10/bin/ld"
+  # pkg.environment "CPPFLAGS", " -I/opt/csw/lib/libffi-3.2.1/include -I/opt/puppetlabs/puppet/include/ruby-2.5.0 -I/opt/csw/lib/libffi-3.2.1/include"
+  # pkg.environment "LDFLAGS", " -L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/csw/lib -Wl,-rpath=/opt/pl-build-tools/libexec/gcc/sparc-sun-solaris2.10/4.8.2 -L/opt/pl-build-tools/libexec/gcc/sparc-sun-solaris2.10/4.8.2"
+  # pkg.environment "LD", '/opt/csw/i386-pc-solaris2.9/bin/ld'
+  # pkg.environment "CFLAGS", " -I/opt/csw/lib/libffi-3.2.1/include -I/opt/puppetlabs/puppet/include/ruby-2.5.0 -I/opt/csw/lib/libffi-3.2.1/include"
+  # pkg.environment "LD_LIBRARY_PATH", "/opt/pl-build-tools/libexec/gcc/sparc-sun-solaris2.10/4.8.2"
+
   pkg.add_source("file://resources/files/ruby_vendor_gems/operating_system.rb")
   defaults_dir = File.join(settings[:libdir], "ruby/2.5.0/rubygems/defaults")
   pkg.directory(defaults_dir)
   pkg.install_file "../operating_system.rb", File.join(defaults_dir, 'operating_system.rb')
-
+  solaris_ruby_dir = '/opt/csw/lib/ruby/2.0.0/i386-solaris2.10'
   unless rbconfig_changes.empty?
     pkg.install do
       [
         "#{host_ruby} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
         "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.5.7-orig.rb",
-        "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
+        "cp original_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
+
+        "#{host_ruby} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{solaris_ruby_dir} solaris",
+        "cp #{solaris_ruby_dir}/new_rbconfig.rb #{solaris_ruby_dir}/rbconfig.rb"
       ]
     end
   end

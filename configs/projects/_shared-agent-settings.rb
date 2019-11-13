@@ -156,11 +156,17 @@ proj.setting(:host, host)
 proj.setting(:cppflags, "-I#{proj.includedir} -I/opt/pl-build-tools/include")
 proj.setting(:cflags, "#{proj.cppflags}")
 if platform.is_solaris?
+  puts 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa'
     proj.setting(
-    :cflags,
-    "#{proj.cppflags}" \
-    ' -I/opt/csw/lib/libffi-3.2.1/include'
-  )
+      :cflags,
+      "#{proj.cflags}" \
+      ' -I/opt/csw/lib/libffi-3.2.1/include'
+    )
+
+    proj.setting(:cppflags,
+      "#{proj.cppflags}" \
+      ' -I/opt/csw/lib/libffi-3.2.1/include'
+    )
 end
 proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
 
