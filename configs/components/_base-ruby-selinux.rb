@@ -41,7 +41,7 @@ if platform.is_cross_compiled_linux?
 end
 
 cflags = ""
-if platform.name =~ /sles-15|fedora-(29|30)|el-8|debian-10/
+if platform.name =~ /sles-15|el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 29)
   cc = '/usr/bin/gcc'
   cflags += "#{settings[:cppflags]} #{settings[:cflags]}"
 end

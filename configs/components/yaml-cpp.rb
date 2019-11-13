@@ -23,7 +23,7 @@ component "yaml-cpp" do |pkg, settings, platform|
   elsif platform.is_macos?
     cmake_toolchain_file = ""
     cmake = "/usr/local/bin/cmake"
-  elsif platform.name =~ /sles-15|fedora-(29|30)|el-8|debian-10/
+  elsif platform.name =~ /sles-15|el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 29)
     pkg.environment 'CPPFLAGS', settings[:cppflags]
     pkg.environment 'CFLAGS', settings[:cflags]
     pkg.environment 'LDFLAGS', settings[:ldflags]
