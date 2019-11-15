@@ -16,6 +16,8 @@ component "git" do |pkg, settings, platform|
       "$(shell cygpath -u \"C:\\ProgramData\\chocolatey\\bin\")",
       "$(PATH)",
     ].join(':')
+  else
+    pkg.build_requires 'curl'
   end
 
   build_deps = []
@@ -69,6 +71,7 @@ component "git" do |pkg, settings, platform|
     "NO_GETTEXT=1",
     "CFLAGS=\"#{settings[:cflags]}\"",
     "LDFLAGS=\"#{settings[:ldflags]}\"",
+    "CURL_CONFIG=\"#{settings[:prefix]}/bin/curl-config\"",
   ]
 
   if platform.is_macos?
