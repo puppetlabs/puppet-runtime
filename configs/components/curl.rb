@@ -61,7 +61,7 @@ component 'curl' do |pkg, settings, platform|
     "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install",
   ]
 
-  unless settings[:runtime_project] == 'agent'
+  unless ['agent', 'pdk'].include?(settings[:runtime_project])
     # Most projects won't need curl binaries, so delete them after installation.
     # Note that the agent _should_ include curl binaries; Some projects and
     # scripts depend on them and they can be helpful in debugging.

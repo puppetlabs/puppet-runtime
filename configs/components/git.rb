@@ -1,12 +1,14 @@
 component "git" do |pkg, settings, platform|
   if platform.is_windows?
-    pkg.version "2.14.2.3"
-    pkg.md5sum "486fb9f0a73469b4634edecdff503091"
-    pkg.url "#{settings[:buildsources_url]}/MinGit-#{pkg.get_version}-64-bit.zip"
+    pkg.version "2.24.0.2"
+    pkg.md5sum "e7e3ee4c67c4697e44c2b7520a4087d5"
+    pkg.url "https://github.com/git-for-windows/git/releases/download/v#{pkg.get_version.split('.')[0..2].join('.')}.windows.#{pkg.get_version.split('.').last}/MinGit-#{pkg.get_version}-64-bit.zip"
+    pkg.mirror "#{settings[:buildsources_url]}/MinGit-#{pkg.get_version}-64-bit.zip"
   else
-    pkg.version "2.14.2"
-    pkg.md5sum "240b2e339029da98dd87ffbc44934278"
-    pkg.url "https://www.kernel.org/pub/software/scm/git/git-#{pkg.get_version}.tar.gz"
+    pkg.version "2.24.0"
+    pkg.md5sum "ed39361a3ae362c8af852d1a06992bc2"
+    pkg.url "https://mirrors.edge.kernel.org/pub/software/scm/git/git-#{pkg.get_version}.tar.gz"
+    pkg.mirror "#{settings[:buildsources_url]}/git-#{pkg.get_version}.tar.gz"
   end
 
   if platform.is_windows?
@@ -14,6 +16,8 @@ component "git" do |pkg, settings, platform|
       "$(shell cygpath -u \"C:\\ProgramData\\chocolatey\\bin\")",
       "$(PATH)",
     ].join(':')
+  else
+    pkg.build_requires 'curl'
   end
 
   build_deps = []
@@ -67,6 +71,7 @@ component "git" do |pkg, settings, platform|
     "NO_GETTEXT=1",
     "CFLAGS=\"#{settings[:cflags]}\"",
     "LDFLAGS=\"#{settings[:ldflags]}\"",
+    "CURL_CONFIG=\"#{settings[:prefix]}/bin/curl-config\"",
   ]
 
   if platform.is_macos?
