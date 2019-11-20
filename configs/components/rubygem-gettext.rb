@@ -13,4 +13,6 @@ component "rubygem-gettext" do |pkg, settings, platform|
   end
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
+
+  pkg.environment "GEM_HOME", (settings[:puppet_gem_vendor_dir] || settings[:gem_home])
 end
