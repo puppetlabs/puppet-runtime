@@ -11,14 +11,15 @@ platform "debian-8-amd64" do |plat|
   packages = [
     "libbz2-dev",
     "libreadline-dev",
+    "libselinux1-dev",
     "make",
     "openjdk-7-jdk",
     "pkg-config",
     "pl-cmake",
     "pl-gcc",
-    "zlib1g-dev",
-    "systemtap-sdt-dev"
-
+    "swig",
+    "systemtap-sdt-dev",
+    "zlib1g-dev"
   ]
 
   plat.provision_with "export DEBIAN_FRONTEND=noninteractive; apt-get update -qq; apt-get install -qy --no-install-recommends #{packages.join(' ')}"

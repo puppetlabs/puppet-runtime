@@ -11,13 +11,15 @@ platform "debian-9-i386" do |plat|
   packages = [
     "libbz2-dev",
     "libreadline-dev",
+    "libselinux1-dev",
     "make",
     "openjdk-8-jdk",
     "pkg-config",
     "pl-cmake",
     "pl-gcc",
-    "zlib1g-dev",
-    "systemtap-sdt-dev"
+    "swig",
+    "systemtap-sdt-dev",
+    "zlib1g-dev"
   ]
 
   plat.provision_with "export DEBIAN_FRONTEND=noninteractive; apt-get update -qq; apt-get install -qy --no-install-recommends #{packages.join(' ')}"

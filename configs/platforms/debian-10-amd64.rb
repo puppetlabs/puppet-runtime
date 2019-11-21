@@ -7,20 +7,22 @@ platform "debian-10-amd64" do |plat|
   plat.install_build_dependencies_with "DEBIAN_FRONTEND=noninteractive; apt-get install -qy --no-install-recommends "
 
   packages = [
-      'libbz2-dev',
-      'libreadline-dev',
-      :make,
-      'openjdk-11-jdk',
-      'pkg-config',
-      'zlib1g-dev',
-      'devscripts',
-      'quilt',
-      'debhelper',
-      'rsync',
-      'fakeroot',
-      'cmake',
-      'build-essential',
-      'systemtap-sdt-dev'
+    'build-essential',
+    'cmake',
+    'debhelper',
+    'devscripts',
+    'fakeroot',
+    'libbz2-dev',
+    'libreadline-dev',
+    'libselinux1-dev',
+    'make',
+    'openjdk-11-jdk',
+    'pkg-config',
+    'quilt',
+    'rsync',
+    'swig',
+    'systemtap-sdt-dev',
+    'zlib1g-dev'
   ]
 
   plat.provision_with "export DEBIAN_FRONTEND=noninteractive; apt-get update -qq; apt-get install -qy --no-install-recommends #{packages.join(' ')}"

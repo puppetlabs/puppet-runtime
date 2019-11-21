@@ -11,13 +11,15 @@ platform "ubuntu-18.04-amd64" do |plat|
   packages = [
     "libbz2-dev",
     "libreadline-dev",
+    "libselinux1-dev",
     "make",
+    "openjdk-8-jre-headless",
     "pkg-config",
     "pl-cmake",
     "pl-gcc",
-    "zlib1g-dev",
+    "swig",
     "systemtap-sdt-dev",
-    "openjdk-8-jre-headless"
+    "zlib1g-dev"
   ]
 
   plat.provision_with "export DEBIAN_FRONTEND=noninteractive; apt-get install -qy --no-install-recommends #{packages.join(' ')}"
