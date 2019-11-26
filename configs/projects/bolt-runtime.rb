@@ -178,12 +178,15 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-puppet'
   proj.component 'rubygem-puppet_forge'
   proj.component 'rubygem-puppet-resource_api'
+  proj.component 'rubygem-puppet-strings'
   proj.component 'rubygem-r10k'
+  proj.component 'rubygem-rgen'
   proj.component 'rubygem-rubyntlm'
   proj.component 'rubygem-ruby_smb'
   proj.component 'rubygem-rubyzip'
   proj.component 'rubygem-terminal-table'
   proj.component 'rubygem-unicode-display_width'
+  proj.component 'rubygem-yard'
 
   # Core Windows dependencies
   proj.component 'rubygem-win32-dir'
