@@ -75,11 +75,11 @@ proj.component('rubygem-gettext-setup')
 
 # Core dependencies
 proj.component('rubygem-addressable')
-proj.component 'rubygem-aws-eventstream'
-proj.component 'rubygem-aws-partitions'
-proj.component 'rubygem-aws-sdk-core'
-proj.component 'rubygem-aws-sdk-ec2'
-proj.component 'rubygem-aws-sigv4'
+proj.component('rubygem-aws-eventstream')
+proj.component('rubygem-aws-partitions')
+proj.component('rubygem-aws-sdk-core')
+proj.component('rubygem-aws-sdk-ec2')
+proj.component('rubygem-aws-sigv4')
 proj.component('rubygem-bcrypt_pbkdf')
 proj.component('rubygem-bindata')
 proj.component('rubygem-builder')
@@ -99,7 +99,7 @@ proj.component('rubygem-gyoku')
 proj.component('rubygem-hiera')
 proj.component('rubygem-hocon')
 proj.component('rubygem-httpclient')
-proj.component 'rubygem-jmespath'
+proj.component('rubygem-jmespath')
 proj.component('rubygem-little-plugger')
 proj.component('rubygem-log4r')
 proj.component('rubygem-logging')
@@ -113,12 +113,15 @@ proj.component('rubygem-public_suffix')
 proj.component('rubygem-puppet')
 proj.component('rubygem-puppet_forge')
 proj.component('rubygem-puppet-resource_api')
+proj.component('rubygem-puppet-strings')
 proj.component('rubygem-r10k')
+proj.component('rubygem-rgen')
 proj.component('rubygem-rubyntlm')
 proj.component('rubygem-ruby_smb')
 proj.component('rubygem-rubyzip')
 proj.component('rubygem-terminal-table')
 proj.component('rubygem-unicode-display_width')
+proj.component('rubygem-yard')
 
 # Core Windows dependencies
 proj.component('rubygem-windows_error')
