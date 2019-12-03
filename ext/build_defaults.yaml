@@ -11,6 +11,7 @@ pe_platforms:
   - osx-10.12-x86_64
   - sles-11-x86_64
   - sles-12-x86_64
+  - ubuntu-14.04-amd64
   - ubuntu-16.04-amd64
   - windows-2012-x64
 gpg_name: 'info@puppetlabs.com'

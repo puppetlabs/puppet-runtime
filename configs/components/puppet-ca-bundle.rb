@@ -18,7 +18,7 @@ component "puppet-ca-bundle" do |pkg, settings, platform|
 
   # Include the keystore for the agent if the agent has a java
   if settings[:runtime_project] == 'agent'
-    if platform.name =~ /el-(6|7|8)|sles-(11|12)|debian-(8|9|10)|ubuntu-(15|16|18)/
+    if platform.name =~ /el-(6|7|8)|sles-(11|12)|debian-(8|9|10)|ubuntu-(14|15|16|18)/
       install_commands << "#{platform[:make]} keystore OPENSSL=#{openssl_cmd} DESTDIR=#{File.join(settings[:prefix], 'ssl')}"
     end
   end
