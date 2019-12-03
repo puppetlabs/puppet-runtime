@@ -46,6 +46,7 @@ component "boost" do |pkg, settings, platform|
   addtl_flags = ""
   gpp = "#{settings[:tools_root]}/bin/g++"
   b2flags = ""
+  link_option = settings[:boost_link_option]
   b2location = "#{settings[:prefix]}/bin/b2"
   bjamlocation = "#{settings[:prefix]}/bin/bjam"
 
@@ -134,7 +135,7 @@ component "boost" do |pkg, settings, platform|
       "./b2 \
       install \
       variant=release \
-      link=shared \
+      #{link_option} \
       toolset=#{toolset} \
       #{b2flags} \
       -d+2 \
@@ -148,7 +149,7 @@ component "boost" do |pkg, settings, platform|
       "#{b2location} \
       install \
       variant=release \
-      link=shared \
+      #{link_option} \
       toolset=#{toolset} \
       #{b2flags} \
       -d+2 \
