@@ -28,4 +28,58 @@ component "rubygem-ffi" do |pkg, settings, platform|
       "#{settings[:gem_install]} ffi-#{pkg.get_version}-#{platform.architecture}-mingw32.gem"
     end
   end
+
+  if platform.is_solaris?
+    base_ruby = case platform.os_version
+                when "10"
+                  "/opt/csw/lib/ruby/2.0.0"
+                when "11"
+                  "/opt/pl-build-tools/lib/ruby/2.1.0"
+                end
+
+    ffi_lib_version = case platform.os_version
+                      when "10"
+                        "6.0.4"
+                      when "11"
+                        "5.0.10"
+                      end
+
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$$PATH"
+
+    case platform.os_version
+    when "10"
+      pkg.install_file "/opt/csw/lib/libffi.so.#{ffi_lib_version}", "#{settings[:libdir]}/libffi.so.6"
+    when "11"
+      pkg.environment "CPATH", "/opt/csw/lib/libffi-3.2.1/include"
+      pkg.environment "MAKE", platform[:make]
+
+      if platform.is_cross_compiled?
+        # install libffi.so from pl-build-tools
+        pkg.install_file "#{settings[:tools_root]}/#{settings[:platform_triple]}/sysroot/usr/lib/libffi.so.#{ffi_lib_version}", "#{settings[:libdir]}/libffi.so"
+
+        # monkey-patch rubygems to think we're running on the destination ruby and architecture
+        ruby_api_version = settings[:ruby_version].gsub(/\.\d*$/, '.0')
+        pkg.build do
+          [
+            %(#{platform[:sed]} -i 's/Gem::Platform.local.to_s/&.gsub("x86", "#{platform.architecture}")/g' #{base_ruby}/rubygems/basic_specification.rb),
+            %(#{platform[:sed]} -i 's/Gem.extension_api_version/"#{ruby_api_version}"/g' #{base_ruby}/rubygems/basic_specification.rb)
+          ]
+        end
+      else
+        # install system libffi.so if we're not cross compiling
+        pkg.install_file "/usr/lib/libffi.so.#{ffi_lib_version}", "#{settings[:libdir]}/libffi.so"
+      end
+    end
+
+    if platform.is_cross_compiled?
+      # monkey-patch rubygems to require our custom rbconfig when
+      # building gems with native extensions
+      sed_command = %(s|Gem.ruby|&, '-r/opt/puppetlabs/puppet/share/doc/rbconfig-#{settings[:ruby_version]}-orig.rb'|)
+      pkg.build do
+        [
+          %(#{platform[:sed]} -i "#{sed_command}" #{base_ruby}/rubygems/ext/ext_conf_builder.rb)
+        ]
+      end
+    end
+  end
 end

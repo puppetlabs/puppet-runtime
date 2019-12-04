@@ -43,7 +43,6 @@ action=nocheck
 # Install to the default base directory.
 basedir=default" > /var/tmp/vanagon-noask;
   echo "mirror=https://artifactory.delivery.puppetlabs.net/artifactory/generic__remote_opencsw_mirror/testing" > /var/tmp/vanagon-pkgutil.conf;
-  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i rsync gmake pkgconfig ggrep || exit 1;
   ln -sf /opt/csw/bin/rsync /usr/bin/rsync;
   # RE-6121 openssl 1.0.2e requires functionality not in sytem grep
   ln -sf /opt/csw/bin/ggrep /usr/bin/grep;
@@ -51,6 +50,7 @@ basedir=default" > /var/tmp/vanagon-noask;
   /opt/csw/bin/pkgutil -l gcc | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l ruby18 | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l readline | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
+  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i rsync gmake pkgconfig ggrep libffi_dev libreadline6 || exit 1;
 
   # Install base build dependencies
   for pkg in #{base_pkgs.map { |pkg| "SUNW#{pkg}.pkg.gz" }.join(' ')}; do \
