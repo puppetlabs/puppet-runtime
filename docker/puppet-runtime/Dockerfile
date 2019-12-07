@@ -29,10 +29,10 @@ RUN yum clean all && \
 
 WORKDIR /runtime
 
-RUN wget https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/$version/el-7-x86_64/${project}-runtime-${project_branch}-${version}.el-7-x86_64.tar.gz && \
-    wget https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/$version/el-7-x86_64/${project}-runtime-${project_branch}-${version}.el-7-x86_64.tar.gz.sha1 && \
-    wget https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/$version/el-7-x86_64/${project}-runtime-${project_branch}-${version}.el-7-x86_64.settings.yaml && \
-    wget https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/$version/el-7-x86_64/${project}-runtime-${project_branch}-${version}.el-7-x86_64.settings.yaml.sha1
+RUN wget --no-verbose https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/$version/el-7-x86_64/${project}-runtime-${project_branch}-${version}.el-7-x86_64.tar.gz && \
+    wget --no-verbose https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/$version/el-7-x86_64/${project}-runtime-${project_branch}-${version}.el-7-x86_64.tar.gz.sha1 && \
+    wget --no-verbose https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/$version/el-7-x86_64/${project}-runtime-${project_branch}-${version}.el-7-x86_64.settings.yaml && \
+    wget --no-verbose https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/$version/el-7-x86_64/${project}-runtime-${project_branch}-${version}.el-7-x86_64.settings.yaml.sha1
 
 COPY validate_downloads.sh /runtime
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
