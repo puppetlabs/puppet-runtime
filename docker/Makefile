@@ -11,7 +11,7 @@ export BUNDLE_BIN = $(pwd)/.bundle/bin
 export GEMFILE = $(pwd)/Gemfile
 
 version = $(shell echo $(git_describe) | sed 's/-.*//')
-agent_branches := 1.10.x 5.5.x 6.0.x 6.4.x master
+agent_branches := 1.10.x 5.5.x 6.4.x master
 
 prep:
 	@git fetch --unshallow 2> /dev/null ||:
