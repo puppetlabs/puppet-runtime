@@ -4,7 +4,7 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.setting :ruby_version, '2.4.9'
   proj.setting :rubygem_net_ssh, '4.1.0'
   proj.setting :rubygem_semantic_puppet_version, '0.1.2'
-  proj.setting :openssl_version, '1.0.2'
+  proj.setting :openssl_version, platform.name =~ /windowsfips-2012r2/ ? '1.0.2' : '1.1.1'
 
   # In puppet-agent#master, install paths have been updated to more closely
   # match those used for *nix agents -- Use the old path style for this project:
@@ -23,6 +23,8 @@ project 'agent-runtime-5.5.x' do |proj|
   # Directory for gems shared by puppet and puppetserver
   proj.setting(:puppet_gem_vendor_dir, File.join(proj.libdir, "ruby", "vendor_gems"))
 
+  proj.setting(:boost_link_option, "") if platform.is_windows?
+
   ########
   # Load shared agent components
   ########
@@ -39,6 +41,7 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.component 'rubygem-highline'
   proj.component 'rubygem-hiera-eyaml'
   proj.component 'ruby-stomp'
-  proj.component 'yaml-cpp' if platform.name =~ /el-8|debian-10/ || platform.is_macos? || (platform.is_fedora? && platform.os_version.to_i >= 29)
-  proj.component 'boost' if platform.name =~ /el-8|debian-10/ || platform.is_macos? || (platform.is_fedora? && platform.os_version.to_i >= 29)
+  # SLES 15 uses the OS distro versions of boost and yaml-cpp:
+  proj.component 'boost' unless platform.name =~ /sles-15/
+  proj.component 'yaml-cpp' unless platform.name =~ /sles-15/
 end
