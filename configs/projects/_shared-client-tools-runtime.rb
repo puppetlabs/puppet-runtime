@@ -7,7 +7,7 @@ unless defined?(proj)
 end
 
 proj.setting(:runtime_project, 'client-tools')
-proj.setting(:openssl_version, '1.0.2')
+proj.setting(:openssl_version, '1.1.1')
 if platform.name =~ /^redhatfips-7-.*/
   # Link against the system openssl instead of our vendored version:
   proj.setting(:system_openssl, true)
