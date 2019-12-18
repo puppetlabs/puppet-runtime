@@ -120,7 +120,11 @@ component 'openssl' do |pkg, settings, platform|
   project_flags = settings[:openssl_extra_configure_flags] || []
   perl_exec = ''
   if platform.is_aix?
-    perl_exec = '/opt/freeware/bin/perl'
+    if platform.name =~ /^aix-6.1/
+      perl_exec = '/opt/freeware/bin/perl'
+    else
+      perl_exec = '/usr/bin/perl'
+    end
   elsif platform.is_solaris? && platform.os_version == '10'
     perl_exec = '/opt/csw/bin/perl'
   end
