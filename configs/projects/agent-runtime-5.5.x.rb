@@ -9,6 +9,7 @@ project 'agent-runtime-5.5.x' do |proj|
   # In puppet-agent#master, install paths have been updated to more closely
   # match those used for *nix agents -- Use the old path style for this project:
   proj.setting :legacy_windows_paths, true
+  proj.setting :provide_ssllib, true
 
   ########
   # Load shared agent settings

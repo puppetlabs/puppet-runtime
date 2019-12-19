@@ -10,7 +10,9 @@ component 'openssl' do |pkg, settings, platform|
 
   # make sure openssl-lib compiles first, as we it only installs versioned libs and hopefully will not cause problems
   # the other way around caused: # error "Inconsistency between crypto.h and cryptlib.c"
-  pkg.build_requires 'openssl-lib' if platform.is_linux?
+  if settings[:provide_ssllib] && platform.is_linux?
+    pkg.build_requires 'openssl-lib'
+  end
 
   target = cflags = ldflags = sslflags = ''
 
