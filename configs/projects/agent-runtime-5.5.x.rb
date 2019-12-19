@@ -44,4 +44,6 @@ project 'agent-runtime-5.5.x' do |proj|
   # SLES 15 uses the OS distro versions of boost and yaml-cpp:
   proj.component 'boost' unless platform.name =~ /sles-15/
   proj.component 'yaml-cpp' unless platform.name =~ /sles-15/
+
+  proj.component 'openssl-lib' if platform.is_linux?
 end
