@@ -1,16 +1,12 @@
-component 'openssl' do |pkg, settings, platform|
-  pkg.version '1.1.1d'
-  pkg.md5sum '3be209000dbc7e1b95bcdf47980a3baa'
+component 'openssl-lib' do |pkg, settings, platform|
+  pkg.version '1.0.2t'
+  pkg.md5sum 'ef66581b80f06eae42f5268bc0b50c6d'
   pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
   #############################
   # ENVIRONMENT, FLAGS, TARGETS
   #############################
-
-  # make sure openssl-lib compiles first, as we it only installs versioned libs and hopefully will not cause problems
-  # the other way around caused: # error "Inconsistency between crypto.h and cryptlib.c"
-  pkg.build_requires 'openssl-lib' if platform.is_linux?
 
   target = cflags = ldflags = sslflags = ''
 
@@ -24,30 +20,24 @@ component 'openssl' do |pkg, settings, platform|
     target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
     cflags = settings[:cflags]
     ldflags = settings[:ldflags]
+    ldflags.slice!("-Wl,--dynamicbase") if platform.name =~ /windowsfips-2012r2/
   elsif platform.is_cross_compiled_linux?
     pkg.environment 'PATH', "/opt/pl-build-tools/bin:$$PATH"
     pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
 
     cflags = "#{settings[:cflags]} -fPIC"
-    if platform.architecture =~ /aarch/
-      # OpenSSL fails to work on aarch unless we turn down the compiler optimization.
-      # See PA-2135 for details
-      cflags += " -O2"
-    end
-
     ldflags = "-Wl,-rpath=/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
     target = if platform.architecture == 'aarch64'
-                'linux-aarch64'
-              elsif platform.name =~ /debian-8-arm/
-                'linux-armv4'
-              elsif platform.architecture =~ /ppc64le|ppc64el/ # Little-endian
-                'linux-ppc64le'
-              elsif platform.architecture =~ /ppc64/ # Big-endian
-                'linux-ppc64'
-              end
+               'linux-aarch64'
+             elsif platform.name =~ /debian-8-arm/
+               'linux-armv4'
+             elsif platform.architecture =~ /ppc64le|ppc64el/ # Litte-endian
+               'linux-ppc64le'
+             elsif platform.architecture =~ /ppc64/ # Big-endian
+               'linux-ppc64'
+             end
   elsif platform.is_aix?
-    pkg.environment 'CC', '/opt/pl-build-tools/bin/gcc'
-
+    pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
     cflags = '$${CFLAGS} -static-libgcc'
     target = 'aix-gcc'
   elsif platform.is_solaris?
@@ -81,24 +71,34 @@ component 'openssl' do |pkg, settings, platform|
 
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
 
+  #########
+  # PATCHES
+  #########
+
+  if platform.is_windows?
+    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
+    # This patch removes the option `-DOPENSSL_USE_APPLINK` from the mingw openssl congifure target
+    # This brings mingw more in line with what is happening with mingw64. All applink does it makes
+    # it possible to use the .dll compiled with one compiler with an application compiled with a
+    # different compiler. Given our openssl should only be interacting with things that we build,
+    # we can ensure everything is build with the same compiler.
+    pkg.apply_patch 'resources/patches/openssl/openssl-mingw-do-not-build-applink.patch'
+    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.2t-fix-no-asm-build-on-windows.patch'
+  elsif platform.is_aix?
+    pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
+    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
+  elsif platform.is_solaris?
+    pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
+    pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
+  elsif platform.is_linux?
+    if platform.name =~ /debian-8-arm/
+      pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
+    end
+  end
+
   ###########
   # CONFIGURE
   ###########
-
-  if platform.is_solaris? && platform.name =~ /10/
-    # We need to link the rt library on Solaris 10 in order to access the clock_gettime
-    # function.
-    cflags += " -lrt"
-
-    # Additionally when we're building on SPARC, we need to revert
-    # https://github.com/openssl/openssl/commit/7a061312 because for
-    # some reason, the linker fails to generate the .map files (like
-    # e.g. libcrypto.map). Strangely, this is not an issue for Solaris
-    # 11 SPARC despite it using an older version of ld (2.25 vs. 2.27).
-    if platform.is_cross_compiled?
-      pkg.apply_patch 'resources/patches/openssl/openssl-1.1.1a-revert-7a061312.patch'
-    end
-  end
 
   # OpenSSL Configure doesn't honor CFLAGS or LDFLAGS as environment variables.
   # Instead, those should be passed to Configure at the end of its options, as
@@ -114,24 +114,24 @@ component 'openssl' do |pkg, settings, platform|
     'no-asm',
     target,
     sslflags,
+    'enable-rfc3779',
+    'enable-tlsext',
     'no-camellia',
     'no-ec2m',
     'no-md2',
-    'no-ssl3'
+    'no-mdc2',
+    'no-ssl2',
+    'no-ssl3',
   ]
+
+  configure_flags += ['fips', "--with-fipsdir=#{settings[:prefix]}/usr/local/ssl/fips-2.0"] if platform.name =~ /windowsfips-2012r2/
 
   # Individual projects may provide their own openssl configure flags:
   project_flags = settings[:openssl_extra_configure_flags] || []
-  perl_exec = ''
-  if platform.is_aix?
-    perl_exec = '/opt/freeware/bin/perl'
-  elsif platform.is_solaris? && platform.os_version == '10'
-    perl_exec = '/opt/csw/bin/perl'
-  end
   configure_flags << project_flags << cflags << ldflags
 
   pkg.configure do
-    ["#{perl_exec} ./Configure #{configure_flags.join(' ')}"]
+    ["./Configure #{configure_flags.join(' ')}"]
   end
 
   #######
@@ -149,22 +149,7 @@ component 'openssl' do |pkg, settings, platform|
   # INSTALL
   #########
 
-  install_prefix = platform.is_windows? ? '' : 'INSTALL_PREFIX=/'
-  install_commands = []
+  pkg.install_file 'libssl.so.1.0.0', "#{settings[:prefix]}/lib/libssl.so.1.0.0"
+  pkg.install_file 'libcrypto.so.1.0.0', "#{settings[:prefix]}/lib/libcrypto.so.1.0.0"
 
-  if platform.is_aix?
-    install_commands << "slibclean"
-  end
-
-  install_commands << "#{platform[:make]} #{install_prefix} install"
-
-  if settings[:runtime_project] == 'pdk'
-    install_commands << "rm -f #{settings[:prefix]}/bin/{openssl,c_rehash}"
-  end
-
-  pkg.install do
-    install_commands
-  end
-
-  pkg.install_file 'LICENSE', "#{settings[:prefix]}/share/doc/openssl-#{pkg.get_version}/LICENSE"
 end
