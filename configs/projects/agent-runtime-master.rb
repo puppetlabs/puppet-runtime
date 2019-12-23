@@ -37,4 +37,6 @@ project 'agent-runtime-master' do |proj|
   # SLES 15 uses the OS distro versions of boost and yaml-cpp:
   proj.component 'boost' unless platform.name =~ /sles-15/
   proj.component 'yaml-cpp' unless platform.name =~ /sles-15/
+
+  proj.component 'rubygem-ffi' if platform.is_aix?
 end

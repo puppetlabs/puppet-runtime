@@ -82,4 +82,6 @@ component "rubygem-ffi" do |pkg, settings, platform|
       end
     end
   end
+
+  pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
 end
