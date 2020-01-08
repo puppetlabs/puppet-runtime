@@ -20,7 +20,6 @@ component 'openssl' do |pkg, settings, platform|
     target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
     cflags = settings[:cflags]
     ldflags = settings[:ldflags]
-    ldflags.slice!("-Wl,--dynamicbase") if platform.name =~ /windowsfips-2012r2/
   elsif platform.is_cross_compiled_linux?
     pkg.environment 'PATH', "/opt/pl-build-tools/bin:$$PATH"
     pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
@@ -83,6 +82,8 @@ component 'openssl' do |pkg, settings, platform|
     # different compiler. Given our openssl should only be interacting with things that we build,
     # we can ensure everything is build with the same compiler.
     pkg.apply_patch 'resources/patches/openssl/openssl-mingw-do-not-build-applink.patch'
+    pkg.apply_patch 'resources/patches/openssl/openssl-enforce-fips-on-fips-mode.patch'
+    pkg.apply_patch 'resources/patches/openssl/openssl-low-level-access.patch'
   elsif platform.is_aix?
     pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
     pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
