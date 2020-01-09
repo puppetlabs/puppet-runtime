@@ -21,10 +21,15 @@ if platform.name =~ /^el-5-.*$/
   pkg.install do
     ["cp ../libselinux-1.33.4.pc #{settings[:libdir]}/pkgconfig/libselinux.pc"]
   end
-else
+elsif platform.name =~ /el-(5|6|7)|fedora-28|debian-(8|9)|ubuntu-(16|18)/
   pkg.version "2.0.94"
   pkg.md5sum "544f75aab11c2af352facc51af12029f"
   pkg.url "https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20100525/devel/libselinux-#{pkg.get_version}.tar.gz"
+  pkg.mirror "#{settings[:buildsources_url]}/libselinux-#{pkg.get_version}.tar.gz"
+else
+  pkg.version "2.9"
+  pkg.md5sum "bb449431b6ed55a0a0496dbc366d6e31"
+  pkg.url "https://github.com/SELinuxProject/selinux/releases/download/20190315/libselinux-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/libselinux-#{pkg.get_version}.tar.gz"
 end
 
