@@ -32,5 +32,12 @@ platform "el-5-x86_64" do |plat|
   ]
   plat.provision_with("yum install -y --nogpgcheck  #{packages.join(' ')}")
   plat.install_build_dependencies_with "yum install -y --nogpgcheck"
+
+  packages = ['libffi-3.0.5-1.el5.x86_64.rpm', 'libffi-devel-3.0.5-1.el5.x86_64.rpm']
+
+  packages.each do |package|
+    plat.provision_with("wget http://artifactory.delivery.puppetlabs.net/artifactory/generic__buildsources/buildsources/#{package}")
+    plat.provision_with("rpm -i #{package}")
+  end
   plat.vmpooler_template "centos-5-x86_64"
 end
