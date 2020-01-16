@@ -1,0 +1,152 @@
+--- a/SPECS/openssl.spec	2019-05-11 00:45:45.000000000 +0000
++++ b/SPECS/openssl.spec	2020-01-13 15:16:29.224852120 +0000
+@@ -61,18 +61,19 @@
+ Patch47: openssl-1.1.1-coverity.patch
+ Patch48: openssl-1.1.1-fips-post-rand.patch
+ Patch49: openssl-1.1.1-ts-sha256-default.patch
++Patch50: openssl-1.1.1-force-fips-on-init.patch
+ # Backported fixes including security fixes
+ 
+ License: OpenSSL
+ Group: System Environment/Libraries
+ URL: http://www.openssl.org/
+ BuildRequires: gcc
+-BuildRequires: coreutils, krb5-devel, perl-interpreter, sed, zlib-devel, /usr/bin/cmp
++BuildRequires: coreutils, krb5-devel, perl, sed, zlib-devel, /usr/bin/cmp
+ BuildRequires: lksctp-tools-devel
+ BuildRequires: /usr/bin/rename
+ BuildRequires: /usr/bin/pod2man
+ BuildRequires: /usr/sbin/sysctl
+-BuildRequires: perl(Test::Harness), perl(Test::More), perl(Math::BigInt)
++BuildRequires: perl(Test::Harness), perl(Math::BigInt)
+ BuildRequires: perl(Module::Load::Conditional), perl(File::Temp)
+ BuildRequires: perl(Time::HiRes)
+ Requires: coreutils
+@@ -89,7 +90,6 @@
+ Group: System Environment/Libraries
+ Requires: ca-certificates >= 2008-5
+ Requires: crypto-policies >= 20180730
+-Recommends: openssl-pkcs11%{?_isa}
+ # Needed obsoletes due to the base/lib subpackage split
+ Obsoletes: openssl < 1:1.0.1-0.3.beta3
+ Obsoletes: openssl-fips < 1:1.0.1e-28
+@@ -126,7 +126,7 @@
+ %package perl
+ Summary: Perl scripts provided with OpenSSL
+ Group: Applications/Internet
+-Requires: perl-interpreter
++Requires: perl
+ Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
+ 
+ %description perl
+@@ -167,6 +167,7 @@
+ %patch47 -p1 -b .coverity
+ %patch48 -p1 -b .fips-post-rand
+ %patch49 -p1 -b .ts-sha256-default
++%patch50 -p1 -b .force-fips-on-init
+ 
+ 
+ %build
+@@ -233,7 +234,7 @@
+ # marked as not requiring an executable stack.
+ # Also add -DPURIFY to make using valgrind with openssl easier as we do not
+ # want to depend on the uninitialized memory as a source of entropy anyway.
+-RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -Wa,--generate-missing-build-notes=yes -DPURIFY $RPM_LD_FLAGS"
++RPM_OPT_FLAGS="$RPM_OPT_FLAGS -Wa,--noexecstack -Wl,-rpath=/opt/puppetlabs/puppet/lib -DPURIFY $RPM_LD_FLAGS"
+ 
+ export HASHBANGPERL=/usr/bin/perl
+ 
+@@ -242,8 +243,8 @@
+ # usable on all platforms.  The Configure script already knows to use -fPIC and
+ # RPM_OPT_FLAGS, so we can skip specifiying them here.
+ ./Configure \
+-	--prefix=%{_prefix} --openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
+-	--system-ciphers-file=%{_sysconfdir}/crypto-policies/back-ends/openssl.config \
++	--prefix=%{_prefix} --openssldir=%{_prefix}/etc/pki/tls ${sslflags} \
++	--system-ciphers-file=%{_prefix}/etc/crypto-policies/back-ends/openssl.config \
+ 	zlib enable-camellia enable-seed enable-rfc3779 enable-sctp \
+ 	enable-cms enable-md2 enable-rc5\
+ 	enable-weak-ssl-ciphers \
+@@ -315,14 +316,14 @@
+ 
+ # Install a makefile for generating keys and self-signed certs, and a script
+ # for generating them on the fly.
+-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/certs
++mkdir -p $RPM_BUILD_ROOT%{_prefix}/etc/pki/tls/certs
+ install -m644 %{SOURCE2} $RPM_BUILD_ROOT%{_pkgdocdir}/Makefile.certificate
+ install -m755 %{SOURCE6} $RPM_BUILD_ROOT%{_bindir}/make-dummy-cert
+ install -m755 %{SOURCE7} $RPM_BUILD_ROOT%{_bindir}/renew-dummy-cert
+ 
+ # Move runable perl scripts to bindir
+-mv $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/misc/*.pl $RPM_BUILD_ROOT%{_bindir}
+-mv $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/misc/tsget $RPM_BUILD_ROOT%{_bindir}
++mv $RPM_BUILD_ROOT%{_prefix}/etc/pki/tls/misc/*.pl $RPM_BUILD_ROOT%{_bindir}
++mv $RPM_BUILD_ROOT%{_prefix}/etc/pki/tls/misc/tsget $RPM_BUILD_ROOT%{_bindir}
+ 
+ # Drop the SSLv3 methods from includes
+ sed -i '/ifndef OPENSSL_NO_SSL3_METHOD/,+4d' $RPM_BUILD_ROOT%{_includedir}/openssl/ssl.h
+@@ -349,19 +350,19 @@
+ done
+ popd
+ 
+-mkdir -m755 $RPM_BUILD_ROOT%{_sysconfdir}/pki/CA
+-mkdir -m700 $RPM_BUILD_ROOT%{_sysconfdir}/pki/CA/private
+-mkdir -m755 $RPM_BUILD_ROOT%{_sysconfdir}/pki/CA/certs
+-mkdir -m755 $RPM_BUILD_ROOT%{_sysconfdir}/pki/CA/crl
+-mkdir -m755 $RPM_BUILD_ROOT%{_sysconfdir}/pki/CA/newcerts
++mkdir -m755 $RPM_BUILD_ROOT%{_prefix}/etc/pki/CA
++mkdir -m700 $RPM_BUILD_ROOT%{_prefix}/etc/pki/CA/private
++mkdir -m755 $RPM_BUILD_ROOT%{_prefix}/etc/pki/CA/certs
++mkdir -m755 $RPM_BUILD_ROOT%{_prefix}/etc/pki/CA/crl
++mkdir -m755 $RPM_BUILD_ROOT%{_prefix}/etc/pki/CA/newcerts
+ 
+ # Ensure the config file timestamps are identical across builds to avoid
+ # mulitlib conflicts and unnecessary renames on upgrade
+-touch -r %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/openssl.cnf
+-touch -r %{SOURCE2} $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/ct_log_list.cnf
++touch -r %{SOURCE2} $RPM_BUILD_ROOT%{_prefix}/etc/pki/tls/openssl.cnf
++touch -r %{SOURCE2} $RPM_BUILD_ROOT%{_prefix}/etc/pki/tls/ct_log_list.cnf
+ 
+-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/openssl.cnf.dist
+-rm -f $RPM_BUILD_ROOT%{_sysconfdir}/pki/tls/ct_log_list.cnf.dist
++rm -f $RPM_BUILD_ROOT%{_prefix}/etc/pki/tls/openssl.cnf.dist
++rm -f $RPM_BUILD_ROOT%{_prefix}/etc/pki/tls/ct_log_list.cnf.dist
+ 
+ # Determine which arch opensslconf.h is going to try to #include.
+ basearch=%{_arch}
+@@ -408,12 +409,12 @@
+ %files libs
+ %{!?_licensedir:%global license %%doc}
+ %license LICENSE
+-%dir %{_sysconfdir}/pki/tls
+-%dir %{_sysconfdir}/pki/tls/certs
+-%dir %{_sysconfdir}/pki/tls/misc
+-%dir %{_sysconfdir}/pki/tls/private
+-%config(noreplace) %{_sysconfdir}/pki/tls/openssl.cnf
+-%config(noreplace) %{_sysconfdir}/pki/tls/ct_log_list.cnf
++%dir %{_prefix}/etc/pki/tls
++%dir %{_prefix}/etc/pki/tls/certs
++%dir %{_prefix}/etc/pki/tls/misc
++%dir %{_prefix}/etc/pki/tls/private
++%config(noreplace) %{_prefix}/etc/pki/tls/openssl.cnf
++%config(noreplace) %{_prefix}/etc/pki/tls/ct_log_list.cnf
+ %attr(0755,root,root) %{_libdir}/libcrypto.so.%{version}
+ %attr(0755,root,root) %{_libdir}/libcrypto.so.%{soversion}
+ %attr(0755,root,root) %{_libdir}/libssl.so.%{version}
+@@ -440,11 +441,11 @@
+ %{_mandir}/man1*/c_rehash*
+ %{_mandir}/man1*/tsget*
+ %{_mandir}/man1*/openssl-tsget*
+-%dir %{_sysconfdir}/pki/CA
+-%dir %{_sysconfdir}/pki/CA/private
+-%dir %{_sysconfdir}/pki/CA/certs
+-%dir %{_sysconfdir}/pki/CA/crl
+-%dir %{_sysconfdir}/pki/CA/newcerts
++%dir %{_prefix}/etc/pki/CA
++%dir %{_prefix}/etc/pki/CA/private
++%dir %{_prefix}/etc/pki/CA/certs
++%dir %{_prefix}/etc/pki/CA/crl
++%dir %{_prefix}/etc/pki/CA/newcerts
+ 
+ %post libs -p /sbin/ldconfig
+ 
