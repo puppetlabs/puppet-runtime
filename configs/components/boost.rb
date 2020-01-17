@@ -12,9 +12,9 @@ component "boost" do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/boost/force-SONAME-option-for-solaris.patch'
   end
 
-  # if platform.is_solaris? || platform.is_aix?
-  #   pkg.apply_patch 'resources/patches/boost/solaris-aix-boost-filesystem-unique-path.patch'
-  # end
+  if platform.is_solaris?
+    pkg.apply_patch 'resources/patches/boost/solaris-pthread-data.patch'
+  end
 
   if platform.is_cisco_wrlinux?
     pkg.apply_patch 'resources/patches/boost/no-fionbio.patch'
