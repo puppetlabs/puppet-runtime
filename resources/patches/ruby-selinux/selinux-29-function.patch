@@ -1,0 +1,14 @@
+diff --git a/src/selinuxswig.i b/src/selinuxswig.i
+index dbdb4c3..cb9b8ba 100644
+--- a/src/selinuxswig.i
++++ b/src/selinuxswig.i
+@@ -41,6 +41,9 @@
+ 	if (*$1) freeconary(*$1);
+ }
+ 
++/* Ignore function not in libselinux 2.8 */
++%ignore security_reject_unknown;
++
+ /* Ignore functions that don't make sense when wrapped */
+ %ignore freecon;
+ %ignore freeconary;
