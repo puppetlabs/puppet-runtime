@@ -84,6 +84,7 @@ component 'openssl' do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/openssl/openssl-mingw-do-not-build-applink.patch'
     pkg.apply_patch 'resources/patches/openssl/openssl-enforce-fips-on-fips-mode.patch'
     pkg.apply_patch 'resources/patches/openssl/openssl-low-level-access.patch'
+    pkg.apply_patch 'resources/patches/openssl/openssl-expose-drbg-init.patch'
   elsif platform.is_aix?
     pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
     pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'

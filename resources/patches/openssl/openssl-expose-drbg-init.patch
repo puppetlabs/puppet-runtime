@@ -1,0 +1,19 @@
+--- a/crypto/crypto.h	2020-01-16 09:50:22.018086800 +0000
++++ b/crypto/crypto.h	2020-01-16 09:54:12.889356000 +0000
+@@ -605,6 +605,9 @@
+         int alg##_Init(cx##_CTX *c)
+ 
+ # ifdef OPENSSL_FIPS
++typedef struct drbg_ctx_st DRBG_CTX;
++DRBG_CTX *FIPS_get_default_drbg(void);
++
+ #  define nonfips_md_init_ctx(alg, cx) \
+         int alg##_Init(cx##_CTX *c) \
+         { \
+--- a/util/libeay.num	2019-12-20 13:09:07.000000000 +0000
++++ b/util/libeay.num	2020-01-16 12:11:11.481374300 +0000
+@@ -4433,3 +4433,4 @@
+ EVP_PKEY_meth_get_copy                  4788	EXIST::FUNCTION:
+ ossl_safe_getenv                        4789	EXIST::FUNCTION:
+ OPENSSL_rdtsc                           4790	EXIST::FUNCTION:
++FIPS_get_default_drbg                   4791	EXIST::FUNCTION:
