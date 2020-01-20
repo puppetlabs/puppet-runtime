@@ -1,0 +1,14 @@
+--- a/crypto/o_init.c	2020-01-08 11:43:54.012388100 +0000
++++ b/crypto/o_init.c	2020-01-08 11:46:19.068665500 +0000
+@@ -84,6 +84,10 @@
+     FIPS_set_error_callbacks(ERR_put_error, ERR_add_error_vdata);
+     FIPS_set_malloc_callbacks(CRYPTO_malloc, CRYPTO_free);
+     RAND_init_fips();
++    /* Ensure the fips is always enabled */
++    FIPS_mode_set(1);
++    FIPS_selftest_check();
++
+ #endif
+ #if 0
+     fprintf(stderr, "Called OPENSSL_init\n");
+

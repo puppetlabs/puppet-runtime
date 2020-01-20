@@ -1,0 +1,170 @@
+diff -up openssl-1.0.2i/crypto/crypto.h openssl-1.0.2i/crypto/crypto.h
+--- a/crypto/crypto.h	2016-09-22 13:35:56.890218070 +0200
++++ b/crypto/crypto.h	2016-09-22 13:35:57.008220790 +0200
+@@ -600,24 +600,26 @@ int FIPS_mode_set(int r);
+ void OPENSSL_init(void);
+ 
+ # define fips_md_init(alg) fips_md_init_ctx(alg, alg)
++# define nonfips_md_init(alg) nonfips_md_init_ctx(alg, alg)
++# define fips_md_init_ctx(alg, cx) \
++        int alg##_Init(cx##_CTX *c)
+ 
+ # ifdef OPENSSL_FIPS
+-#  define fips_md_init_ctx(alg, cx) \
++#  define nonfips_md_init_ctx(alg, cx) \
+         int alg##_Init(cx##_CTX *c) \
+         { \
+         if (FIPS_mode()) OpenSSLDie(__FILE__, __LINE__, \
+-                "Low level API call to digest " #alg " forbidden in FIPS mode!"); \
++                "Digest " #alg " forbidden in FIPS mode!"); \
+         return private_##alg##_Init(c); \
+         } \
+         int private_##alg##_Init(cx##_CTX *c)
+ 
+ #  define fips_cipher_abort(alg) \
+         if (FIPS_mode()) OpenSSLDie(__FILE__, __LINE__, \
+-                "Low level API call to cipher " #alg " forbidden in FIPS mode!")
++                "Cipher " #alg " forbidden in FIPS mode!")
+ 
+ # else
+-#  define fips_md_init_ctx(alg, cx) \
+-        int alg##_Init(cx##_CTX *c)
++#  define nonfips_md_init_ctx(alg, cx) fips_md_init_ctx(alg, cx)
+ #  define fips_cipher_abort(alg) while(0)
+ # endif
+ 
+diff -up openssl-1.0.2i/crypto/mdc2/mdc2dgst.c openssl-1.0.2i/crypto/mdc2/mdc2dgst.c
+--- a/crypto/mdc2/mdc2dgst.c	2016-09-22 12:23:06.000000000 +0200
++++ b/crypto/mdc2/mdc2dgst.c	2016-09-22 13:35:57.020221066 +0200
+@@ -76,7 +76,7 @@
+                         *((c)++)=(unsigned char)(((l)>>24L)&0xff))
+ 
+ static void mdc2_body(MDC2_CTX *c, const unsigned char *in, size_t len);
+-fips_md_init(MDC2)
++nonfips_md_init(MDC2)
+ {
+     c->num = 0;
+     c->pad_type = 1;
+--- a/crypto/md2/md2_dgst.c	2016-09-22 12:23:06.000000000 +0200
++++ b/crypto/md2/md2_dgst.c	2016-09-22 13:35:57.020221066 +0200
+@@ -119,7 +119,7 @@
+         return ("md2(int)");
+ }
+ 
+-fips_md_init(MD2)
++nonfips_md_init(MD2)
+ {
+     c->num = 0;
+     memset(c->state, 0, sizeof(c->state));
+diff -up openssl-1.0.2i/crypto/md4/md4_dgst.c openssl-1.0.2i/crypto/md4/md4_dgst.c
+--- a/crypto/md4/md4_dgst.c	2016-09-22 12:23:06.000000000 +0200
++++ b/crypto/md4/md4_dgst.c	2016-09-22 13:35:57.020221066 +0200
+@@ -72,7 +72,7 @@ const char MD4_version[] = "MD4" OPENSSL
+ #define INIT_DATA_C (unsigned long)0x98badcfeL
+ #define INIT_DATA_D (unsigned long)0x10325476L
+ 
+-fips_md_init(MD4)
++nonfips_md_init(MD4)
+ {
+     memset(c, 0, sizeof(*c));
+     c->A = INIT_DATA_A;
+diff -up openssl-1.0.2i/crypto/md5/md5_dgst.c openssl-1.0.2i/crypto/md5/md5_dgst.c
+--- a/crypto/md5/md5_dgst.c	2016-09-22 12:23:06.000000000 +0200
++++ b/crypto/md5/md5_dgst.c	2016-09-22 13:35:57.020221066 +0200
+@@ -72,7 +72,7 @@ const char MD5_version[] = "MD5" OPENSSL
+ #define INIT_DATA_C (unsigned long)0x98badcfeL
+ #define INIT_DATA_D (unsigned long)0x10325476L
+ 
+-fips_md_init(MD5)
++nonfips_md_init(MD5)
+ {
+     memset(c, 0, sizeof(*c));
+     c->A = INIT_DATA_A;
+diff -up openssl-1.0.2i/crypto/ripemd/rmd_dgst.c openssl-1.0.2i/crypto/ripemd/rmd_dgst.c
+--- a/crypto/ripemd/rmd_dgst.c	2016-09-22 12:23:06.000000000 +0200
++++ b/crypto/ripemd/rmd_dgst.c	2016-09-22 13:35:57.021221089 +0200
+@@ -70,7 +70,7 @@ void ripemd160_block_x86(RIPEMD160_CTX *
+ void ripemd160_block(RIPEMD160_CTX *c, unsigned long *p, size_t num);
+ #endif
+ 
+-fips_md_init(RIPEMD160)
++nonfips_md_init(RIPEMD160)
+ {
+     memset(c, 0, sizeof(*c));
+     c->A = RIPEMD160_A;
+diff -up openssl-1.0.2i/crypto/sha/sha_locl.h openssl-1.0.2i/crypto/sha/sha_locl.h
+--- a/crypto/sha/sha_locl.h	2016-09-22 13:35:56.702213737 +0200
++++ b/crypto/sha/sha_locl.h	2016-09-22 13:35:57.023221135 +0200
+@@ -123,11 +123,11 @@ void sha1_block_data_order(SHA_CTX *c, c
+ #define INIT_DATA_h4 0xc3d2e1f0UL
+ 
+ #ifdef SHA_0
+-fips_md_init(SHA)
++nonfips_md_init(SHA)
+ #else
+ fips_md_init_ctx(SHA1, SHA)
+ #endif
+ {
+     memset(c, 0, sizeof(*c));
+     c->h0 = INIT_DATA_h0;
+     c->h1 = INIT_DATA_h1;
+diff -up openssl-1.0.2i/crypto/whrlpool/wp_dgst.c openssl-1.0.2i/crypto/whrlpool/wp_dgst.c
+--- a/crypto/whrlpool/wp_dgst.c	2016-09-22 12:23:06.000000000 +0200
++++ b/crypto/whrlpool/wp_dgst.c	2016-09-22 13:35:57.023221135 +0200
+@@ -56,7 +56,7 @@
+ #include <openssl/crypto.h>
+ #include <string.h>
+ 
+-fips_md_init(WHIRLPOOL)
++nonfips_md_init(WHIRLPOOL)
+ {
+     memset(c, 0, sizeof(*c));
+     return (1);
+--- a/crypto/evp/evp_locl.h	2020-01-16 08:23:25.770477500 +0000
++++ b/crypto/evp/evp_locl.h	2020-01-16 08:24:17.723812000 +0000
+@@ -355,11 +355,6 @@
+ # define MD2_Init        private_MD2_Init
+ # define MDC2_Init       private_MDC2_Init
+ # define SHA_Init        private_SHA_Init
+-# define SHA1_Init       private_SHA1_Init
+-# define SHA224_Init     private_SHA224_Init
+-# define SHA256_Init     private_SHA256_Init
+-# define SHA384_Init     private_SHA384_Init
+-# define SHA512_Init     private_SHA512_Init
+ 
+ # define BF_set_key      private_BF_set_key
+ # define CAST_set_key    private_CAST_set_key
+--- a/crypto/sha/sha.h	2020-01-16 08:54:04.175750500 +0000
++++ b/crypto/sha/sha.h	2020-01-16 08:55:31.812452400 +0000
+@@ -115,9 +115,6 @@
+ void SHA_Transform(SHA_CTX *c, const unsigned char *data);
+ # endif
+ # ifndef OPENSSL_NO_SHA1
+-#  ifdef OPENSSL_FIPS
+-int private_SHA1_Init(SHA_CTX *c);
+-#  endif
+ int SHA1_Init(SHA_CTX *c);
+ int SHA1_Update(SHA_CTX *c, const void *data, size_t len);
+ int SHA1_Final(unsigned char *md, SHA_CTX *c);
+@@ -139,10 +136,6 @@
+ } SHA256_CTX;
+ 
+ # ifndef OPENSSL_NO_SHA256
+-#  ifdef OPENSSL_FIPS
+-int private_SHA224_Init(SHA256_CTX *c);
+-int private_SHA256_Init(SHA256_CTX *c);
+-#  endif
+ int SHA224_Init(SHA256_CTX *c);
+ int SHA224_Update(SHA256_CTX *c, const void *data, size_t len);
+ int SHA224_Final(unsigned char *md, SHA256_CTX *c);
+@@ -192,10 +185,6 @@
+ # endif
+ 
+ # ifndef OPENSSL_NO_SHA512
+-#  ifdef OPENSSL_FIPS
+-int private_SHA384_Init(SHA512_CTX *c);
+-int private_SHA512_Init(SHA512_CTX *c);
+-#  endif
+ int SHA384_Init(SHA512_CTX *c);
+ int SHA384_Update(SHA512_CTX *c, const void *data, size_t len);
+ int SHA384_Final(unsigned char *md, SHA512_CTX *c);

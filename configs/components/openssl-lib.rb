@@ -20,7 +20,6 @@ component 'openssl-lib' do |pkg, settings, platform|
     target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
     cflags = settings[:cflags]
     ldflags = settings[:ldflags]
-    ldflags.slice!("-Wl,--dynamicbase") if platform.name =~ /windowsfips-2012r2/
   elsif platform.is_cross_compiled_linux?
     pkg.environment 'PATH', "/opt/pl-build-tools/bin:$$PATH"
     pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
