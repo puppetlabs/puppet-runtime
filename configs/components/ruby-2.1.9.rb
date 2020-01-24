@@ -59,6 +59,12 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   pkg.apply_patch "#{base}/cve-2018-8777-2.patch"
   pkg.apply_patch "#{base}/cve-2017-17742.patch"
 
+  # Patches for https://www.debian.org/lts/security/2019/dla-2007
+  pkg.apply_patch "#{base}/cve-2019-16201.patch"
+  pkg.apply_patch "#{base}/cve-2019-16254.patch"
+  pkg.apply_patch "#{base}/cve-2019-16255.patch"
+  pkg.apply_patch "#{base}/cve-2019-15845.patch"
+
   if platform.is_aix?
     pkg.apply_patch "#{base}/aix_ruby_2.1_libpath_with_opt_dir.patch"
     pkg.apply_patch "#{base}/aix_ruby_2.1_fix_proctitle.patch"
