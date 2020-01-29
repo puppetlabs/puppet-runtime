@@ -1,7 +1,7 @@
 component "boost" do |pkg, settings, platform|
   # Source-Related Metadata
-  pkg.version "1.67.0"
-  pkg.md5sum "4850fceb3f2222ee011d4f3ea304d2cb"
+  pkg.version "1.69.0"
+  pkg.md5sum "b50944c0c13f81ce2c006802a1186f5a"
   # Apparently boost doesn't use dots to version they use underscores....arg
   pkg.url "http://downloads.sourceforge.net/project/boost/boost/#{pkg.get_version}/boost_#{pkg.get_version.gsub('.','_')}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/boost_#{pkg.get_version.gsub('.','_')}.tar.gz"
@@ -12,8 +12,8 @@ component "boost" do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/boost/force-SONAME-option-for-solaris.patch'
   end
 
-  if platform.is_solaris? || platform.is_aix?
-    pkg.apply_patch 'resources/patches/boost/solaris-aix-boost-filesystem-unique-path.patch'
+  if platform.is_solaris?
+    pkg.apply_patch 'resources/patches/boost/solaris-pthread-data.patch'
   end
 
   if platform.is_cisco_wrlinux?
