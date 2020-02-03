@@ -48,12 +48,12 @@ proj.component 'rubygem-locale'
 proj.component 'rubygem-gettext'
 proj.component 'rubygem-fast_gettext'
 
-proj.component 'rubygem-ffi'
 if platform.is_windows? || platform.is_solaris?
   proj.component 'rubygem-minitar'
 end
 
 if platform.is_windows?
+  proj.component 'rubygem-ffi'
   proj.component 'rubygem-win32-dir'
   proj.component 'rubygem-win32-process'
   proj.component 'rubygem-win32-security'

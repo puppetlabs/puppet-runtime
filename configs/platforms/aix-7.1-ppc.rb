@@ -24,7 +24,6 @@ platform "aix-7.1-ppc" do |plat|
     "https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS/ppc/db/db-4.8.24-3.aix6.1.ppc.rpm",
     "https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS/ppc/gdbm/gdbm-1.8.3-5.aix5.2.ppc.rpm",
     "https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS/ppc/perl/perl-5.22.0-1.aix6.1.ppc.rpm",
-    "https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS/ppc/libffi/libffi-3.2.1-3.aix6.1.ppc.rpm",
     "http://pl-build-tools.delivery.puppetlabs.net/aix/6.1/ppc/pl-gcc-5.2.0-11.aix6.1.ppc.rpm",
     "http://pl-build-tools.delivery.puppetlabs.net/aix/6.1/ppc/pl-cmake-3.2.3-2.aix6.1.ppc.rpm",
   ]
