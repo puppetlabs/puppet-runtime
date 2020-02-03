@@ -29,11 +29,11 @@ component "rubygem-ffi" do |pkg, settings, platform|
     end
   end
 
-  if platform.is_solaris?
+  if platform.is_solaris? || platform.name =~ /ubuntu-16.04-ppc64el/
     base_ruby = case platform.os_version
                 when "10"
                   "/opt/csw/lib/ruby/2.0.0"
-                when "11"
+                else
                   "/opt/pl-build-tools/lib/ruby/2.1.0"
                 end
 
@@ -82,6 +82,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
       end
     end
   end
+
 
   pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
 end

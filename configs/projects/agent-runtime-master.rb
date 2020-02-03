@@ -34,6 +34,9 @@ project 'agent-runtime-master' do |proj|
   proj.component 'rubygem-hiera-eyaml'
   proj.component 'rubygem-httpclient'
   proj.component 'rubygem-thor'
+  unless platform.is_windows? || platform.is_aix? || platform.is_solaris?
+    proj.component 'rubygem-sys-filesystem'
+  end
   # SLES 15 uses the OS distro versions of boost and yaml-cpp:
   proj.component 'boost' unless platform.name =~ /sles-15/
   proj.component 'yaml-cpp' unless platform.name =~ /sles-15/
