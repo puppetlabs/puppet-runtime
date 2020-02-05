@@ -51,7 +51,7 @@ basedir=default" > /var/tmp/vanagon-noask;
   /opt/csw/bin/pkgutil -l gcc | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l ruby18 | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l readline | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
-  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i rsync gmake libgcc_s1 libreadline6 pkgconfig ggrep libffi_dev ruby20 ruby20_dev || exit 1;
+  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i rsync gmake libgcc_s1 libreadline6 pkgconfig ggrep ruby20 ruby20_dev || exit 1;
   # RE-6121 openssl 1.0.2e requires functionality not in sytem grep
   ln -sf /opt/csw/bin/ggrep /usr/bin/grep;
   ln -sf /opt/csw/bin/rsync /usr/bin/rsync;
@@ -65,11 +65,6 @@ basedir=default" > /var/tmp/vanagon-noask;
   for pkg in #{build_pkgs.join(' ')}; do \
   tmpdir=$(mktemp -p /var/tmp -d); (cd ${tmpdir} && curl -O #{build_url}/${pkg} && gunzip -c ${pkg} | pkgadd -d /dev/stdin -a /var/tmp/vanagon-noask all); \
   done
-
-  # Download the SPARC version of libffi.so
-  /opt/csw/bin/pkgutil --stream --download -T sparc:5.10 libffi6 -y
-  pkgtrans /var/opt/csw/pkgutil/packages/libffi6.sparc.5.10.pkg /opt/csw/lib all
-  cp /opt/csw/lib/CSWlibffi6/root/opt/csw/lib/libffi.so.6.0.4 /opt/csw/lib/libffi.so.6.0.4
 
   ntpdate pool.ntp.org]
 
