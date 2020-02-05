@@ -172,6 +172,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-net-http-persistent'
   proj.component 'rubygem-net-scp'
   proj.component 'rubygem-net-ssh'
+  proj.component 'rubygem-net-ssh-krb'
   proj.component 'rubygem-nori'
   proj.component 'rubygem-orchestrator_client'
   proj.component 'rubygem-public_suffix'
