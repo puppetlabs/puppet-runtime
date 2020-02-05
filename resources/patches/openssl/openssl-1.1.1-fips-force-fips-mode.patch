@@ -1,0 +1,157 @@
+-- a/SOURCES/openssl-1.1.1-force-fips-on-init.patch	1970-01-01 00:00:00.000000000 +0000
++++ a/SOURCES/openssl-1.1.1-force-fips-on-init.patch	2020-01-13 15:17:06.850638770 +0000
+@@ -0,0 +1,154 @@
++--- openssl-1.1.1/ssl/ssl_init.c.fips-enable-on-init    2020-01-09 10:30:32.328566167 +0000
+++++ openssl-1.1.1/ssl/ssl_init.c        2020-01-09 10:40:45.771704723 +0000
++@@ -243,5 +243,8 @@
++         && !RUN_ONCE(&ssl_strings, ossl_init_load_ssl_strings))
++         return 0;
++
+++    FIPS_mode_set(1);
+++    FIPS_selftest_check();
+++
++     return 1;
++ }
++
++--- openssl-1.1.1/crypto/o_init.c.fips-enable-on-init	2020-01-22 12:12:40.750159866 +0000
+++++ openssl-1.1.1/crypto/o_init.c               	2020-01-22 12:12:15.042157100 +0000
++@@ -57,7 +57,7 @@
++  * Perform FIPS module power on selftest and automatic FIPS mode switch.
++  */
++ 
++-void __attribute__ ((constructor)) OPENSSL_init_library(void)
+++void OPENSSL_init_library(void)
++ {
++     static int done = 0;
++     if (done)
++--- openssl-1.1.1/crypto/mdc2/mdc2dgst.c.orig	2020-01-23 13:03:52.129553235 +0000
+++++ openssl-1.1.1/crypto/mdc2/mdc2dgst.c	2020-01-23 13:05:37.527564576 +0000
++@@ -28,6 +28,19 @@
++ 
++ static void mdc2_body(MDC2_CTX *c, const unsigned char *in, size_t len);
++ int MDC2_Init(MDC2_CTX *c)
+++#ifdef OPENSSL_FIPS
+++{
+++  if (!FIPS_mode()) {
+++    FIPS_mode_set(1);
+++    FIPS_selftest_check();
+++  }
+++  if (FIPS_mode())
+++        OpenSSLDie(__FILE__, __LINE__, "Digest MDC2 forbidden in FIPS mode!");
+++    return private_MDC2_Init(c);
+++}
+++
+++int private_MDC2_Init(MDC2_CTX *c)
+++#endif
++ {
++     c->num = 0;
++     c->pad_type = 1;
++--- openssl-1.1.1/crypto/md2/md2_dgst.c.orig	2020-01-23 13:09:51.606591914 +0000
+++++ openssl-1.1.1/crypto/md2/md2_dgst.c	2020-01-23 13:10:40.401597165 +0000
++@@ -69,6 +69,19 @@
++ }
++ 
++ int MD2_Init(MD2_CTX *c)
+++#ifdef OPENSSL_FIPS
+++{
+++  if (!FIPS_mode()) {
+++    FIPS_mode_set(1);
+++    FIPS_selftest_check();
+++  }
+++  if (FIPS_mode())
+++        OpenSSLDie(__FILE__, __LINE__, "Digest MD2 forbidden in FIPS mode!");
+++    return private_MD2_Init(c);
+++}
+++
+++int private_MD2_Init(MD2_CTX *c)
+++#endif
++ {
++     c->num = 0;
++     memset(c->state, 0, sizeof(c->state));
++--- openssl-1.1.1/crypto/md4/md4_dgst.c.orig	2020-01-23 13:06:36.325570902 +0000
+++++ openssl-1.1.1/crypto/md4/md4_dgst.c	2020-01-23 13:07:45.103578303 +0000
++@@ -21,6 +21,19 @@
++ #define INIT_DATA_D (unsigned long)0x10325476L
++ 
++ int MD4_Init(MD4_CTX *c)
+++#ifdef OPENSSL_FIPS
+++{
+++  if (!FIPS_mode()) {
+++    FIPS_mode_set(1);
+++    FIPS_selftest_check();
+++  }
+++  if (FIPS_mode())
+++        OpenSSLDie(__FILE__, __LINE__, "Digest MD4 forbidden in FIPS mode!");
+++    return private_MD4_Init(c);
+++}
+++
+++int private_MD4_Init(MD4_CTX *c)
+++#endif
++ {
++     memset(c, 0, sizeof(*c));
++     c->A = INIT_DATA_A;
++--- openssl-1.1.1/crypto/md5/md5_dgst.c.orig	2020-01-23 12:25:54.462308160 +0000
+++++ openssl-1.1.1/crypto/md5/md5_dgst.c	2020-01-23 12:59:17.860523724 +0000
++@@ -21,6 +21,19 @@
++ #define INIT_DATA_D (unsigned long)0x10325476L
++ 
++ int MD5_Init(MD5_CTX *c)
+++#ifdef OPENSSL_FIPS
+++{
+++  if (!FIPS_mode()) {
+++    FIPS_mode_set(1);
+++    FIPS_selftest_check();
+++  }
+++  if (FIPS_mode())
+++        OpenSSLDie(__FILE__, __LINE__, "Digest MD5 forbidden in FIPS mode!");
+++    return private_MD5_Init(c);
+++}
+++
+++int private_MD5_Init(MD5_CTX *c)
+++#endif
++ {
++     memset(c, 0, sizeof(*c));
++     c->A = INIT_DATA_A;
++--- openssl-1.1.1/crypto/ripemd/rmd_dgst.c.orig	2020-01-23 13:13:18.678614195 +0000
+++++ openssl-1.1.1/crypto/ripemd/rmd_dgst.c	2020-01-23 13:14:11.009619826 +0000
++@@ -19,6 +19,19 @@
++ #endif
++ 
++ int RIPEMD160_Init(RIPEMD160_CTX *c)
+++#ifdef OPENSSL_FIPS
+++{
+++  if (!FIPS_mode()) {
+++    FIPS_mode_set(1);
+++    FIPS_selftest_check();
+++  }
+++  if (FIPS_mode())
+++        OpenSSLDie(__FILE__, __LINE__, "Digest RIPEMD160 forbidden in FIPS mode!");
+++    return private_RIPEMD160_Init(c);
+++}
+++
+++int private_RIPEMD160_Init(RIPEMD160_CTX *c)
+++#endif
++ {
++     memset(c, 0, sizeof(*c));
++     c->A = RIPEMD160_A;
++--- openssl-1.1.1/crypto/whrlpool/wp_dgst.c.orig	2020-01-23 13:20:07.863658223 +0000
+++++ openssl-1.1.1/crypto/whrlpool/wp_dgst.c	2020-01-23 13:28:06.178709690 +0000
++@@ -57,6 +57,17 @@
++ #include <string.h>
++ 
++ int WHIRLPOOL_Init(WHIRLPOOL_CTX *c)
+++#ifdef OPENSSL_FIPS
+++{
+++  FIPS_mode_set(1);
+++  FIPS_selftest_check();
+++  if (FIPS_mode())
+++        OpenSSLDie(__FILE__, __LINE__, "Digest WHIRLPOOL forbidden in FIPS mode!");
+++    return private_WHIRLPOOL_Init(c);
+++}
+++
+++int private_WHIRLPOOL_Init(WHIRLPOOL_CTX *c)
+++#endif
++ {
++     memset(c, 0, sizeof(*c));
++     return 1;
++
