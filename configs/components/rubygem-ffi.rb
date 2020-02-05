@@ -29,12 +29,19 @@ component "rubygem-ffi" do |pkg, settings, platform|
     end
   end
 
+  # due to contrib/make_sunver.pl missing on solaris 11 we cannot compile libffi, so we provide the opencsw library
+  pkg.environment "CPATH", "/opt/csw/lib/libffi-3.2.1/include" if platform.name =~ /solaris-11/
+  pkg.environment "MAKE", platform[:make] if platform.is_solaris?
+
+  pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$$PATH"
+
+  if platform.name =~ /solaris-11-sparc/
+    pkg.install_file "#{settings[:tools_root]}/#{settings[:platform_triple]}/sysroot/usr/lib/libffi.so.5.0.10", "#{settings[:libdir]}/libffi.so"
+  elsif platform.name =~ /solaris-11-i386/
+    pkg.install_file "/usr/lib/libffi.so.5.0.10", "#{settings[:libdir]}/libffi.so"
+  end
+
   if platform.is_cross_compiled?
-    pkg.environment "PATH", "/opt/csw/bin:$$PATH" if platform.is_solaris?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$$PATH" # put cross-compilation toolchains in the path
-
-    pkg.environment "MAKE", platform[:make] if platform.is_solaris?
-
     ruby_api_version = settings[:ruby_version].gsub(/\.\d*$/, '.0')
     base_ruby = case platform.name
                 when /solaris-10/
@@ -45,7 +52,6 @@ component "rubygem-ffi" do |pkg, settings, platform|
 
     # solaris 10 uses ruby 2.0 which doesn't install native extensions based on architecture
     unless platform.name =~ /solaris-10/
-
       # weird architecture naming conventions...
       target_architecture = if platform.architecture =~ /ppc64el|ppc64le/
                               "powerpc64le"
