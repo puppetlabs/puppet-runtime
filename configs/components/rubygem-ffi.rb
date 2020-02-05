@@ -29,60 +29,46 @@ component "rubygem-ffi" do |pkg, settings, platform|
     end
   end
 
-  if platform.is_solaris? || platform.name =~ /ubuntu-16.04-ppc64el/
-    base_ruby = case platform.os_version
-                when "10"
+  if platform.is_cross_compiled?
+    pkg.environment "PATH", "/opt/csw/bin:$$PATH" if platform.is_solaris?
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:$$PATH" # put cross-compilation toolchains in the path
+
+    pkg.environment "MAKE", platform[:make] if platform.is_solaris?
+
+    ruby_api_version = settings[:ruby_version].gsub(/\.\d*$/, '.0')
+    base_ruby = case platform.name
+                when /solaris-10/
                   "/opt/csw/lib/ruby/2.0.0"
                 else
                   "/opt/pl-build-tools/lib/ruby/2.1.0"
                 end
 
-    ffi_lib_version = case platform.os_version
-                      when "10"
-                        "6.0.4"
-                      when "11"
-                        "5.0.10"
-                      end
+    # solaris 10 uses ruby 2.0 which doesn't install native extensions based on architecture
+    unless platform.name =~ /solaris-10/
 
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$$PATH"
+      # weird architecture naming conventions...
+      target_architecture = if platform.architecture =~ /ppc64el|ppc64le/
+                              "powerpc64le"
+                            else
+                              platform.architecture
+                            end
 
-    case platform.os_version
-    when "10"
-      pkg.install_file "/opt/csw/lib/libffi.so.#{ffi_lib_version}", "#{settings[:libdir]}/libffi.so.6"
-    when "11"
-      pkg.environment "CPATH", "/opt/csw/lib/libffi-3.2.1/include"
-      pkg.environment "MAKE", platform[:make]
-
-      if platform.is_cross_compiled?
-        # install libffi.so from pl-build-tools
-        pkg.install_file "#{settings[:tools_root]}/#{settings[:platform_triple]}/sysroot/usr/lib/libffi.so.#{ffi_lib_version}", "#{settings[:libdir]}/libffi.so"
-
-        # monkey-patch rubygems to think we're running on the destination ruby and architecture
-        ruby_api_version = settings[:ruby_version].gsub(/\.\d*$/, '.0')
-        pkg.build do
-          [
-            %(#{platform[:sed]} -i 's/Gem::Platform.local.to_s/&.gsub("x86", "#{platform.architecture}")/g' #{base_ruby}/rubygems/basic_specification.rb),
-            %(#{platform[:sed]} -i 's/Gem.extension_api_version/"#{ruby_api_version}"/g' #{base_ruby}/rubygems/basic_specification.rb)
-          ]
-        end
-      else
-        # install system libffi.so if we're not cross compiling
-        pkg.install_file "/usr/lib/libffi.so.#{ffi_lib_version}", "#{settings[:libdir]}/libffi.so"
-      end
-    end
-
-    if platform.is_cross_compiled?
-      # monkey-patch rubygems to require our custom rbconfig when
-      # building gems with native extensions
-      sed_command = %(s|Gem.ruby|&, '-r/opt/puppetlabs/puppet/share/doc/rbconfig-#{settings[:ruby_version]}-orig.rb'|)
       pkg.build do
         [
-          %(#{platform[:sed]} -i "#{sed_command}" #{base_ruby}/rubygems/ext/ext_conf_builder.rb)
+          %(#{platform[:sed]} -i 's/Gem::Platform.local.to_s/"#{target_architecture}-linux"/' #{base_ruby}/rubygems/basic_specification.rb),
+          %(#{platform[:sed]} -i 's/Gem.extension_api_version/"#{ruby_api_version}"/' #{base_ruby}/rubygems/basic_specification.rb)
         ]
       end
     end
-  end
 
+    # make rubygems use our target rbconfig when installing gems
+    sed_command = %(s|Gem.ruby|&, '-r/opt/puppetlabs/puppet/share/doc/rbconfig-#{settings[:ruby_version]}-orig.rb'|)
+    pkg.build do
+      [
+        %(#{platform[:sed]} -i "#{sed_command}" #{base_ruby}/rubygems/ext/ext_conf_builder.rb)
+      ]
+    end
+  end
 
   pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
 end
