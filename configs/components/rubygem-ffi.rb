@@ -33,7 +33,9 @@ component "rubygem-ffi" do |pkg, settings, platform|
   pkg.environment "CPATH", "/opt/csw/lib/libffi-3.2.1/include" if platform.name =~ /solaris-11/
   pkg.environment "MAKE", platform[:make] if platform.is_solaris?
 
-  pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$$PATH"
+  if platform.is_cross_compiled? || platform.is_solaris?
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$$PATH"
+  end
 
   if platform.name =~ /solaris-11-sparc/
     pkg.install_file "#{settings[:tools_root]}/#{settings[:platform_triple]}/sysroot/usr/lib/libffi.so.5.0.10", "#{settings[:libdir]}/libffi.so"
