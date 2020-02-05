@@ -149,7 +149,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-bindata'
   proj.component 'rubygem-builder'
   proj.component 'rubygem-CFPropertyList'
-  proj.component 'rubygem-colored'
+  proj.component 'rubygem-colored2'
   proj.component 'rubygem-concurrent-ruby'
   proj.component 'rubygem-connection_pool'
   proj.component 'rubygem-cri'
