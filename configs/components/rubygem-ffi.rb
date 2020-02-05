@@ -53,15 +53,17 @@ component "rubygem-ffi" do |pkg, settings, platform|
     # solaris 10 uses ruby 2.0 which doesn't install native extensions based on architecture
     unless platform.name =~ /solaris-10/
       # weird architecture naming conventions...
-      target_architecture = if platform.architecture =~ /ppc64el|ppc64le/
-                              "powerpc64le"
-                            else
-                              platform.architecture
-                            end
+      target_triple = if platform.architecture =~ /ppc64el|ppc64le/
+                        "powerpc64le-linux"
+                      elsif platform.name =~ /solaris-11-sparc/
+                        "sparc-solaris-2.11"
+                      else
+                        "#{platform.architecture}-linux"
+                      end
 
       pkg.build do
         [
-          %(#{platform[:sed]} -i 's/Gem::Platform.local.to_s/"#{target_architecture}-linux"/' #{base_ruby}/rubygems/basic_specification.rb),
+          %(#{platform[:sed]} -i 's/Gem::Platform.local.to_s/"#{target_triple}"/' #{base_ruby}/rubygems/basic_specification.rb),
           %(#{platform[:sed]} -i 's/Gem.extension_api_version/"#{ruby_api_version}"/' #{base_ruby}/rubygems/basic_specification.rb)
         ]
       end
