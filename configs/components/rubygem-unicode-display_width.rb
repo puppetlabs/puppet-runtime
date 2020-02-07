@@ -1,6 +1,6 @@
 component 'rubygem-unicode-display_width' do |pkg, settings, platform|
-  pkg.version '1.6.0'
-  pkg.md5sum '3722d19455b4a1c2b38aeee006aa3ddc'
+  pkg.version '1.6.1'
+  pkg.md5sum '2892f7d0f315d6da30c2d4bdd1c6f216'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
