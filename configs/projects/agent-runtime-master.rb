@@ -36,7 +36,7 @@ project 'agent-runtime-master' do |proj|
   proj.component 'rubygem-httpclient'
   proj.component 'rubygem-thor'
 
-  unless platform.is_windows? || platform.is_aix? || platform.is_solaris?
+  unless platform.is_windows?
     proj.component 'rubygem-sys-filesystem'
   end
 
