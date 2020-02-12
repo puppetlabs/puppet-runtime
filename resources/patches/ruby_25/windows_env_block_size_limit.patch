@@ -1,0 +1,117 @@
+From 490fbc4c858e1b37f338c59366a84cc228c53c3e Mon Sep 17 00:00:00 2001
+From: nobu <nobu@b2dd03c8-39d4-4d8f-98ff-823fe69b080e>
+Date: Sat, 11 Aug 2018 13:18:55 +0000
+Subject: [PATCH] hash.c: env block size limit on Windows
+
+* hash.c (ruby_setenv): do not check environment block size.
+  c.f. https://msdn.microsoft.com/en-us/library/windows/desktop/ms682653(v=vs.85).aspx
+  Starting with Windows Vista and Windows Server 2008, there is no
+  technical limitation on the size of the environment block.
+  [ruby-core:88400] [Bug #14979]
+
+git-svn-id: svn+ssh://ci.ruby-lang.org/ruby/trunk@64293 b2dd03c8-39d4-4d8f-98ff-823fe69b080e
+---
+ hash.c                | 32 +++++++++++++++++++++++++-------
+ test/ruby/test_env.rb | 18 ++++++++++++++----
+ 2 files changed, 39 insertions(+), 11 deletions(-)
+
+diff --git a/hash.c b/hash.c
+index c457923ddf1e..d58e67cf8764 100644
+--- a/hash.c
++++ b/hash.c
+@@ -3549,10 +3549,33 @@ getenvsize(const WCHAR* p)
+     while (*p++) p += lstrlenW(p) + 1;
+     return p - porg + 1;
+ }
++
+ static size_t
+ getenvblocksize(void)
+ {
++#ifdef _MAX_ENV
++    return _MAX_ENV;
++#else
+     return 32767;
++#endif
++}
++
++static int
++check_envsize(size_t n)
++{
++    if (_WIN32_WINNT < 0x0600 && rb_w32_osver() < 6) {
++	/* https://msdn.microsoft.com/en-us/library/windows/desktop/ms682653(v=vs.85).aspx */
++	/* Windows Server 2003 and Windows XP: The maximum size of the
++	 * environment block for the process is 32,767 characters. */
++	WCHAR* p = GetEnvironmentStringsW();
++	if (!p) return -1; /* never happen */
++	n += getenvsize(p);
++	FreeEnvironmentStringsW(p);
++	if (n >= getenvblocksize()) {
++	    return -1;
++	}
++    }
++    return 0;
+ }
+ #endif
+ 
+@@ -3592,16 +3615,11 @@ ruby_setenv(const char *name, const char *value)
+     check_envname(name);
+     len = MultiByteToWideChar(CP_UTF8, 0, name, -1, NULL, 0);
+     if (value) {
+-	WCHAR* p = GetEnvironmentStringsW();
+-	size_t n;
+ 	int len2;
+-	if (!p) goto fail; /* never happen */
+-	n = lstrlen(name) + 2 + strlen(value) + getenvsize(p);
+-	FreeEnvironmentStringsW(p);
+-	if (n >= getenvblocksize()) {
++	len2 = MultiByteToWideChar(CP_UTF8, 0, value, -1, NULL, 0);
++	if (check_envsize((size_t)len + len2)) { /* len and len2 include '\0' */
+ 	    goto fail;  /* 2 for '=' & '\0' */
+ 	}
+-	len2 = MultiByteToWideChar(CP_UTF8, 0, value, -1, NULL, 0);
+ 	wname = ALLOCV_N(WCHAR, buf, len + len2);
+ 	wvalue = wname + len;
+ 	MultiByteToWideChar(CP_UTF8, 0, name, -1, wname, len);
+diff --git a/test/ruby/test_env.rb b/test/ruby/test_env.rb
+index 2f4923fbd95a..892e9b7bd694 100644
+--- a/test/ruby/test_env.rb
++++ b/test/ruby/test_env.rb
+@@ -457,7 +457,7 @@ def test_update
+   def test_huge_value
+     huge_value = "bar" * 40960
+     ENV["foo"] = "bar"
+-    if /mswin|mingw/ =~ RUBY_PLATFORM
++    if /mswin|mingw/ =~ RUBY_PLATFORM && windows_version < 6
+       assert_raise(Errno::EINVAL) { ENV["foo"] = huge_value }
+       assert_equal("bar", ENV["foo"])
+     else
+@@ -467,6 +467,10 @@ def test_huge_value
+   end
+ 
+   if /mswin|mingw/ =~ RUBY_PLATFORM
++    def windows_version
++      @windows_version ||= %x[ver][/Version (\d+)/, 1].to_i
++    end
++
+     def test_win32_blocksize
+       keys = []
+       len = 32767 - ENV.to_a.flatten.inject(1) {|r,e| r + e.bytesize + 1}
+@@ -476,9 +480,15 @@ def test_win32_blocksize
+         keys << key
+         ENV[key] = val
+       end
+-      1.upto(12) {|i|
+-        assert_raise(Errno::EINVAL) { ENV[key] = val }
+-      }
++      if windows_version < 6
++        1.upto(12) {|i|
++          assert_raise(Errno::EINVAL) { ENV[key] = val }
++        }
++      else
++        1.upto(12) {|i|
++          assert_nothing_raised(Errno::EINVAL) { ENV[key] = val }
++        }
++      end
+     ensure
+       keys.each {|k| ENV.delete(k)}
+     end
