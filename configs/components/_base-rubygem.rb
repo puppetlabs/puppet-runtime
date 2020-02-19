@@ -15,7 +15,7 @@ unless version && !version.empty?
 end
 
 pkg.build_requires "runtime-#{settings[:runtime_project]}"
-pkg.build_requires "pl-ruby-patch"
+pkg.build_requires "pl-ruby-patch" if platform.is_cross_compiled?
 
 if platform.is_windows?
   # This part applies to all gems except gettext and gettext-setup
