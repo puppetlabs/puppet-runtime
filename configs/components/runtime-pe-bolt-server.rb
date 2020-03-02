@@ -8,6 +8,15 @@ component "runtime-pe-bolt-server" do |pkg, settings, platform|
     platform.provision_with "echo 'Acquire::AllowInsecureRepositories \"true\";' > /etc/apt/apt.conf.d/90insecure"
   end
 
-  platform.add_build_repository("http://enterprise.delivery.puppetlabs.net/#{settings[:pe_version]}/repos/#{platform.name}/#{platform.name}.repo")
+  artifactory_url = 'https://artifactory.delivery.puppetlabs.net/artifactory'
+
+  if platform.is_rpm?
+    platform.add_build_repository "#{artifactory_url}/rpm_enterprise__local/#{settings[:pe_version]}/repos/#{platform.name}/#{platform.name}.repo"
+  end
+
+  if platform.is_deb?
+    platform.add_build_repository "#{artifactory_url}/debian_enterprise__local/#{settings[:pe_version]}/repos/#{platform.name}/#{platform.name}.list"
+  end
+
   pkg.build_requires('puppet-agent')
 end
