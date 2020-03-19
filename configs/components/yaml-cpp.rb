@@ -3,8 +3,8 @@ component "yaml-cpp" do |pkg, settings, platform|
   pkg.ref "refs/tags/yaml-cpp-0.6.2"
 
   # Build-time Configuration
-  cmake = "#{settings[:tools_root]}/bin/cmake"
-  cmake_toolchain_file = "-DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/pl-build-toolchain.cmake"
+  cmake_toolchain_file = ''
+  cmake = '/usr/bin/cmake'
   make = 'make'
   mkdir = 'mkdir'
 
@@ -23,12 +23,6 @@ component "yaml-cpp" do |pkg, settings, platform|
   elsif platform.is_macos?
     cmake_toolchain_file = ""
     cmake = "/usr/local/bin/cmake"
-  elsif platform.name =~ /sles-15|el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 29)
-    pkg.environment 'CPPFLAGS', settings[:cppflags]
-    pkg.environment 'CFLAGS', settings[:cflags]
-    pkg.environment 'LDFLAGS', settings[:ldflags]
-    cmake_toolchain_file = ''
-    cmake = '/usr/bin/cmake'
   elsif platform.is_windows?
     make = "#{settings[:gcc_bindir]}/mingw32-make"
     mkdir = '/usr/bin/mkdir'
@@ -36,6 +30,13 @@ component "yaml-cpp" do |pkg, settings, platform|
     pkg.environment "CYGWIN", settings[:cygwin]
     cmake = "C:/ProgramData/chocolatey/bin/cmake.exe -G \"MinGW Makefiles\""
     cmake_toolchain_file = "-DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/pl-build-toolchain.cmake"
+  elsif platform.is_aix? || platform.name =~ /cisco-wrlinux-[57]|debian-[89]|el-[567]|eos-4|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04)/
+    cmake = "#{settings[:tools_root]}/bin/cmake"
+    cmake_toolchain_file = "-DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/pl-build-toolchain.cmake"
+  else
+    pkg.environment 'CPPFLAGS', settings[:cppflags]
+    pkg.environment 'CFLAGS', settings[:cflags]
+    pkg.environment 'LDFLAGS', settings[:ldflags]
   end
 
   # Build Commands
