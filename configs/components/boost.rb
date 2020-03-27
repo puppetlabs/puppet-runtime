@@ -10,9 +10,6 @@ component "boost" do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/boost/0001-fix-build-for-solaris.patch'
     pkg.apply_patch 'resources/patches/boost/Fix-bootstrap-build-for-solaris-10.patch'
     pkg.apply_patch 'resources/patches/boost/force-SONAME-option-for-solaris.patch'
-  end
-
-  if platform.is_solaris?
     pkg.apply_patch 'resources/patches/boost/solaris-pthread-data.patch'
   end
 
@@ -100,13 +97,13 @@ component "boost" do |pkg, settings, platform|
   elsif platform.is_aix?
     pkg.environment "PATH" => "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
-  elsif platform.name =~ /sles-15|el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 29)
+  elsif platform.name =~ /cisco-wrlinux-[57]|debian-[89]|el-[567]|eos-4|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04)/
+    pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
+    linkflags = "-Wl,-rpath=#{settings[:libdir]},-rpath=#{settings[:libdir]}64"
+  else
     pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
     linkflags = "#{settings[:ldflags]},-rpath=#{settings[:libdir]}64"
     gpp = '/usr/bin/g++'
-  else
-    pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
-    linkflags = "-Wl,-rpath=#{settings[:libdir]},-rpath=#{settings[:libdir]}64"
   end
 
   # Set user-config.jam
