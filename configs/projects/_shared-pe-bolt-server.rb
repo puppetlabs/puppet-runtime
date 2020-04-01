@@ -125,6 +125,7 @@ proj.component('rubygem-rubyntlm')
 proj.component('rubygem-ruby_smb')
 proj.component('rubygem-rubyzip')
 proj.component('rubygem-terminal-table')
+proj.component('rubygem-thor')
 proj.component('rubygem-unicode-display_width')
 proj.component('rubygem-yard')
 
