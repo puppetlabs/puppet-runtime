@@ -82,10 +82,10 @@ project 'pdk-runtime' do |proj|
       # only set 'latest_puppet' if there is an uppper bound on compatible puppet version for this ruby version
       latest_puppet: "4.10.12",
     },
-    "2.5.7" => {
-      ruby_version: "2.5.7",
+    "2.5.8" => {
+      ruby_version: "2.5.8",
       ruby_api: "2.5.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.7"),
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.8"),
     }
   }
 

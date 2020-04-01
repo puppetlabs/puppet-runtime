@@ -1,5 +1,5 @@
 component 'ruby-2.5-stomp' do |pkg, settings, platform|
-  expected_ruby_version = '2.5.7'
+  expected_ruby_version = '2.5.8'
 
   unless settings[:ruby_version] == expected_ruby_version
     unless settings.key?(:additional_rubies) && settings[:additional_rubies].key?(expected_ruby_version)
