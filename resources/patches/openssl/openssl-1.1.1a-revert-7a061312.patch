@@ -22,12 +22,12 @@ index 3dda4e89bf..21be1071de 100644
  LIBS=libcrypto libssl
 +ORDINALS[libcrypto]=crypto
 +ORDINALS[libssl]=ssl
- INCLUDE[libcrypto]=. crypto/include include
+ INCLUDE[libcrypto]=. include
  INCLUDE[libssl]=. include
  DEPEND[libssl]=libcrypto
-@@ -24,61 +26,6 @@ GENERATE[crypto/include/internal/bn_conf.h]=crypto/include/internal/bn_conf.h.in
- DEPEND[crypto/include/internal/dso_conf.h]=configdata.pm
- GENERATE[crypto/include/internal/dso_conf.h]=crypto/include/internal/dso_conf.h.in
+@@ -24,61 +26,6 @@
+ DEPEND[include/crypto/dso_conf.h]=configdata.pm
+ GENERATE[include/crypto/dso_conf.h]=include/crypto/dso_conf.h.in
  
 -IF[{- defined $target{shared_defflag} -}]
 -  IF[{- $config{target} =~ /^mingw/ -}]
