@@ -7,6 +7,9 @@ component "rubygem-ffi" do |pkg, settings, platform|
   # Windows versions of the FFI gem have custom filenames, so we overwite the
   # defaults that _base-rubygem provides here, just for Windows.
   if platform.is_windows?
+    # Pin ffi on Windows due to win32-service failures
+    # see: https://github.com/chef/win32-service/issues/70
+    pkg.version '1.9.25'
     # Vanagon's `pkg.mirror` is additive, and the _base_rubygem sets the
     # non-Windows gem as the first mirror, which is incorrect. We need to unset
     # the list of mirrors before adding the Windows-appropriate ones here:
