@@ -217,7 +217,7 @@ component 'ruby-2.5.8' do |pkg, settings, platform|
     pkg.install do
       [
         "#{host_ruby} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
-        "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-2.5.8-orig.rb",
+        "cp original_rbconfig.rb #{settings[:datadir]}/doc/rbconfig-#{pkg.get_version}-orig.rb",
         "cp new_rbconfig.rb #{rbconfig_topdir}/rbconfig.rb",
       ]
     end
