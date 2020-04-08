@@ -1,12 +1,15 @@
 component "rubygem-ffi" do |pkg, settings, platform|
-  pkg.version '1.9.25'
-  pkg.md5sum "e8923807b970643d9e356a65038769ac"
+  pkg.version '1.12.2'
+  pkg.md5sum "28dc3d1294a04b728d24ba025e331b13"
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
   # Windows versions of the FFI gem have custom filenames, so we overwite the
   # defaults that _base-rubygem provides here, just for Windows.
   if platform.is_windows?
+    # Pin ffi on Windows due to win32-service failures
+    # see: https://github.com/chef/win32-service/issues/70
+    pkg.version '1.9.25'
     # Vanagon's `pkg.mirror` is additive, and the _base_rubygem sets the
     # non-Windows gem as the first mirror, which is incorrect. We need to unset
     # the list of mirrors before adding the Windows-appropriate ones here:
@@ -41,6 +44,8 @@ component "rubygem-ffi" do |pkg, settings, platform|
     pkg.install_file "#{settings[:tools_root]}/#{settings[:platform_triple]}/sysroot/usr/lib/libffi.so.5.0.10", "#{settings[:libdir]}/libffi.so"
   elsif platform.name =~ /solaris-11-i386/
     pkg.install_file "/usr/lib/libffi.so.5.0.10", "#{settings[:libdir]}/libffi.so"
+  elsif platform.name =~ /solaris-10-i386/
+    pkg.install_file "/opt/csw/lib/libffi.so.6", "#{settings[:libdir]}/libffi.so.6"
   end
 
   if platform.name =~ /el-5-x86_64/

@@ -1,6 +1,6 @@
 component "rubygem-multi_json" do |pkg, settings, platform|
-  pkg.version '1.13.1'
-  pkg.md5sum 'b7702a827fd011461fbda6b80f2219d5'
+  pkg.version '1.14.1'
+  pkg.md5sum 'ff088e41a3af364202670f3afdead842'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
