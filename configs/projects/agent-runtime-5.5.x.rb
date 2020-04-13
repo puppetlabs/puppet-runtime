@@ -1,7 +1,7 @@
 project 'agent-runtime-5.5.x' do |proj|
   # Set preferred component versions if they differ from defaults:
   proj.setting :augeas_version, '1.12.0'
-  proj.setting :ruby_version, '2.4.9'
+  proj.setting :ruby_version, '2.4.10'
   proj.setting :rubygem_net_ssh, '4.1.0'
   proj.setting :rubygem_semantic_puppet_version, '0.1.2'
   proj.setting :openssl_version, platform.name =~ /windowsfips-2012r2/ ? '1.0.2' : '1.1.1'
