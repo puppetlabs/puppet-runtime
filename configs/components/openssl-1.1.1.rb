@@ -122,6 +122,10 @@ component 'openssl' do |pkg, settings, platform|
     'no-ssl3'
   ]
 
+  if settings[:debug_symbols]
+    configure_flags += ['-g3', '-O0', '-fno-omit-frame-pointer', '-fno-inline-functions']
+  end
+
   # Individual projects may provide their own openssl configure flags:
   project_flags = settings[:openssl_extra_configure_flags] || []
   perl_exec = ''

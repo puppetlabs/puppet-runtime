@@ -42,7 +42,7 @@ component "boost" do |pkg, settings, platform|
   execute = "./"
   addtl_flags = ""
   gpp = "#{settings[:tools_root]}/bin/g++"
-  b2flags = ""
+  b2flags = []
   link_option = settings[:boost_link_option]
   b2location = "#{settings[:prefix]}/bin/b2"
   bjamlocation = "#{settings[:prefix]}/bin/bjam"
@@ -60,9 +60,9 @@ component "boost" do |pkg, settings, platform|
   elsif platform.is_solaris?
     pkg.environment 'PATH', '/opt/pl-build-tools/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/csw/bin'
     linkflags = "-Wl,-rpath=#{settings[:libdir]},-L/opt/pl-build-tools/#{settings[:platform_triple]}/lib,-L/usr/lib"
-    b2flags = "define=_XOPEN_SOURCE=600"
+    b2flags << "define=_XOPEN_SOURCE=600"
     if platform.architecture == "sparc"
-      b2flags = "#{b2flags} instruction-set=v9"
+      b2flags << "instruction-set=v9"
     end
     gpp = "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
   elsif platform.is_windows?
@@ -87,10 +87,7 @@ component "boost" do |pkg, settings, platform|
     # We want it to be Vista/Server 2008
     #
     # Set layout to system to avoid nasty version numbers and arches in filenames
-    b2flags = "address-model=#{arch} \
-               define=WINVER=0x0600 \
-               define=_WIN32_WINNT=0x0600 \
-               --layout=system"
+    b2flags += ["address-model=#{arch}", 'define=WINVER=0x0600', 'define=_WIN32_WINNT=0x0600', '--layout=system']
 
     # We don't have iconv available on windows yet
     install_only_flags = "boost.locale.iconv=off"
@@ -117,6 +114,12 @@ component "boost" do |pkg, settings, platform|
     end
   end
 
+  if settings[:debug_symbols]
+    b2flags += ['debug-symbols=on', 'variant=debug']
+  else
+    b2flags << 'variant=release'
+  end
+
   # Build Commands
 
   # On some platforms, we have multiple means of specifying paths. Sometimes, we need to use either one
@@ -131,10 +134,9 @@ component "boost" do |pkg, settings, platform|
       "#{execute}bootstrap#{bootstrap_suffix} #{with_toolset}",
       "./b2 \
       install \
-      variant=release \
       #{link_option} \
       toolset=#{toolset} \
-      #{b2flags} \
+      #{b2flags.join(' ')} \
       -d+2 \
       --prefix=#{settings[:prefix]} \
       --debug-configuration"
@@ -145,10 +147,9 @@ component "boost" do |pkg, settings, platform|
     [
       "#{b2location} \
       install \
-      variant=release \
       #{link_option} \
       toolset=#{toolset} \
-      #{b2flags} \
+      #{b2flags.join(' ')} \
       -d+2 \
       --debug-configuration \
       --prefix=#{settings[:prefix]} \
