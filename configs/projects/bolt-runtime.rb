@@ -163,6 +163,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-hiera'
   proj.component 'rubygem-httpclient'
   proj.component 'rubygem-jmespath'
+  proj.component 'rubygem-jwt'
   proj.component 'rubygem-little-plugger'
   proj.component 'rubygem-log4r'
   proj.component 'rubygem-logging'
