@@ -90,7 +90,7 @@ else
 end
 
 raise "Couldn't find a :ruby_version setting in the project file" unless proj.ruby_version
-ruby_base_version = proj.ruby_version.gsub(/(\d)\.(\d)\.(\d)/, '\1.\2.0')
+ruby_base_version = proj.ruby_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2.0')
 proj.setting(:gem_home, File.join(proj.libdir, 'ruby', 'gems', ruby_base_version))
 proj.setting(:ruby_vendordir, File.join(proj.libdir, "ruby", "vendor_ruby"))
 

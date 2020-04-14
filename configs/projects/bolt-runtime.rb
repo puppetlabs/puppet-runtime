@@ -56,7 +56,7 @@ project 'bolt-runtime' do |proj|
     proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
   end
 
-  ruby_base_version = proj.ruby_version.gsub(/(\d)\.(\d)\.(\d)/, '\1.\2.0')
+  ruby_base_version = proj.ruby_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2.0')
   proj.setting(:gem_home, File.join(proj.libdir, 'ruby', 'gems', ruby_base_version))
   proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local --bindir=#{proj.ruby_bindir}")
 
