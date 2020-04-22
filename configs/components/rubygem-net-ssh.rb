@@ -4,6 +4,8 @@ component "rubygem-net-ssh" do |pkg, settings, platform|
   pkg.version version
 
   case version
+  when "6.0.2"
+    pkg.md5sum "20d6098cf1139c66c26d53f0c42456b3"
   when "5.2.0"
     pkg.md5sum "341114b3bf34257abd3b11bd16b0c99d"
   when "4.2.0"
