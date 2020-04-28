@@ -29,6 +29,8 @@ matrix:
           fi
     - stage: runtime container tests
       rvm: 2.6.6
+      services:
+        - docker
       env:
         - DOCKER_COMPOSE_VERSION=1.25.5
       script:
