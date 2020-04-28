@@ -9,6 +9,7 @@ pwd := $(shell pwd)
 export BUNDLE_PATH = $(pwd)/.bundle/gems
 export BUNDLE_BIN = $(pwd)/.bundle/bin
 export GEMFILE = $(pwd)/Gemfile
+export DOCKER_BUILDKIT = 1
 
 version = $(shell echo $(git_describe) | sed 's/-.*//')
 agent_branches := 1.10.x 5.5.x master
@@ -31,6 +32,7 @@ build: prep build-agent-runtimes
 build-agent-runtimes: prep
 	@for branch in $(agent_branches); do \
 		docker build \
+			${DOCKER_BUILD_FLAGS} \
 			--pull \
 			--build-arg vcs_ref=$(vcs_ref) \
 			--build-arg build_date=$(build_date) \

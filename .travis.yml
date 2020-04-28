@@ -33,6 +33,8 @@ matrix:
         - docker
       env:
         - DOCKER_COMPOSE_VERSION=1.25.5
+        # necessary to prevent overwhelming TravisCI build output limits
+        - DOCKER_BUILD_FLAGS="--progress plain"
       script:
         - |
           if [ -n "$TRAVIS_COMMIT_RANGE" ]; then
