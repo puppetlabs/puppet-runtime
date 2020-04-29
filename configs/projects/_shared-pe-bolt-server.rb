@@ -128,6 +128,7 @@ proj.component('rubygem-rubyzip')
 proj.component('rubygem-terminal-table')
 proj.component('rubygem-thor')
 proj.component('rubygem-unicode-display_width')
+proj.component('rubygem-x25519')
 proj.component('rubygem-yard')
 
 # Core Windows dependencies
