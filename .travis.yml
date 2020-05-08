@@ -1,3 +1,4 @@
+dist: focal
 sudo: false
 language: ruby
 matrix:
@@ -27,7 +28,7 @@ matrix:
             false
           fi
     - stage: runtime container tests
-      rvm: 2.5.5
+      rvm: 2.6.6
       env:
         - DOCKER_COMPOSE_VERSION=1.25.5
       script:
