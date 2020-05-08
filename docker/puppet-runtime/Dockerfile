@@ -37,3 +37,5 @@ LABEL org.label-schema.name="$project Runtime, $project_branch branch" \
 RUN chmod +x /runtime/validate_downloads.sh && \
     /runtime/validate_downloads.sh && \
     gunzip -c ${file_base}.tar.gz | tar -k -C / -xf -
+
+COPY Dockerfile /
