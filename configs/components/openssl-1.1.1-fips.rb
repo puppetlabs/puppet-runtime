@@ -24,6 +24,7 @@ component 'openssl-1.1.1-fips' do |pkg, settings, _platform|
   # FIXME: pkg.apply_patch is not usefull here as vanagon component does
   # not know how to extract rpm and patch happend before configure step
   # proper fix would be extension in vanagon for source rpm handling
+  pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-patch-openssl-cnf.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-force-fips-mode.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-post-rand.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-spec-file.patch'
@@ -35,6 +36,7 @@ component 'openssl-1.1.1-fips' do |pkg, settings, _platform|
   pkg.configure do
     [
       "rpm -i #{topdir} openssl-#{pkg.get_version}.el8.src.rpm",
+      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-patch-openssl-cnf.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-force-fips-mode.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-post-rand.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-spec-file.patch && cd -"
