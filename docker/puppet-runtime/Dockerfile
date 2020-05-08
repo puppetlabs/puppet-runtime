@@ -7,7 +7,9 @@ ARG project="agent"
 ARG project_branch="master"
 ARG artifactory=https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/${version}/el-7-x86_64
 ARG file_base=${project}-runtime-${project_branch}-${version}.el-7-x86_64
-ARG file_base_uri=${artifactory}/${file_base}
+# validate_downloads.sh consumes these values
+ARG RUNTIME_FILE="${file_base}.tar.gz"
+ARG SETTINGS_FILE="${file_base}.settings.yaml"
 
 LABEL org.label-schema.maintainer="Puppet Release Team <release@puppet.com>" \
       org.label-schema.vendor="Puppet" \
@@ -21,14 +23,11 @@ COPY validate_downloads.sh /runtime/validate_downloads.sh
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 # hadolint ignore=DL3020
-ADD ${file_base_uri}.tar.gz \
-    ${file_base_uri}.tar.gz.sha1 \
-    ${file_base_uri}.settings.yaml \
-    ${file_base_uri}.settings.yaml.sha1 \
+ADD ${artifactory}/${RUNTIME_FILE} \
+    ${artifactory}/${RUNTIME_FILE}.sha1 \
+    ${artifactory}/${SETTINGS_FILE} \
+    ${artifactory}/${SETTINGS_FILE}.sha1 \
     /
-
-ENV RUNTIME_FILE="${file_base}.tar.gz" \
-    SETTINGS_FILE="${file_base}.settings.yaml"
 
 LABEL org.label-schema.name="$project Runtime, $project_branch branch" \
       org.label-schema.version="$version" \
