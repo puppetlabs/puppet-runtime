@@ -16,6 +16,7 @@ variables:
   NAMESPACE: puppet
   CONTAINER_NAME: puppet-runtime
   LINT_IGNORES:
+  DOCKER_BUILDKIT: 1
 
 workspace:
   clean: resources
