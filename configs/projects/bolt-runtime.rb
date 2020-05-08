@@ -122,6 +122,12 @@ project 'bolt-runtime' do |proj|
     proj.component 'rubygem-ed25519'
   end
 
+  # Building native extensions for the x25519 gem is only supported
+  # on 64-bit, non-Windows systems.
+  unless platform.is_windows? || platform.dist == 'el6' || platform.architecture == 'i386'
+    proj.component 'rubygem-x25519'
+  end
+
   # Puppet dependencies
   proj.component 'rubygem-hocon'
   proj.component 'rubygem-deep_merge'
