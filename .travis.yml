@@ -28,6 +28,8 @@ matrix:
           fi
     - stage: runtime container tests
       rvm: 2.5.5
+      env:
+        - DOCKER_COMPOSE_VERSION=1.25.5
       script:
         - |
           if [ -n "$TRAVIS_COMMIT_RANGE" ]; then
@@ -37,6 +39,10 @@ matrix:
             }
           fi
           set -ex
+          sudo rm /usr/local/bin/docker-compose
+          curl --location https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname --kernel-name`-`uname --machine` > docker-compose
+          chmod +x docker-compose
+          sudo mv docker-compose /usr/local/bin
           cd docker
           make lint build test
           set +x

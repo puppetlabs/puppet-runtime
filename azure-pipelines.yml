@@ -15,7 +15,8 @@ pool:
 variables:
   NAMESPACE: puppet
   CONTAINER_NAME: puppet-runtime
-  LINT_IGNORES: DL3008 DL3018 DL4000 DL4001
+  LINT_IGNORES:
+  DOCKER_BUILDKIT: 1
 
 workspace:
   clean: resources
