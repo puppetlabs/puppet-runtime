@@ -1,3 +1,4 @@
+dist: focal
 sudo: false
 language: ruby
 matrix:
@@ -27,10 +28,14 @@ matrix:
             false
           fi
     - stage: runtime container tests
-      rvm: 2.5.5
+      rvm: 2.6.6
+      services:
+        - docker
       env:
         - DOCKER_COMPOSE_VERSION=1.25.5
-      script:
+        # necessary to prevent overwhelming TravisCI build output limits
+        - DOCKER_BUILD_FLAGS="--progress plain"
+      before_install:
         - |
           if [ -n "$TRAVIS_COMMIT_RANGE" ]; then
             git diff --name-only $TRAVIS_COMMIT_RANGE | grep docker || {
@@ -38,13 +43,15 @@ matrix:
               exit
             }
           fi
-          set -ex
-          sudo rm /usr/local/bin/docker-compose
-          curl --location https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname --kernel-name`-`uname --machine` > docker-compose
-          chmod +x docker-compose
-          sudo mv docker-compose /usr/local/bin
-          cd docker
-          make lint build test
-          set +x
+        - sudo rm /usr/local/bin/docker-compose
+        - curl --location https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname --kernel-name`-`uname --machine` > docker-compose
+        - chmod +x docker-compose
+        - sudo mv docker-compose /usr/local/bin
+      script:
+        - set -e
+        - cd docker
+        - make lint
+        - make build
+        - make test
 notifications:
   email: false

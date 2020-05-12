@@ -1,4 +1,6 @@
-FROM centos:7
+ARG centos_version=7
+
+FROM centos:${centos_version}
 
 ARG vcs_ref
 ARG build_date
