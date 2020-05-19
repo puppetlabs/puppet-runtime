@@ -1,6 +1,6 @@
-From 22bb70572d7da073bb8539900d48efda1cfd0d97 Mon Sep 17 00:00:00 2001
-From: "Sean P. McDonald" <sean.mcdonald@puppetlabs.com>
-Date: Fri, 20 Jul 2018 10:05:11 -0700
+From 73f592a68c4a0cedcdf910c51c51a3359755c0e9 Mon Sep 17 00:00:00 2001
+From: gimmy <gheorghe.popescu@puppet.com>
+Date: Wed, 20 May 2020 12:44:50 +0300
 Subject: [PATCH] force SONAME option for solaris
 # Solaris machines need to provide the shared object name via the -h flag to the
 # linker when compiling things. This is so when other things are linked against
@@ -17,10 +17,10 @@ Subject: [PATCH] force SONAME option for solaris
  1 file changed, 3 insertions(+)
 
 diff --git a/tools/build/src/tools/gcc.jam b/tools/build/src/tools/gcc.jam
-index be363f1a..b080dfbd 100644
+index 8910a55f2..b5bec7066 100644
 --- a/tools/build/src/tools/gcc.jam
 +++ b/tools/build/src/tools/gcc.jam
-@@ -938,6 +938,9 @@ toolset.flags gcc.link.dll .IMPLIB-COMMAND <target-os>cygwin : "-Wl,--out-implib
+@@ -1070,6 +1070,9 @@ toolset.flags gcc.link.dll .IMPLIB-COMMAND <target-os>cygwin : "-Wl,--out-implib
      # See note [1]
      toolset.flags gcc.link OPTIONS <target-os>solaris/<runtime-link>static : -static ;
 
@@ -31,5 +31,4 @@ index be363f1a..b080dfbd 100644
      # For <runtime-link>static we made sure there are no dynamic libraries in the
      # link. On HP-UX not all system libraries exist as archived libraries (for
 --
-2.18.0.windows.1
-
+2.25.0

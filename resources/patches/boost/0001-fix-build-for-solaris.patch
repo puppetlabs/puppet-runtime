@@ -1,25 +1,51 @@
-From f00dd485bf3793e17614637a085c3950c7ad8dcc Mon Sep 17 00:00:00 2001
-From: "Sean P. McDonald" <sean.mcdonald@puppetlabs.com>
-Date: Tue, 15 May 2018 14:02:23 -0700
+From a916bb628eacb6e594a19a39aeb2bc4bca24d857 Mon Sep 17 00:00:00 2001
+From: gimmy <gheorghe.popescu@puppet.com>
+Date: Wed, 20 May 2020 12:52:05 +0300
 Subject: [PATCH] fix-build-for-solaris '
 
 ---
- tools/build/src/engine/build.sh | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/build/src/engine/build.sh | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
 diff --git a/tools/build/src/engine/build.sh b/tools/build/src/engine/build.sh
-index 50a28e83..0a3ec858 100644
+index 41af3715e..b04100e71 100755
 --- a/tools/build/src/engine/build.sh
 +++ b/tools/build/src/engine/build.sh
-@@ -132,7 +132,7 @@ case $BOOST_JAM_TOOLSET in
- 
-     gcc)
+@@ -77,7 +77,7 @@ test_exec ()
+ # Check that the compiler can do C++11.
+ test_cxx11 ()
+ {
+-    if ! test $NO_CXX11_CHECK ; then
++    if [ ! $NO_CXX11_CHECK ]; then
+         case $1 in
+             gcc) ( ${CXX:=g++} -x c++ -std=c++11 check_cxx11.cpp && rm -f a.out ) 1>/dev/null 2>/dev/null ;;
+             intel-darwin) ( ${CXX:=icc} -xc++ check_cxx11.cpp && rm -f a.out ) 1>/dev/null 2>/dev/null ;;
+@@ -190,7 +190,8 @@ case "$1" in
+ esac
+
+ # We need a C++11 compiler. Check here and given some feedback about it.
+-if ! test_cxx11 $B2_TOOLSET ; then
++res=test_cxx11 $B2_TOOLSET
++if [ ! res ]; then
+     error_exit "
+ A C++11 capable compiler is required for building the B2 engine.
+ Toolset '$B2_TOOLSET' does not appear to support C++11.
+@@ -207,7 +208,7 @@ case $B2_TOOLSET in
+         CXX=${CXX:=g++}
+         CXX_VERSION_OPT=${CXX_VERSION_OPT:=--version}
          # Check whether it's MinGW GCC, which has Windows headers and none of POSIX ones.
--        machine=$(gcc -dumpmachine 2>/dev/null)
-+        machine=`gcc -dumpmachine 2>/dev/null`
-         if [ $? -ne 0 ]; then
-             echo "BOOST_JAM_TOOLSET is gcc, but the 'gcc' command cannot be executed."
+-        machine=$(${CXX} -dumpmachine 2>/dev/null)
++        machine=`${CXX} -dumpmachine 2>/dev/null`
+         if test $? -ne 0 ; then
+             echo "B2_TOOLSET is gcc, but the 'gcc' command cannot be executed."
              echo "Make sure 'gcc' is in PATH, or use a different toolset."
--- 
-2.17.0.windows.1
+@@ -492,5 +493,5 @@ esac
+ if check_debug_build "$@" ; then B2_CXXFLAGS="${B2_CXXFLAGS_DEBUG}"
+ else B2_CXXFLAGS="${B2_CXXFLAGS_RELEASE} -DNDEBUG"
+ fi
+-echo_run ${B2_CXX} ${CXXFLAGS} ${B2_CXXFLAGS} ${B2_SOURCES} -o b2
++echo_run ${B2_CXX} ${CXXFLAGS} ${B2_CXXFLAGS} -lrt ${B2_SOURCES} -o b2
+ echo_run cp b2 bjam
+--
+2.25.0
 

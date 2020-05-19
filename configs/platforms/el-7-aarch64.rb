@@ -5,11 +5,13 @@ platform "el-7-aarch64" do |plat|
 
   plat.add_build_repository "http://pl-build-tools.delivery.puppetlabs.net/yum/el/7/aarch64/pl-build-tools-aarch64.repo"
   plat.add_build_repository "http://pl-build-tools.delivery.puppetlabs.net/yum/el/7/x86_64/pl-build-tools-x86_64.repo"
+  #
   packages = [
     "autoconf",
     "automake",
     "createrepo",
     "gcc",
+    "gcc-c++",
     "imake",
     "java-1.8.0-openjdk-devel",
     "libsepol",
