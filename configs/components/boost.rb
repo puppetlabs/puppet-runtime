@@ -50,6 +50,15 @@ component "boost" do |pkg, settings, platform|
   if platform.is_cross_compiled_linux?
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH"
     linkflags = "-Wl,-rpath=#{settings[:libdir]}"
+    # The boost b2 build requires a c++11 compatible compiler,
+    # so we need to install g++ and force the b2 build to use
+    # the system g++ for the build of the build tool by using
+    # the CXX env var
+    #
+    # Once the b2 tool has finished building, the actual boost
+    # library build will go back to using the cross-compiled
+    # g++.
+    pkg.environment "CXX" => "/usr/bin/g++"
     gpp = "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
   elsif platform.is_macos?
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH"
