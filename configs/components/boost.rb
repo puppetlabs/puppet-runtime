@@ -1,7 +1,7 @@
 component "boost" do |pkg, settings, platform|
   # Source-Related Metadata
-  pkg.version "1.69.0"
-  pkg.md5sum "b50944c0c13f81ce2c006802a1186f5a"
+  pkg.version "1.73.0"
+  pkg.md5sum "4036cd27ef7548b8d29c30ea10956196"
   # Apparently boost doesn't use dots to version they use underscores....arg
   pkg.url "http://downloads.sourceforge.net/project/boost/boost/#{pkg.get_version}/boost_#{pkg.get_version.gsub('.','_')}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/boost_#{pkg.get_version.gsub('.','_')}.tar.gz"
@@ -98,10 +98,10 @@ component "boost" do |pkg, settings, platform|
     pkg.environment "PATH" => "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
   elsif platform.name =~ /cisco-wrlinux-[57]|debian-[89]|el-[567]|eos-4|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04)/
-    pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
+    pkg.environment "PATH" => "/opt/pl-build-tools/bin:#{settings[:bindir]}:$$PATH"
     linkflags = "-Wl,-rpath=#{settings[:libdir]},-rpath=#{settings[:libdir]}64"
   else
-    pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
+    pkg.environment "PATH" => "/opt/pl-build-tools/bin:#{settings[:bindir]}:$$PATH"
     linkflags = "#{settings[:ldflags]},-rpath=#{settings[:libdir]}64"
     gpp = '/usr/bin/g++'
   end
