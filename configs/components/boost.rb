@@ -73,7 +73,7 @@ component "boost" do |pkg, settings, platform|
     end
     gpp = "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
     with_toolset = toolset
-    pkg.environment("LD_LIBRARY_PATH" => '/opt/pl-build-tools/libdir') if platform.name =~ /solaris-10/
+    pkg.environment("LDFLAGS", settings[:ldflags]) if platform.name =~ /solaris-10/
   elsif platform.is_windows?
     arch = platform.architecture == "x64" ? "64" : "32"
     pkg.environment "PATH" => "C:/tools/mingw#{arch}/bin:$$PATH"
