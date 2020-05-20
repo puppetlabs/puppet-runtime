@@ -104,6 +104,9 @@ component "boost" do |pkg, settings, platform|
     # We don't have iconv available on windows yet
     install_only_flags = "boost.locale.iconv=off"
   elsif platform.is_aix?
+    pkg.environment "NO_CXX11_CHECK" => "1"
+    pkg.environment "CXX" => "/opt/freeware/bin/g++"
+    pkg.environment "CXXFLAGS" => "-pthread"
     pkg.environment "PATH" => "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
   elsif platform.name =~ /cisco-wrlinux-[57]|debian-[89]|el-[567]|eos-4|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04)/
