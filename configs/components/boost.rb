@@ -8,9 +8,7 @@ component "boost" do |pkg, settings, platform|
 
   if platform.is_solaris?
     pkg.apply_patch 'resources/patches/boost/0001-fix-build-for-solaris.patch'
-    pkg.apply_patch 'resources/patches/boost/Fix-bootstrap-build-for-solaris-10.patch'
     pkg.apply_patch 'resources/patches/boost/force-SONAME-option-for-solaris.patch'
-    pkg.apply_patch 'resources/patches/boost/solaris-pthread-data.patch'
   end
 
   if platform.is_cisco_wrlinux?
@@ -74,6 +72,8 @@ component "boost" do |pkg, settings, platform|
       b2flags = "#{b2flags} instruction-set=v9"
     end
     gpp = "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
+    with_toolset = toolset
+    pkg.environment("LD_LIBRARY_PATH" => '/opt/pl-build-tools/libdir') if platform =~ /solaris-10/
   elsif platform.is_windows?
     arch = platform.architecture == "x64" ? "64" : "32"
     pkg.environment "PATH" => "C:/tools/mingw#{arch}/bin:$$PATH"
