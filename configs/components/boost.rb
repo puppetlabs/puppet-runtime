@@ -65,7 +65,7 @@ component "boost" do |pkg, settings, platform|
     toolset = 'gcc'
     with_toolset = "--with-toolset=clang"
   elsif platform.is_solaris?
-    pkg.environment 'PATH', '/opt/pl-build-tools/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/csw/bin'
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/ccs/bin:/opt/csw/bin:/usr/sfw/bin'
     linkflags = "-Wl,-rpath=#{settings[:libdir]},-L/opt/pl-build-tools/#{settings[:platform_triple]}/lib,-L/usr/lib"
     b2flags = "define=_XOPEN_SOURCE=600"
     if platform.architecture == "sparc"
