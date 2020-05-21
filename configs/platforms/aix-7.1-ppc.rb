@@ -34,6 +34,16 @@ platform "aix-7.1-ppc" do |plat|
     plat.provision_with("rpm -Uvh --replacepkgs --nodeps #{name}")
   end
 
+
+  plat.provision_with %[
+curl -O https://artifactory.delivery.puppetlabs.net/artifactory/generic__buildsources/openssl-1.0.2.1800.tar.Z;
+uncompress openssl-1.0.2.1800.tar.Z;
+tar xvf openssl-1.0.2.1800.tar;
+cd openssl-1.0.2.1800 && /usr/sbin/installp -acgwXY -d $PWD openssl.base;
+curl -O http://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/ezinstall/ppc/yum.sh && sh yum.sh;
+yum install -y gcc-c++]
+
+
   # We use --force with rpm because the pl-gettext and pl-autoconf
   # packages conflict with a charset.alias file.
   #

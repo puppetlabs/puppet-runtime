@@ -1,4 +1,4 @@
-platform "el-7-ppc64le" do |plat|
+  platform "el-7-ppc64le" do |plat|
   plat.servicedir "/usr/lib/systemd/system"
   plat.defaultdir "/etc/sysconfig"
   plat.servicetype "systemd"
@@ -10,6 +10,7 @@ platform "el-7-ppc64le" do |plat|
     "automake",
     "createrepo",
     "gcc",
+    "gcc-c++",
     "imake",
     "java-1.8.0-openjdk-devel",
     "libsepol",

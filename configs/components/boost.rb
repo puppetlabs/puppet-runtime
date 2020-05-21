@@ -1,16 +1,14 @@
 component "boost" do |pkg, settings, platform|
   # Source-Related Metadata
-  pkg.version "1.69.0"
-  pkg.md5sum "b50944c0c13f81ce2c006802a1186f5a"
+  pkg.version "1.73.0"
+  pkg.md5sum "4036cd27ef7548b8d29c30ea10956196"
   # Apparently boost doesn't use dots to version they use underscores....arg
   pkg.url "http://downloads.sourceforge.net/project/boost/boost/#{pkg.get_version}/boost_#{pkg.get_version.gsub('.','_')}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/boost_#{pkg.get_version.gsub('.','_')}.tar.gz"
 
   if platform.is_solaris?
     pkg.apply_patch 'resources/patches/boost/0001-fix-build-for-solaris.patch'
-    pkg.apply_patch 'resources/patches/boost/Fix-bootstrap-build-for-solaris-10.patch'
     pkg.apply_patch 'resources/patches/boost/force-SONAME-option-for-solaris.patch'
-    pkg.apply_patch 'resources/patches/boost/solaris-pthread-data.patch'
   end
 
   if platform.is_cisco_wrlinux?
@@ -50,6 +48,15 @@ component "boost" do |pkg, settings, platform|
   if platform.is_cross_compiled_linux?
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH"
     linkflags = "-Wl,-rpath=#{settings[:libdir]}"
+    # The boost b2 build requires a c++11 compatible compiler,
+    # so we need to install g++ and force the b2 build to use
+    # the system g++ for the build of the build tool by using
+    # the CXX env var
+    #
+    # Once the b2 tool has finished building, the actual boost
+    # library build will go back to using the cross-compiled
+    # g++.
+    pkg.environment "CXX" => "/usr/bin/g++"
     gpp = "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
   elsif platform.is_macos?
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH"
@@ -58,13 +65,15 @@ component "boost" do |pkg, settings, platform|
     toolset = 'gcc'
     with_toolset = "--with-toolset=clang"
   elsif platform.is_solaris?
-    pkg.environment 'PATH', '/opt/pl-build-tools/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/usr/csw/bin'
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:/usr/sbin:/usr/bin:/usr/local/bin:/usr/ccs/bin:/opt/csw/bin:/usr/sfw/bin'
     linkflags = "-Wl,-rpath=#{settings[:libdir]},-L/opt/pl-build-tools/#{settings[:platform_triple]}/lib,-L/usr/lib"
     b2flags = "define=_XOPEN_SOURCE=600"
     if platform.architecture == "sparc"
       b2flags = "#{b2flags} instruction-set=v9"
     end
     gpp = "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
+    with_toolset = toolset
+    pkg.environment("LD_LIBRARY_PATH" => '/opt/pl-build-tools/lib') if platform.name =~ /solaris-10/
   elsif platform.is_windows?
     arch = platform.architecture == "x64" ? "64" : "32"
     pkg.environment "PATH" => "C:/tools/mingw#{arch}/bin:$$PATH"
@@ -95,13 +104,17 @@ component "boost" do |pkg, settings, platform|
     # We don't have iconv available on windows yet
     install_only_flags = "boost.locale.iconv=off"
   elsif platform.is_aix?
+    pkg.environment "NO_CXX11_CHECK" => "1"
+    pkg.environment "CXX" => "/opt/freeware/bin/g++"
+    pkg.environment "CXXFLAGS" => "-pthread"
     pkg.environment "PATH" => "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
   elsif platform.name =~ /cisco-wrlinux-[57]|debian-[89]|el-[567]|eos-4|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04)/
-    pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
+    pkg.environment "PATH" => "/opt/pl-build-tools/bin:#{settings[:bindir]}:$$PATH"
     linkflags = "-Wl,-rpath=#{settings[:libdir]},-rpath=#{settings[:libdir]}64"
+    pkg.environment("LD_LIBRARY_PATH" => '/opt/pl-build-tools/lib64') if platform.name =~ /cisco-wrlinux-5/
   else
-    pkg.environment "PATH" => "#{settings[:bindir]}:$$PATH"
+    pkg.environment "PATH" => "/opt/pl-build-tools/bin:#{settings[:bindir]}:$$PATH"
     linkflags = "#{settings[:ldflags]},-rpath=#{settings[:libdir]}64"
     gpp = '/usr/bin/g++'
   end
