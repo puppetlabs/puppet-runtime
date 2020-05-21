@@ -112,6 +112,7 @@ component "boost" do |pkg, settings, platform|
   elsif platform.name =~ /cisco-wrlinux-[57]|debian-[89]|el-[567]|eos-4|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04)/
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:#{settings[:bindir]}:$$PATH"
     linkflags = "-Wl,-rpath=#{settings[:libdir]},-rpath=#{settings[:libdir]}64"
+    pkg.environment("LD_LIBRARY_PATH" => '/opt/pl-build-tools/lib64') if platform.name =~ /cisco-wrlinux-5/
   else
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:#{settings[:bindir]}:$$PATH"
     linkflags = "#{settings[:ldflags]},-rpath=#{settings[:libdir]}64"
