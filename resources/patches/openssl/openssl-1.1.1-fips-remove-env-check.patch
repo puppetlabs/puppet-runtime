@@ -1,0 +1,17 @@
+--- a/SOURCES/openssl-1.1.1-remove-env-check.patch	1970-01-01 00:00:00.000000000 +0000
++++ a/SOURCES/openssl-1.1.1-remove-env-check.patch	2020-06-02 08:11:15.751135001 +0000
+@@ -0,0 +1,14 @@
++--- openssl-1.1.1/apps/openssl.c.orig	2020-06-02 08:02:26.670078073 +0000
+++++ openssl-1.1.1/apps/openssl.c	2020-06-02 08:02:49.915080574 +0000
++@@ -151,11 +151,6 @@
++         CRYPTO_set_mem_debug(1);
++     CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ON);
++ 
++-    if (getenv("OPENSSL_FIPS")) {
++-        BIO_printf(bio_err, "FIPS mode not supported.\n");
++-        return 1;
++-    }
++-
++     if (!apps_startup()) {
++         BIO_printf(bio_err,
++                    "FATAL: Startup failure (dev note: apps_startup() failed)\n");
