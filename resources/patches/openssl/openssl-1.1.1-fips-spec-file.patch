@@ -1,11 +1,12 @@
 --- a/SPECS/openssl.spec	2019-05-11 00:45:45.000000000 +0000
 +++ b/SPECS/openssl.spec	2020-01-13 15:16:29.224852120 +0000
-@@ -67,17 +67,19 @@
+@@ -67,17 +67,20 @@
  Patch52: openssl-1.1.1-s390x-update.patch
  Patch53: openssl-1.1.1-fips-crng-test.patch
  Patch54: openssl-1.1.1-regression-fixes.patch
 +Patch55: openssl-1.1.1-force-fips-on-init.patch
 +Patch56: openssl-1.1.1-openssl-cnf-fips-mode.patch
++Patch57: openssl-1.1.1-remove-env-check.patch
  
  License: OpenSSL
  Group: System Environment/Libraries
@@ -39,12 +40,13 @@
  Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
  
  %description perl
-@@ -177,6 +177,8 @@
+@@ -177,6 +177,9 @@
  %patch52 -p1 -b .s390x-update
  %patch53 -p1 -b .crng-test
  %patch54 -p1 -b .regression
 +%patch55 -p1 -b .force-fips-on-init
 +%patch56 -p1 -b .openssl-cnf-fips-mode
++%patch57 -p1 -b .remove-env-check
  
  
  %build
