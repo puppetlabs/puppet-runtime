@@ -183,7 +183,7 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   end
 
   pkg.add_source("file://resources/files/rubygems/COMODO_RSA_Certification_Authority.pem")
-  defaults_dir = File.join(settings[:libdir], "ruby/2.1.0/rubygems/ssl_certs/puppetlabs.net")
+  defaults_dir = File.join(settings[:libdir], "ruby/2.1.0/rubygems/ssl_certs")
   pkg.directory(defaults_dir)
   pkg.install_file "../COMODO_RSA_Certification_Authority.pem", File.join(defaults_dir, 'COMODO_RSA_Certification_Authority.pem')
 
