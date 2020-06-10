@@ -42,9 +42,8 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.component 'rubygem-highline'
   proj.component 'rubygem-hiera-eyaml'
   proj.component 'ruby-stomp'
-  # SLES 15 uses the OS distro versions of boost and yaml-cpp:
-  proj.component 'boost' unless platform.name =~ /sles-15/
-  proj.component 'yaml-cpp' unless platform.name =~ /sles-15/
+  proj.component 'boost'
+  proj.component 'yaml-cpp'
 
   proj.component 'openssl-lib' if platform.is_linux?
 end
