@@ -9,7 +9,7 @@ platform "sles-15-x86_64" do |plat|
     "aaa_base",
     "autoconf",
     "automake",
-    "gcc",
+    "gcc-c++",
     "java-1_8_0-openjdk-devel",
     "libbz2-devel",
     "make",

@@ -40,7 +40,6 @@ project 'agent-runtime-master' do |proj|
     proj.component 'rubygem-sys-filesystem'
   end
 
-  # SLES 15 uses the OS distro versions of boost and yaml-cpp:
-  proj.component 'boost' unless platform.name =~ /sles-15/
-  proj.component 'yaml-cpp' unless platform.name =~ /sles-15/
+  proj.component 'boost'
+  proj.component 'yaml-cpp'
 end
