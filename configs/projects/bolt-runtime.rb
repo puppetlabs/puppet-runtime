@@ -177,6 +177,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-net-ssh-krb'
   proj.component 'rubygem-nori'
   proj.component 'rubygem-orchestrator_client'
+  proj.component 'rubygem-paint'
   proj.component 'rubygem-public_suffix'
   proj.component 'rubygem-puppet'
   proj.component 'rubygem-puppet_forge'
