@@ -54,10 +54,10 @@ proj.component 'rubygem-fast_gettext'
 
 if platform.is_windows? || platform.is_solaris?
   proj.component 'rubygem-minitar'
+  proj.component 'rubygem-ffi'
 end
 
 if platform.is_windows?
-  proj.component 'rubygem-ffi'
   proj.component 'rubygem-win32-dir'
   proj.component 'rubygem-win32-process'
   proj.component 'rubygem-win32-security'
