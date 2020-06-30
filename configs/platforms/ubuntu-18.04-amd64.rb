@@ -10,6 +10,7 @@ platform "ubuntu-18.04-amd64" do |plat|
 
   packages = [
     "libbz2-dev",
+    "libtinfo-dev",
     "libreadline-dev",
     "libselinux1-dev",
     "make",
