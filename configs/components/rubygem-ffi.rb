@@ -1,6 +1,6 @@
 component "rubygem-ffi" do |pkg, settings, platform|
-  pkg.version '1.12.2'
-  pkg.md5sum "28dc3d1294a04b728d24ba025e331b13"
+  pkg.version '1.13.1'
+  pkg.md5sum "569d4561359cb3c8d8360d26bd1be4ed"
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 

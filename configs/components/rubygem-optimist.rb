@@ -1,6 +1,6 @@
 component 'rubygem-optimist' do |pkg, settings, _platform|
-  pkg.version '3.0.0'
-  pkg.md5sum '85785b247885704e61230b0c024f494c'
+  pkg.version '3.0.1'
+  pkg.md5sum 'ce7ee8dac7e34793756680c2af9a8ee9'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
