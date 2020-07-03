@@ -53,4 +53,20 @@ component "rubygem-ffi" do |pkg, settings, platform|
   end
 
   pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
+
+  # FFI 1.13.1 forced the minimum required ruby version to ~> 2.3
+  # In order to be able to install the gem using pl-ruby(2.1.9)
+  # we need to remove the required ruby version check
+  if platform.is_cross_compiled?
+    base_ruby = case platform.name
+                when /solaris-10/
+                  "/opt/csw/lib/ruby/2.0.0"
+                else
+                  "/opt/pl-build-tools/lib/ruby/2.1.0"
+                end
+
+    pkg.configure do
+      %(#{platform[:sed]} -i '0,/ensure_required_ruby_version_met/b; /ensure_required_ruby_version_met/d' #{base_ruby}/rubygems/installer.rb)
+    end
+  end
 end
