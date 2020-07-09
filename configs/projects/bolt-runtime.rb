@@ -47,6 +47,7 @@ project 'bolt-runtime' do |proj|
   if platform.is_windows?
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
     proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem.bat"))
+    proj.setting(:host_bundle, File.join(proj.ruby_bindir, "bundle.bat"))
 
     # For windows, we need to ensure we are building for mingw not cygwin
     platform_triple = platform.platform_triple
@@ -54,6 +55,7 @@ project 'bolt-runtime' do |proj|
   else
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby"))
     proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
+    proj.setting(:host_bundle, File.join(proj.ruby_bindir, "bundle"))
   end
 
   ruby_base_version = proj.ruby_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2.0')
@@ -114,6 +116,7 @@ project 'bolt-runtime' do |proj|
   proj.component "runtime-bolt"
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
+  proj.component "rubygem-bundler"
 
   # Building native gems on Windows has some issues right now.
   # Include for non-Windows platforms only.
