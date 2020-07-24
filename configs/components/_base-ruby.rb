@@ -37,6 +37,7 @@ elsif platform.is_solaris?
 elsif platform.is_cross_compiled_linux?
   pkg.environment 'PATH', "#{settings[:bindir]}:$$PATH"
   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
+  pkg.environment 'CXX', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
   pkg.environment 'LDFLAGS', "-Wl,-rpath=#{settings[:libdir]}"
 elsif platform.is_windows?
   pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:tools_root]}/bin):$(shell cygpath -u #{settings[:tools_root]}/include):$(shell cygpath -u #{settings[:bindir]}):$(shell cygpath -u #{ruby_bindir}):$(shell cygpath -u #{settings[:includedir]}):$(PATH)"
