@@ -10,6 +10,7 @@ platform "el-7-ppc64" do |plat|
   packages = [
     "autoconf",
     "automake",
+    "bison",
     "createrepo",
     "gcc",
     "imake",

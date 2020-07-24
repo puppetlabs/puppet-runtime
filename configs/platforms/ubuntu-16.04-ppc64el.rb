@@ -9,6 +9,7 @@ platform "ubuntu-16.04-ppc64el" do |plat|
   plat.install_build_dependencies_with "DEBIAN_FRONTEND=noninteractive; apt-get install -qy --no-install-recommends "
 
   packages = [
+    "bison",
     "libreadline-dev",
     "openjdk-8-jdk",
     "pkg-config",
