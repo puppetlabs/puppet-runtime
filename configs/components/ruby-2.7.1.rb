@@ -41,6 +41,8 @@ component 'ruby-2.7.1' do |pkg, settings, platform|
 
   if platform.is_cross_compiled?
     pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.5.patch"
+    pkg.apply_patch "#{base}/lib_optparse_remove_safe_nav_operator.patch"
+    pkg.apply_patch "#{base}/revert_delete_prefix.patch"
     pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
   end
 

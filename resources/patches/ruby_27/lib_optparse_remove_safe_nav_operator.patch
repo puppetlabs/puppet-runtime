@@ -1,0 +1,18 @@
+diff --git a/lib/optparse.rb b/lib/optparse.rb
+index 614ebc3..71ef887 100644
+--- a/lib/optparse.rb
++++ b/lib/optparse.rb
+@@ -1842,11 +1842,12 @@ XXX
+       basename = File.basename($0, '.*')
+       return true if load(File.expand_path(basename, '~/.options')) rescue nil
+       basename << ".options"
++      xdg_config_dirs = ENV['XDG_CONFIG_DIRS'].split(File::PATH_SEPARATOR) if ENV['XDG_CONFIG_DIRS']
+       return [
+         # XDG
+         ENV['XDG_CONFIG_HOME'],
+         '~/.config',
+-        *ENV['XDG_CONFIG_DIRS']&.split(File::PATH_SEPARATOR),
++        *xdg_config_dirs,
+ 
+         # Haiku
+         '~/config/settings',
