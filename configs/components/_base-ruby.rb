@@ -34,7 +34,7 @@ elsif platform.is_solaris?
     # This doesn't work and halts the configure process. Set CONFIG_SHELL to force use of bash:
     pkg.environment 'CONFIG_SHELL', '/bin/bash'
   end
-elsif platform.is_cross_compiled_linux? || platform.is_solaris?
+elsif platform.is_cross_compiled_linux?
   pkg.environment 'PATH', "#{settings[:bindir]}:$$PATH"
   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
   pkg.environment 'LDFLAGS', "-Wl,-rpath=#{settings[:libdir]}"
