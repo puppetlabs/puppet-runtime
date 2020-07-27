@@ -11,11 +11,19 @@ project 'agent-runtime-main' do |proj|
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-agent-settings.rb'))
 
   ########
-  # Settings specific to the master branch
+  # Settings specific to the next branch
   ########
 
   # Directory for gems shared by puppet and puppetserver
   proj.setting(:puppet_gem_vendor_dir, File.join(proj.libdir, "ruby", "vendor_gems"))
+
+  # Ruby 2.7 loads openssl on installation. Because pl-ruby was not
+  # built with openssl support, we switch to compile with system
+  # rubies.
+  # Solaris 11 seems to work with pl-ruby, and 10 is handled in _shared-agent-settings.rb.
+  if platform.is_cross_compiled_linux?
+    proj.setting(:host_ruby, "/usr/bin/ruby")
+  end
 
   ########
   # Load shared agent components
