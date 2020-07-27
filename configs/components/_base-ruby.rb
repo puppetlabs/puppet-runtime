@@ -28,6 +28,7 @@ if platform.is_aix?
 elsif platform.is_solaris?
   pkg.environment 'PATH', "#{settings[:bindir]}:/usr/ccs/bin:/usr/sfw/bin:$$PATH:/opt/csw/bin"
   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
+  pkg.environment 'CXX', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
   pkg.environment 'LDFLAGS', "-Wl,-rpath=#{settings[:libdir]}"
   if platform.os_version == '10'
     # ./configure uses /bin/sh as the default shell when running config.sub on Solaris 10;
