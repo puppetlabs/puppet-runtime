@@ -45,6 +45,8 @@ component 'ruby-2.7.1' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/revert_delete_prefix.patch"
     pkg.apply_patch "#{base}/remove_squiggly_heredocs.patch"
     pkg.apply_patch "#{base}/remove_deprecate_constant_statements.patch"
+    pkg.apply_patch "#{base}/ruby2_keywords_guard.patch"
+    pkg.apply_patch "#{base}/ruby_version_extra_guards.patch"
     pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
   end
 

@@ -1,0 +1,29 @@
+# RUBY_VERSION resolves to 2.7.1, but we're compiling with much older versions,
+# so also check for the CROSS_COMPILING variable which we set ourselves during
+# compilation
+diff --git a/lib/rubygems/util.rb b/lib/rubygems/util.rb
+index b5f1408..1ea7a83 100644
+--- a/lib/rubygems/util.rb
++++ b/lib/rubygems/util.rb
+@@ -85,7 +85,7 @@ module Gem::Util
+   # returning absolute paths to the matching files.
+ 
+   def self.glob_files_in_dir(glob, base_path)
+-    if RUBY_VERSION >= "2.5"
++    if RUBY_VERSION >= "2.5" && ENV['CROSS_COMPILING'].nil?
+       Dir.glob(glob, base: base_path).map! {|f| File.expand_path(f, base_path) }
+     else
+       Dir.glob(File.expand_path(glob, base_path))
+diff --git a/lib/fileutils.rb b/lib/fileutils.rb
+index a7ad65a..2a2f8f4 100644
+--- a/lib/fileutils.rb
++++ b/lib/fileutils.rb
+@@ -834,7 +834,7 @@ module FileUtils
+   def compare_stream(a, b)
+     bsize = fu_stream_blksize(a, b)
+ 
+-    if RUBY_VERSION > "2.4"
++    if RUBY_VERSION > "2.4" && ENV['CROSS_COMPILING'].nil?
+       sa = String.new(capacity: bsize)
+       sb = String.new(capacity: bsize)
+     else
