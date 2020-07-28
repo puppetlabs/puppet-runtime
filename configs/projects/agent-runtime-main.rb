@@ -25,6 +25,12 @@ project 'agent-runtime-main' do |proj|
     proj.setting(:host_ruby, "/usr/bin/ruby")
   end
 
+  # Ruby 2.6 (RubyGems 3.0.1) removed the --ri and --rdoc
+  # options. Switch to using --no-document which is available starting
+  # with RubyGems 2.0.0preview2. This should also cover cross-compiled
+  # platforms that use older rubies.
+  proj.setting(:gem_install, "#{proj.host_gem} install --no-document --local")
+
   ########
   # Load shared agent components
   ########
