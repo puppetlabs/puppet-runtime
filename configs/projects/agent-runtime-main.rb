@@ -49,6 +49,7 @@ project 'agent-runtime-main' do |proj|
   proj.component 'rubygem-hiera-eyaml'
   proj.component 'rubygem-httpclient'
   proj.component 'rubygem-thor'
+  proj.component 'rubygem-scanf'
 
   unless platform.is_windows?
     proj.component 'rubygem-sys-filesystem'
