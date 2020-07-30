@@ -1,0 +1,27 @@
+2018/10/04 - Bryan Jen, Puppet Inc.
+
+This patch to the Ruby batch file generation is necessary when packaging
+Ruby with Puppet's vanagon package builder, as used by Puppet agent,
+Bolt, and PDK. When the msi installer is built, the path generated for
+the installed Ruby cannot be assumed to be the same as the path in
+the build environment. For that reason, we need this patch to use the
+executables from the current working directory, so that it is always
+using the vendored ruby installation.
+---
+
+--- a/lib/rubygems/commands/setup_command.rb
++++ b/lib/rubygems/commands/setup_command.rb
+@@ -279,10 +279,11 @@
+               file.puts <<-TEXT
+   @ECHO OFF
+   IF NOT "%~f0" == "~f0" GOTO :WinNT
+-  @"#{File.basename(Gem.ruby).chomp('"')}" "#{dest_file}" %1 %2 %3 %4 %5 %6 %7 %8 %9
++  ECHO.This version of Ruby has not been built with support for Windows 95/98/Me.
+   GOTO :EOF
+   :WinNT
+-  @"#{File.basename(Gem.ruby).chomp('"')}" "%~dpn0" %*
++  SET RUBY_EXE_PATH="%~dp0ruby.exe"
++  @%RUBY_EXE_PATH% "%~dpn0" %*
+   TEXT
+             end
+
