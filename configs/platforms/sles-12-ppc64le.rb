@@ -9,6 +9,7 @@ platform "sles-12-ppc64le" do |plat|
     "aaa_base",
     "autoconf",
     "automake",
+    "bison",
     "gcc",
     "gcc-c++",
     "java-1_7_0-openjdk-devel",

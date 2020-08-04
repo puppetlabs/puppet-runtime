@@ -1,0 +1,51 @@
+# ruby2_keywords was added in Ruby 2.7, provide some empty methods for
+# cross-compilation purposes
+diff --git a/lib/forwardable.rb b/lib/forwardable.rb
+index 4cfade4..68edefe 100644
+--- a/lib/forwardable.rb
++++ b/lib/forwardable.rb
+@@ -186,7 +186,7 @@ module Forwardable
+     # If it's not a class or module, it's an instance
+     mod = Module === self ? self : singleton_class
+     ret = mod.module_eval(&gen)
+-    mod.send(:ruby2_keywords, ali) if RUBY_VERSION >= '2.7'
++    mod.send(:ruby2_keywords, ali) if RUBY_VERSION >= '2.7' && ENV['CROSS_COMPILING'].nil?
+     ret
+   end
+
+diff --git a/lib/delegate.rb b/lib/delegate.rb
+index 1587c7e..2938265 100644
+--- a/lib/delegate.rb
++++ b/lib/delegate.rb
+@@ -75,6 +75,14 @@ class Delegator < BasicObject
+   #
+   # Handles the magic of delegation through \_\_getobj\_\_.
+   #
++  if ENV['CROSS_COMPILING']
++    unless self.respond_to?(:ruby2_keywords, true)
++      def self.ruby2_keywords(name, *)
++        # nil
++      end
++    end
++  end
++
+   ruby2_keywords def method_missing(m, *args, &block)
+     r = true
+     target = self.__getobj__ {r = false}
+@@ -337,6 +345,16 @@ class SimpleDelegator < Delegator
+   end
+ end
+ 
++if ENV['CROSS_COMPILING']
++  class Proc
++    unless method_defined?(:ruby2_keywords)
++      def ruby2_keywords
++        self
++      end
++    end
++  end
++end
++
+ def Delegator.delegating_block(mid) # :nodoc:
+   lambda do |*args, &block|
+     target = self.__getobj__

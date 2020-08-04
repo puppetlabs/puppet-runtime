@@ -1,0 +1,369 @@
+From 4dd46dbad046c0c5902f0217243c3207dbb274b5 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Josef=20=C5=A0im=C3=A1nek?= <josef.simanek@gmail.com>
+Date: Fri, 10 Apr 2020 18:58:04 +0200
+Subject: [PATCH 1/4] [rubygems/rubygems] Deprecate rubyforge_project attribute
+ only during build time.
+
+https://github.com/rubygems/rubygems/commit/c44eb21648
+---
+ lib/rubygems/specification.rb           |  5 ++---
+ lib/rubygems/specification_policy.rb    | 10 ++++++++++
+ test/rubygems/test_gem_specification.rb | 20 ++++++++++++++++++++
+ 3 files changed, 32 insertions(+), 3 deletions(-)
+
+diff --git a/lib/rubygems/specification.rb b/lib/rubygems/specification.rb
+index 18e3f2d20d..6ff9a89699 100644
+--- a/lib/rubygems/specification.rb
++++ b/lib/rubygems/specification.rb
+@@ -727,12 +727,11 @@ class Gem::Specification < Gem::BasicSpecification
+   attr_writer :original_platform # :nodoc:
+ 
+   ##
+-  # Deprecated and ignored.
++  # Deprecated via specification policy and ignored during runtime.
+   #
+   # Formerly used to set rubyforge project.
+ 
+-  attr_writer :rubyforge_project
+-  deprecate :rubyforge_project=, :none,       2019, 12
++  attr_accessor :rubyforge_project
+ 
+   ##
+   # The Gem::Specification version of this gemspec.
+diff --git a/lib/rubygems/specification_policy.rb b/lib/rubygems/specification_policy.rb
+index d9f415d25f..8d4958c001 100644
+--- a/lib/rubygems/specification_policy.rb
++++ b/lib/rubygems/specification_policy.rb
+@@ -20,6 +20,8 @@ class Gem::SpecificationPolicy
+     wiki_uri
+   ].freeze # :nodoc:
+ 
++  DEPRECATED_ATTRIBUTES = [:rubyforge_project].freeze #:nodoc:
++
+   def initialize(specification)
+     @warnings = 0
+ 
+@@ -75,6 +77,8 @@ class Gem::SpecificationPolicy
+ 
+     validate_dependencies
+ 
++    validate_deprecated_attributes
++
+     if @warnings > 0
+       if strict
+         error "specification has warnings"
+@@ -408,6 +412,12 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
+     warning "#{executable_path} is missing #! line"
+   end
+ 
++  def validate_deprecated_attributes # :nodoc:
++    DEPRECATED_ATTRIBUTES.each do |attr|
++      warning("#{attr} is deprecated") unless @specification.send(attr).nil?
++    end
++  end
++
+   def warning(statement) # :nodoc:
+     @warnings += 1
+
+diff --git a/test/rubygems/test_gem_specification.rb b/test/rubygems/test_gem_specification.rb
+index 1848e52e16..cf4a4de6c9 100644
+--- a/test/rubygems/test_gem_specification.rb
++++ b/test/rubygems/test_gem_specification.rb
+@@ -3123,6 +3123,26 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
+     warning
+   end
+ 
++  def test_deprecated_attributes
++    assert_equal Gem::SpecificationPolicy::DEPRECATED_ATTRIBUTES, [:rubyforge_project]
++  end
++
++  def test_validate_deprecated_attributes
++    util_setup_validate
++
++    use_ui @ui do
++      Gem::SpecificationPolicy::DEPRECATED_ATTRIBUTES.each do |attr|
++        @a1.send("#{attr}=", 'invalid-attribute')
++      end
++
++      @a1.validate
++    end
++
++    Gem::SpecificationPolicy::DEPRECATED_ATTRIBUTES.each do |attr|
++      assert_match "#{attr} is deprecated", @ui.error
++    end
++  end
++
+   def test_validate_license_values
+     util_setup_validate
+
+-- 
+2.27.0
+
+
+From 856cbbdd52eaafd27c21a8f4dea7e89373667694 Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Josef=20=C5=A0im=C3=A1nek?= <josef.simanek@gmail.com>
+Date: Sun, 19 Apr 2020 17:43:31 +0200
+Subject: [PATCH 2/4] [rubygems/rubygems] Track removed methods calls and warn
+ during build time. move rubyforge_project= to removed methods
+
+https://github.com/rubygems/rubygems/commit/223f7fd470
+---
+ lib/rubygems/specification.rb           | 20 +++++++++++++-------
+ lib/rubygems/specification_policy.rb    | 10 ++++------
+ test/rubygems/test_gem_specification.rb | 15 +++++----------
+ 3 files changed, 22 insertions(+), 23 deletions(-)
+
+diff --git a/lib/rubygems/specification.rb b/lib/rubygems/specification.rb
+index 6ff9a89699..eb622876fb 100644
+--- a/lib/rubygems/specification.rb
++++ b/lib/rubygems/specification.rb
+@@ -6,6 +6,7 @@
+ # See LICENSE.txt for permissions.
+ #++
+ 
++require 'set'
+ require 'rubygems/version'
+ require 'rubygems/requirement'
+ require 'rubygems/platform'
+@@ -193,6 +194,12 @@ class Gem::Specification < Gem::BasicSpecification
+   @@spec_with_requirable_file = {}
+   @@active_stub_with_requirable_file = {}
+ 
++  # Tracking removed method calls to warn users during build time.
++  REMOVED_METHODS = [:rubyforge_project=].freeze # :nodoc:
++  def removed_method_calls
++    @removed_method_calls ||= Set.new
++  end
++
+   ######################################################################
+   # :section: Required gemspec attributes
+ 
+@@ -726,13 +733,6 @@ class Gem::Specification < Gem::BasicSpecification
+ 
+   attr_writer :original_platform # :nodoc:
+ 
+-  ##
+-  # Deprecated via specification policy and ignored during runtime.
+-  #
+-  # Formerly used to set rubyforge project.
+-
+-  attr_accessor :rubyforge_project
+-
+   ##
+   # The Gem::Specification version of this gemspec.
+   #
+@@ -2106,9 +2106,15 @@ class Gem::Specification < Gem::BasicSpecification
+   end
+ 
+   ##
++  # Track removed method calls to warn about during build time.
+   # Warn about unknown attributes while loading a spec.
+ 
+   def method_missing(sym, *a, &b) # :nodoc:
++    if REMOVED_METHODS.include?(sym)
++      removed_method_calls << sym
++      return
++    end
++
+     if @specification_version > CURRENT_SPECIFICATION_VERSION and
+       sym.to_s =~ /=$/
+       warn "ignoring #{sym} loading #{full_name}" if $DEBUG
+diff --git a/lib/rubygems/specification_policy.rb b/lib/rubygems/specification_policy.rb
+index 8d4958c001..4b525df7d7 100644
+--- a/lib/rubygems/specification_policy.rb
++++ b/lib/rubygems/specification_policy.rb
+@@ -20,8 +20,6 @@ class Gem::SpecificationPolicy
+     wiki_uri
+   ].freeze # :nodoc:
+ 
+-  DEPRECATED_ATTRIBUTES = [:rubyforge_project].freeze #:nodoc:
+-
+   def initialize(specification)
+     @warnings = 0
+ 
+@@ -77,7 +75,7 @@ class Gem::SpecificationPolicy
+ 
+     validate_dependencies
+ 
+-    validate_deprecated_attributes
++    validate_removed_attributes
+ 
+     if @warnings > 0
+       if strict
+@@ -412,9 +410,9 @@ http://spdx.org/licenses or '#{Gem::Licenses::NONSTANDARD}' for a nonstandard li
+     warning "#{executable_path} is missing #! line"
+   end
+ 
+-  def validate_deprecated_attributes # :nodoc:
+-    DEPRECATED_ATTRIBUTES.each do |attr|
+-      warning("#{attr} is deprecated") unless @specification.send(attr).nil?
++  def validate_removed_attributes # :nodoc:
++    @specification.removed_method_calls.each do |attr|
++      warning("#{attr} is deprecated and ignored. Please remove this from your gemspec to ensure that your gem continues to build in the future.")
+     end
+   end
+
+diff --git a/test/rubygems/test_gem_specification.rb b/test/rubygems/test_gem_specification.rb
+index cf4a4de6c9..21cd7c87b3 100644
+--- a/test/rubygems/test_gem_specification.rb
++++ b/test/rubygems/test_gem_specification.rb
+@@ -3123,24 +3123,19 @@ http://spdx.org/licenses or 'Nonstandard' for a nonstandard license.
+     warning
+   end
+ 
+-  def test_deprecated_attributes
+-    assert_equal Gem::SpecificationPolicy::DEPRECATED_ATTRIBUTES, [:rubyforge_project]
++  def test_removed_methods
++    assert_equal Gem::Specification::REMOVED_METHODS, [:rubyforge_project=]
+   end
+ 
+-  def test_validate_deprecated_attributes
++  def test_validate_removed_rubyforge_project
+     util_setup_validate
+ 
+     use_ui @ui do
+-      Gem::SpecificationPolicy::DEPRECATED_ATTRIBUTES.each do |attr|
+-        @a1.send("#{attr}=", 'invalid-attribute')
+-      end
+-
++      @a1.rubyforge_project = 'invalid-attribute'
+       @a1.validate
+     end
+ 
+-    Gem::SpecificationPolicy::DEPRECATED_ATTRIBUTES.each do |attr|
+-      assert_match "#{attr} is deprecated", @ui.error
+-    end
++    assert_match "rubyforge_project= is deprecated", @ui.error
+   end
+ 
+   def test_validate_license_values
+-- 
+2.27.0
+
+
+From 832a7b04589578b52297db6a9943e0c6c003fbfc Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Josef=20=C5=A0im=C3=A1nek?= <josef.simanek@gmail.com>
+Date: Sun, 19 Apr 2020 18:16:41 +0200
+Subject: [PATCH 3/4] [rubygems/rubygems] Add gem build test to check for
+ removed methods.
+
+https://github.com/rubygems/rubygems/commit/c07b9cf4f1
+---
+ lib/rubygems/test_case.rb                       |  2 ++
+ .../specifications/rubyforge-0.0.1.gemspec      | 14 ++++++++++++++
+ .../rubygems/test_gem_commands_build_command.rb | 17 +++++++++++++++++
+ test/rubygems/test_gem_stub_specification.rb    |  1 -
+ 4 files changed, 33 insertions(+), 1 deletion(-)
+ create mode 100644 test/rubygems/specifications/rubyforge-0.0.1.gemspec
+
+diff --git a/lib/rubygems/test_case.rb b/lib/rubygems/test_case.rb
+index b5c377f43a..f1f6b853a4 100644
+--- a/lib/rubygems/test_case.rb
++++ b/lib/rubygems/test_case.rb
+@@ -96,6 +96,8 @@ class Gem::TestCase < (defined?(Minitest::Test) ? Minitest::Test : MiniTest::Uni
+ 
+   TEST_PATH = ENV.fetch('RUBYGEMS_TEST_PATH', File.expand_path('../../../test/rubygems', __FILE__))
+ 
++  SPECIFICATIONS = File.expand_path(File.join(TEST_PATH, "specifications"), __FILE__)
++
+   def assert_activate(expected, *specs)
+     specs.each do |spec|
+       case spec
+diff --git a/test/rubygems/specifications/rubyforge-0.0.1.gemspec b/test/rubygems/specifications/rubyforge-0.0.1.gemspec
+new file mode 100644
+index 0000000000..0df2c4c379
+--- /dev/null
++++ b/test/rubygems/specifications/rubyforge-0.0.1.gemspec
+@@ -0,0 +1,14 @@
++# -*- encoding: utf-8 -*-
++
++Gem::Specification.new do |s|
++  s.name              = "rubyforge"
++  s.version           = "0.0.1"
++  s.platform          = "ruby"
++  s.require_paths     = ["lib"]
++  s.summary           = "A very bar gem"
++  s.authors           = ["unknown"]
++  s.license           = 'MIT'
++  s.homepage          = 'http://example.com'
++  s.files             = ['README.md']
++  s.rubyforge_project = 'abc'
++end
+diff --git a/test/rubygems/test_gem_commands_build_command.rb b/test/rubygems/test_gem_commands_build_command.rb
+index 9dfba75cf5..76ede1466f 100644
+--- a/test/rubygems/test_gem_commands_build_command.rb
++++ b/test/rubygems/test_gem_commands_build_command.rb
+@@ -122,6 +122,23 @@ class TestGemCommandsBuildCommand < Gem::TestCase
+     util_test_build_gem @gem
+   end
+ 
++  def test_execute_rubyforge_project_warning
++    rubyforge_gemspec = File.join SPECIFICATIONS, "rubyforge-0.0.1.gemspec"
++
++    @cmd.options[:args] = [rubyforge_gemspec]
++
++    use_ui @ui do
++      Dir.chdir @tempdir do
++        @cmd.execute
++      end
++    end
++
++    error = @ui.error.split("\n")
++    assert_equal "WARNING:  rubyforge_project= is deprecated and ignored. Please remove this from your gemspec to ensure that your gem continues to build in the future.", error.shift
++    assert_equal "WARNING:  See https://guides.rubygems.org/specification-reference/ for help", error.shift
++    assert_equal [], error
++  end
++
+   def test_execute_strict_with_warnings
+     bad_gem = util_spec 'some_bad_gem' do |s|
+       s.files = ['README.md']
+diff --git a/test/rubygems/test_gem_stub_specification.rb b/test/rubygems/test_gem_stub_specification.rb
+index 8553194c44..91a46d7842 100644
+--- a/test/rubygems/test_gem_stub_specification.rb
++++ b/test/rubygems/test_gem_stub_specification.rb
+@@ -4,7 +4,6 @@
+ 
+ class TestStubSpecification < Gem::TestCase
+ 
+-  SPECIFICATIONS = File.expand_path(File.join("..", "specifications"), __FILE__)
+   FOO = File.join SPECIFICATIONS, "foo-0.0.1-x86-mswin32.gemspec"
+   BAR = File.join SPECIFICATIONS, "bar-0.0.2.gemspec"
+ 
+-- 
+2.27.0
+
+
+From 39322317f3442e71a997503059fb644f31e0ea3e Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Josef=20=C5=A0im=C3=A1nek?= <josef.simanek@gmail.com>
+Date: Thu, 23 Apr 2020 09:03:11 +0200
+Subject: [PATCH 4/4] [rubygems/rubygems] Do not use set.
+
+https://github.com/rubygems/rubygems/commit/1a72c8796f
+---
+ lib/rubygems/specification.rb | 3 +--
+ 1 file changed, 1 insertion(+), 2 deletions(-)
+
+diff --git a/lib/rubygems/specification.rb b/lib/rubygems/specification.rb
+index eb622876fb..a153286e79 100644
+--- a/lib/rubygems/specification.rb
++++ b/lib/rubygems/specification.rb
+@@ -6,7 +6,6 @@
+ # See LICENSE.txt for permissions.
+ #++
+ 
+-require 'set'
+ require 'rubygems/version'
+ require 'rubygems/requirement'
+ require 'rubygems/platform'
+@@ -197,7 +196,7 @@ class Gem::Specification < Gem::BasicSpecification
+   # Tracking removed method calls to warn users during build time.
+   REMOVED_METHODS = [:rubyforge_project=].freeze # :nodoc:
+   def removed_method_calls
+-    @removed_method_calls ||= Set.new
++    @removed_method_calls ||= []
+   end
+ 
+   ######################################################################
+-- 
+2.27.0
+

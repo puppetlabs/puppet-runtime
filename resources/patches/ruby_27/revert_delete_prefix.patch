@@ -1,0 +1,106 @@
+commit 8b4ce7d6c6e1ae339d8fce21e846c78f1579ce44
+Author: Gabriel Nagy <gabriel.nagy@puppet.com>
+Date:   Fri Jul 24 17:50:07 2020 +0300
+
+    Revert "Use delete_prefix instead of `sub(/\Afixed-pattern/, '')`"
+    
+    This reverts commit c01a5ee85e2d6a7128cccafb143bfa694284ca87.
+    
+    Revert this commit since on cross-compiled platforms we use older Ruby
+    versions to compile Ruby, and `delete_prefix` was added in Ruby 2.5.
+
+diff --git a/ext/ripper/lib/ripper/lexer.rb b/ext/ripper/lib/ripper/lexer.rb
+index 9f613c3475..1f151d5957 100644
+--- a/ext/ripper/lib/ripper/lexer.rb
++++ b/ext/ripper/lib/ripper/lexer.rb
+@@ -265,14 +265,14 @@ def compile(pattern)
+     end
+ 
+     def map_tokens(tokens)
+-      tokens.map {|pos,type,str| map_token(type.to_s.delete_prefix('on_')) }.join
++      tokens.map {|pos,type,str| map_token(type.to_s.sub(/\Aon_/,'')) }.join
+     end
+ 
+     MAP = {}
+     seed = ('a'..'z').to_a + ('A'..'Z').to_a + ('0'..'9').to_a
+     SCANNER_EVENT_TABLE.each do |ev, |
+       raise CompileError, "[RIPPER FATAL] too many system token" if seed.empty?
+-      MAP[ev.to_s.delete_prefix('on_')] = seed.shift
++      MAP[ev.to_s.sub(/\Aon_/,'')] = seed.shift
+     end
+ 
+     def map_token(tok)
+diff --git a/lib/cgi/core.rb b/lib/cgi/core.rb
+index bec76e0749..75e6a966b6 100644
+--- a/lib/cgi/core.rb
++++ b/lib/cgi/core.rb
+@@ -421,7 +421,7 @@ def self.parse(query)
+   module QueryExtension
+ 
+     %w[ CONTENT_LENGTH SERVER_PORT ].each do |env|
+-      define_method(env.delete_prefix('HTTP_').downcase) do
++      define_method(env.sub(/^HTTP_/, '').downcase) do
+         (val = env_table[env]) && Integer(val)
+       end
+     end
+@@ -434,7 +434,7 @@ module QueryExtension
+         HTTP_ACCEPT HTTP_ACCEPT_CHARSET HTTP_ACCEPT_ENCODING
+         HTTP_ACCEPT_LANGUAGE HTTP_CACHE_CONTROL HTTP_FROM HTTP_HOST
+         HTTP_NEGOTIATE HTTP_PRAGMA HTTP_REFERER HTTP_USER_AGENT ].each do |env|
+-      define_method(env.delete_prefix('HTTP_').downcase) do
++      define_method(env.sub(/^HTTP_/, '').downcase) do
+         env_table[env]
+       end
+     end
+diff --git a/lib/mkmf.rb b/lib/mkmf.rb
+index eabccd48eb..4dc9c5c71f 100644
+--- a/lib/mkmf.rb
++++ b/lib/mkmf.rb
+@@ -2282,7 +2282,7 @@ def create_makefile(target, srcprefix = nil)
+     origdef ||= ''
+ 
+     if $extout and $INSTALLFILES
+-      $cleanfiles.concat($INSTALLFILES.collect {|files, dir|File.join(dir, files.delete_prefix('./'))})
++      $cleanfiles.concat($INSTALLFILES.collect {|files, dir|File.join(dir, files.sub(/\A\.\//, ''))})
+       $distcleandirs.concat($INSTALLFILES.collect {|files, dir| dir})
+     end
+ 
+diff --git a/lib/net/protocol.rb b/lib/net/protocol.rb
+index 07fbc6a21f..7688adb671 100644
+--- a/lib/net/protocol.rb
++++ b/lib/net/protocol.rb
+@@ -337,7 +337,7 @@ def each_message_chunk
+       read_bytes = 0
+       while (line = readuntil("\r\n")) != ".\r\n"
+         read_bytes += line.size
+-        yield line.delete_prefix('.')
++        yield line.sub(/\A\./, '')
+       end
+       LOG_on()
+       LOG "read message (#{read_bytes} bytes)"
+diff --git a/lib/optparse.rb b/lib/optparse.rb
+index 614ebc3eae..5aa74e3e50 100644
+--- a/lib/optparse.rb
++++ b/lib/optparse.rb
+@@ -1602,7 +1602,7 @@ def parse_in_order(argv = default_argv, setter = nil, &nonopt)  # :nodoc:
+               begin
+                 sw, = complete(:short, opt)
+                 # short option matched.
+-                val = arg.delete_prefix('-')
++                val = arg.sub(/\A-/, '')
+                 has_arg = true
+               rescue InvalidOption
+                 # if no short options match, try completion with long
+diff --git a/lib/un.rb b/lib/un.rb
+index 4a15a37394..fe5f618b78 100644
+--- a/lib/un.rb
++++ b/lib/un.rb
+@@ -47,7 +47,7 @@ def setup(options = "", *long_options)
+     end
+     long_options.each do |s|
+       opt_name, arg_name = s.split(/(?=[\s=])/, 2)
+-      opt_name.delete_prefix!('--')
++      opt_name.sub!(/\A--/, '')
+       s = "--#{opt_name.gsub(/([A-Z]+|[a-z])([A-Z])/, '\1-\2').downcase}#{arg_name}"
+       puts "#{opt_name}=>#{s}" if $DEBUG
+       opt_name = opt_name.intern

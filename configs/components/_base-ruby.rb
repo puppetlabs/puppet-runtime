@@ -28,15 +28,17 @@ if platform.is_aix?
 elsif platform.is_solaris?
   pkg.environment 'PATH', "#{settings[:bindir]}:/usr/ccs/bin:/usr/sfw/bin:$$PATH:/opt/csw/bin"
   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
+  pkg.environment 'CXX', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
   pkg.environment 'LDFLAGS', "-Wl,-rpath=#{settings[:libdir]}"
   if platform.os_version == '10'
     # ./configure uses /bin/sh as the default shell when running config.sub on Solaris 10;
     # This doesn't work and halts the configure process. Set CONFIG_SHELL to force use of bash:
     pkg.environment 'CONFIG_SHELL', '/bin/bash'
   end
-elsif platform.is_cross_compiled_linux? || platform.is_solaris?
+elsif platform.is_cross_compiled_linux?
   pkg.environment 'PATH', "#{settings[:bindir]}:$$PATH"
   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
+  pkg.environment 'CXX', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
   pkg.environment 'LDFLAGS', "-Wl,-rpath=#{settings[:libdir]}"
 elsif platform.is_windows?
   pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:tools_root]}/bin):$(shell cygpath -u #{settings[:tools_root]}/include):$(shell cygpath -u #{settings[:bindir]}):$(shell cygpath -u #{ruby_bindir}):$(shell cygpath -u #{settings[:includedir]}):$(PATH)"

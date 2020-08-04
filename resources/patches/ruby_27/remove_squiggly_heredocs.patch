@@ -1,0 +1,50 @@
+From c78699d4f769cc88516c6cba396aefce06571c3c Mon Sep 17 00:00:00 2001
+From: Gabriel Nagy <gabriel.nagy@puppet.com>
+Date: Fri, 24 Jul 2020 18:23:14 +0300
+Subject: [PATCH] Remove squiggly heredoc from cxxanyargs extconf
+
+The squiggly heredoc was added in Ruby 2.3, but we're cross-compiling
+with older Ruby versions. Change it to a normal heredoc.
+---
+ ext/-test-/cxxanyargs/extconf.rb | 2 +-
+ lib/readline.gemspec | 4 ++--
+ 2 file changed, 3 insertion(+), 3 deletion(-)
+
+diff --git a/ext/-test-/cxxanyargs/extconf.rb b/ext/-test-/cxxanyargs/extconf.rb
+index 08d8c83010..8cc95e48d0 100644
+--- a/ext/-test-/cxxanyargs/extconf.rb
++++ b/ext/-test-/cxxanyargs/extconf.rb
+@@ -2,7 +2,7 @@
+ 
+ cxx = MakeMakefile["C++"]
+ 
+-ok = cxx.try_compile(<<~'begin', "") do |x|
++ok = cxx.try_compile(<<-'begin', "") do |x|
+   #include "ruby/config.h"
+ 
+   namespace {
+diff --git a/lib/readline.gemspec b/lib/readline.gemspec
+index 5c641a8..52a8ff4 100644
+--- a/lib/readline.gemspec
++++ b/lib/readline.gemspec
+@@ -5,7 +5,7 @@ Gem::Specification.new do |spec|
+   spec.email         = ['aycabta@gmail.com']
+ 
+   spec.summary       = %q{It's a loader for "readline".}
+-  spec.description   = <<~EOD
++  spec.description   = <<-EOD
+     This is just a loader for "readline". If Ruby has "readline-ext" gem that
+     is a native extension, this gem will load it first. If Ruby doesn't have
+     the "readline-ext" gem this gem will load "reline" that is a compatible
+@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
+   spec.files         = Dir['BSDL', 'COPYING', 'README.md', 'lib/readline.rb']
+   spec.require_paths = ['lib']
+ 
+-  spec.post_install_message = <<~EOM
++  spec.post_install_message = <<-EOM
+     +---------------------------------------------------------------------------+
+     | This is just a loader for "readline". If Ruby has "readline-ext" gem that |
+     | is a native extension, this gem will load it first. If Ruby doesn't have  |
+-- 
+2.27.0
+

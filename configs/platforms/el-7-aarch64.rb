@@ -9,6 +9,7 @@ platform "el-7-aarch64" do |plat|
   packages = [
     "autoconf",
     "automake",
+    "bison",
     "createrepo",
     "gcc",
     "gcc-c++",
