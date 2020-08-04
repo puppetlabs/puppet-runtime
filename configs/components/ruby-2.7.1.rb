@@ -57,16 +57,14 @@ component 'ruby-2.7.1' do |pkg, settings, platform|
     # TODO: Remove this patch once PA-1607 is resolved.
     pkg.apply_patch "#{base}/aix_configure.patch"
     pkg.apply_patch "#{base}/aix-fix-libpath-in-configure.patch"
-    pkg.apply_patch "#{base}/aix_use_pl_build_tools_autoconf_r2.5.patch"
+    pkg.apply_patch "#{base}/aix-do-not-use-realpath.patch"
     pkg.apply_patch "#{base}/aix_ruby_2.1_fix_make_test_failure_r2.5.patch"
     pkg.apply_patch "#{base}/Remove-O_CLOEXEC-check-for-AIX-builds_r2.5.patch"
   end
 
   if platform.is_windows?
     pkg.apply_patch "#{base}/windows_ruby_2.5_fixup_generated_batch_files.patch"
-    pkg.apply_patch "#{base}/windows_socket_compat_error_r2.5.patch"
     pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
-    pkg.apply_patch "#{base}/windows_env_block_size_limit.patch"
   end
 
   ####################
@@ -77,6 +75,7 @@ component 'ruby-2.7.1' do |pkg, settings, platform|
     pkg.environment 'optflags', settings[:cflags]
   elsif platform.is_windows?
     pkg.environment 'optflags', settings[:cflags] + ' -O3'
+    pkg.environment 'MAKE', 'make'
   elsif platform.is_cross_compiled?
     pkg.environment 'CROSS_COMPILING', 'true'
   else
@@ -97,6 +96,8 @@ component 'ruby-2.7.1' do |pkg, settings, platform|
     special_flags += " --with-baseruby=#{host_ruby} "
   elsif platform.is_solaris? && platform.architecture == "sparc"
     special_flags += " --with-baseruby=#{host_ruby} --enable-close-fds-by-recvmsg-with-peek "
+  elsif platform.name =~ /el-6/
+    special_flags += " --with-baseruby=no "
   elsif platform.is_windows?
     special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
   end

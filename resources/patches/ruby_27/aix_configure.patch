@@ -1,0 +1,105 @@
+From 36c7bd3faaa23694b187c4bed27af1a944c969c5 Mon Sep 17 00:00:00 2001
+From: "Sean P. McDonald" <sean.mcdonald@puppetlabs.com>
+Date: Tue, 7 Aug 2018 12:07:40 -0700
+Subject: [PATCH] revert-configure-fix
+#  reverts changes from commit b7f7b0a2d25071dd8fe09b3f313168bf7f939cc7 that
+#  resulted in build failures on AIX. The patch should be removed once PA-1607
+#  is resolved.
+
+---
+ configure.ac | 43 ++++++++++++++++++++-----------------------
+ 1 file changed, 20 insertions(+), 23 deletions(-)
+
+diff --git a/configure.ac b/configure.ac
+index f1ed36b..91db828 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -463,24 +463,6 @@ RUBY_WERROR_FLAG([
+     cd .. && rm -fr tmp.$$.try_link
+ ])
+ 
+-: ${RPATHFLAG=''}
+-rpathflag=''
+-AS_IF([test x"${RPATHFLAG}" = x], [
+-    AS_CASE(["$target_os"],
+-       [hpux*], [AS_IF([test "$rb_cv_prog_gnu_ld" = no], [rpathflag='+b '])],
+-       [aix*], [rpathflag='-blibpath:'],
+-       [for rpathflag in -R "-rpath "; do
+-           AS_CASE("$rpathflag",
+-                   [*" "], [AS_CASE(["${linker_flag}"],
+-                                    [*,], [rpathflag=`echo "$rpathflag" | tr ' ' ,`])])
+-           rpathflag="${linker_flag}${rpathflag}"
+-           RUBY_TRY_LDFLAGS([${rpathflag}.], [], [rpathflag=])
+-           AS_IF([test "x${rpathflag}" != x], [])
+-        done])
+-], [
+-    rpathflag=`echo "$RPATHFLAG" | sed 's/%.*//'`
+-])
+-
+ AS_CASE([$RUBY_PATCHLEVEL], [-*],
+        [RUBY_DEVEL=yes], [RUBY_DEVEL=no])
+ particular_werror_flags=$RUBY_DEVEL
+@@ -751,7 +733,7 @@ AC_ARG_WITH(opt-dir,
+        [
+                val=`echo "$PATH_SEPARATOR$withval" | sed "s|$PATH_SEPARATOR\([[^$PATH_SEPARATOR]*]\)| -I\1/include|g;s/^ //"`
+                CPPFLAGS="$CPPFLAGS $val"
+-               val=`echo "$PATH_SEPARATOR$withval" | sed "s|$PATH_SEPARATOR\([[^$PATH_SEPARATOR]*]\)| -L\1/lib${rpathflag:+ $rpathflag\\\\1/lib}|g;s/^ //"`
++               val=`echo "$PATH_SEPARATOR$withval" | sed "s|$PATH_SEPARATOR\([[^$PATH_SEPARATOR]*]\)| -L\1/lib|g;s/^ //"`
+                LDFLAGS="$LDFLAGS $val"
+                LDFLAGS_OPTDIR="$val"
+                OPT_DIR="$withval"
+@@ -2610,6 +2592,7 @@ AC_SUBST(LIBEXT)dnl
+ AC_SUBST(ASMEXT, S)dnl
+ 
+ STATIC=
++: ${PATHFLAG=''}
+ 
+ AS_IF([test "$with_dln_a_out" != yes], [
+   rb_cv_dlopen=unknown
+@@ -2648,6 +2631,9 @@ AS_IF([test "$with_dln_a_out" != yes], [
+                        : ${LDSHARED='$(LD) -b'}
+                        XLDFLAGS="$XLDFLAGS -Wl,-E"
+                        : ${LIBPATHENV=SHLIB_PATH}
++                       if test "$rb_cv_prog_gnu_ld" = no; then
++                           RPATHFLAG=' +b %1$-s'
++                       fi
+                        rb_cv_dlopen=yes],
+        [solaris*], [   AS_IF([test "$GCC" = yes], [
+                            : ${LDSHARED='$(CC) -shared'}
+@@ -2723,6 +2709,7 @@ AS_IF([test "$with_dln_a_out" != yes], [
+                         TRY_LINK='$(CC) -oconftest $(INCFLAGS) -I$(hdrdir) $(CPPFLAGS)'
+                         TRY_LINK="$TRY_LINK"' $(CFLAGS) $(src) $(LIBPATH) $(LDFLAGS) $(LOCAL_LIBS) $(LIBS)'
+                        : ${LIBPATHENV=LIBPATH}
++                       RPATHFLAG=" ${linker_flag}-blibpath:%1\$-s:${prefix}/lib:${LIBPATH:-/usr/lib:/lib}"
+                        : ${PRELOADENV=LDR_PRELOAD}
+                        rb_cv_dlopen=yes],
+        [nto-qnx*], [   DLDFLAGS="$DLDFLAGS -L/lib -L/usr/lib -L/usr/local/lib"
+@@ -2758,11 +2745,20 @@ AS_IF([test "$with_dln_a_out" != yes], [
+       ])
+   ])
+ 
+-  AS_IF([test "$enable_rpath:${RPATHFLAG}" = yes:], [
+-      AS_IF([test "x$rpathflag" != x], [
+-         RPATHFLAG=" ${rpathflag}%1\$-s"
+-      ])
+-  ])
++  if test "$enable_rpath" = yes; then
++    if test x"${RPATHFLAG}" = x; then
++      for rpathflag in -R "-rpath "; do
++       AS_CASE("$rpathflag",
++               [*" "], [AS_CASE(["${linker_flag}"],
++                                [*,], [rpathflag=`echo "$rpathflag" | tr ' ' ,`])])
++       rpathflag="${linker_flag}${rpathflag}"
++       RUBY_TRY_LDFLAGS([${rpathflag}.], [], [rpathflag=])
++       if test "x${rpathflag}" != x; then
++                 break
++       fi
++      done
++    fi
++  fi
+ ])
+ AS_IF([test "${LDSHAREDXX}" = ""], [
+     AS_CASE(["${LDSHARED}"],
+--
+2.18.0.windows.1
+

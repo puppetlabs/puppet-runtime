@@ -7,9 +7,6 @@ component "rubygem-ffi" do |pkg, settings, platform|
   # Windows versions of the FFI gem have custom filenames, so we overwite the
   # defaults that _base-rubygem provides here, just for Windows.
   if platform.is_windows?
-    # Pin ffi on Windows due to win32-service failures
-    # see: https://github.com/chef/win32-service/issues/70
-    pkg.version '1.9.25'
     # Vanagon's `pkg.mirror` is additive, and the _base_rubygem sets the
     # non-Windows gem as the first mirror, which is incorrect. We need to unset
     # the list of mirrors before adding the Windows-appropriate ones here:
@@ -18,11 +15,11 @@ component "rubygem-ffi" do |pkg, settings, platform|
     @component.install = []
 
     if platform.architecture == "x64"
-      pkg.md5sum "e263997763271fba35562245b450576f"
+      pkg.sha256sum "029c5c65c4b862a901d8751b8265f46cdcedf6f9186f59121e7511cbeb6e36be"
       pkg.url "https://rubygems.org/downloads/ffi-#{pkg.get_version}-x64-mingw32.gem"
       pkg.mirror "#{settings[:buildsources_url]}/ffi-#{pkg.get_version}-x64-mingw32.gem"
     else
-      pkg.md5sum "3303124f1ca0ee3e59829301ffcad886"
+      pkg.sha256sum "10d30fca1ddeac3ca27b39c60ef408248a4714692bb22b4789da7598a9ded69e"
       pkg.url "https://rubygems.org/downloads/ffi-#{pkg.get_version}-x86-mingw32.gem"
       pkg.mirror "#{settings[:buildsources_url]}/ffi-#{pkg.get_version}-x86-mingw32.gem"
     end
