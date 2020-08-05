@@ -42,4 +42,6 @@ project 'agent-runtime-master' do |proj|
 
   proj.component 'boost'
   proj.component 'yaml-cpp'
+
+  proj.component 'rubygem-win32-service' if platform.is_windows?
 end
