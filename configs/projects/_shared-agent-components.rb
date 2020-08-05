@@ -60,7 +60,6 @@ end
 if platform.is_windows?
   proj.component 'rubygem-win32-dir'
   proj.component 'rubygem-win32-security'
-  proj.component 'rubygem-win32-service'
 end
 
 if platform.is_macos?
