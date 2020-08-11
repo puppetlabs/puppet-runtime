@@ -48,6 +48,7 @@ project 'agent-runtime-5.5.x' do |proj|
   proj.component 'openssl-lib' if platform.is_linux?
 
   if platform.is_windows?
+    proj.component 'rubygem-win32-dir'
     proj.component 'rubygem-win32-process'
     proj.component 'rubygem-win32-service'
   end

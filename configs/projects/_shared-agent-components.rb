@@ -58,7 +58,6 @@ if platform.is_windows? || platform.is_solaris?
 end
 
 if platform.is_windows?
-  proj.component 'rubygem-win32-dir'
   proj.component 'rubygem-win32-security'
 end
 

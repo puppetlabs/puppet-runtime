@@ -44,6 +44,7 @@ project 'agent-runtime-master' do |proj|
   proj.component 'yaml-cpp'
 
   if platform.is_windows?
+    proj.component 'rubygem-win32-dir'
     proj.component 'rubygem-win32-process'
     proj.component 'rubygem-win32-service'
   end
