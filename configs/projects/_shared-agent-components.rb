@@ -57,13 +57,6 @@ if platform.is_windows? || platform.is_solaris?
   proj.component 'rubygem-ffi'
 end
 
-if platform.is_windows?
-  proj.component 'rubygem-win32-dir'
-  proj.component 'rubygem-win32-process'
-  proj.component 'rubygem-win32-security'
-  proj.component 'rubygem-win32-service'
-end
-
 if platform.is_macos?
   proj.component 'rubygem-CFPropertyList'
 end
