@@ -52,9 +52,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
     pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$$PATH"
   end
 
-  if platform.name =~ /solaris-11-sparc/
-    pkg.install_file "#{settings[:tools_root]}/#{settings[:platform_triple]}/sysroot/usr/lib/libffi.so.5.0.10", "#{settings[:libdir]}/libffi.so"
-  elsif platform.name =~ /solaris-11-i386/
+  if platform.name =~ /solaris-11-i386/
     pkg.install_file "/usr/lib/libffi.so.5.0.10", "#{settings[:libdir]}/libffi.so"
   elsif platform.name =~ /solaris-10-i386/
     pkg.install_file "/opt/csw/lib/libffi.so.6", "#{settings[:libdir]}/libffi.so.6"
@@ -66,9 +64,6 @@ component "rubygem-ffi" do |pkg, settings, platform|
 
   pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
 
-  # FFI 1.13.1 forced the minimum required ruby version to ~> 2.3
-  # In order to be able to install the gem using pl-ruby(2.1.9)
-  # we need to remove the required ruby version check
   if platform.is_cross_compiled?
     base_ruby = case platform.name
                 when /solaris-10/
@@ -77,6 +72,28 @@ component "rubygem-ffi" do |pkg, settings, platform|
                   "/opt/pl-build-tools/lib/ruby/2.1.0"
                 end
 
+    # force compilation without system libffi in order to have a statically linked ffi_c.so
+    if platform.name =~ /solaris-11-sparc/
+      sed_exp = 's|CONFIG\["LDFLAGS"\].*|CONFIG["LDFLAGS"] = "-Wl,-rpath-link,/opt/pl-build-tools/sparc-sun-solaris2.11/sysroot/lib:/opt/pl-build-tools/sparc-sun-solaris2.11/sysroot/usr/lib -L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector"|'
+
+      pkg.configure do
+        [
+          # libtool always uses the system/solaris ld even if we
+          # configure it to use the GNU ld, causing some flag
+          # mismatches, so just temporarily move the system ld
+          # somewhere else
+          %(mv /usr/bin/ld /usr/bin/ld1),
+          %(#{platform[:sed]} -i '#{sed_exp}' /opt/puppetlabs/puppet/share/doc/rbconfig-#{settings[:ruby_version]}-orig.rb)
+        ]
+      end
+
+      # move ld back after the gem is installed
+      pkg.install { "mv /usr/bin/ld1 /usr/bin/ld" }
+    end
+
+    # FFI 1.13.1 forced the minimum required ruby version to ~> 2.3
+    # In order to be able to install the gem using pl-ruby(2.1.9)
+    # we need to remove the required ruby version check
     pkg.configure do
       %(#{platform[:sed]} -i '0,/ensure_required_ruby_version_met/b; /ensure_required_ruby_version_met/d' #{base_ruby}/rubygems/installer.rb)
     end
