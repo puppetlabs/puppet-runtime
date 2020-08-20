@@ -47,7 +47,6 @@ project 'agent-runtime-main' do |proj|
   proj.component 'rubygem-optimist'
   proj.component 'rubygem-highline'
   proj.component 'rubygem-hiera-eyaml'
-  proj.component 'rubygem-httpclient'
   proj.component 'rubygem-thor'
   proj.component 'rubygem-scanf'
 
