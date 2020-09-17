@@ -22,8 +22,6 @@
 #     /usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 307.4.0)
 #     /usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1238.0.0)
 
-
-LIBDIR=<%= libdir %>
 BOOST_DYLIBS=${LIBDIR}/libboost*.dylib
 
 echo "Updating install_name values for boost dylibs..."

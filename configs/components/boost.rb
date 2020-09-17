@@ -185,16 +185,16 @@ component "boost" do |pkg, settings, platform|
   # use a script to manually rewrite the finshed dylibs' install_names to use
   # @rpath instead of the build directory.
   if platform.is_macos?
-    pkg.add_source("file://resources/files/boost/macos_rpath_install_names.erb")
+    pkg.add_source("file://resources/files/boost/macos_rpath_install_names.sh")
     pkg.configure do
       [
-        "#{settings[:bindir]}/erb libdir=#{settings[:libdir]} ../macos_rpath_install_names.erb > macos_rpath_install_names.sh",
+        "cp ../macos_rpath_install_names.sh macos_rpath_install_names.sh",
         "chmod +x macos_rpath_install_names.sh",
       ]
     end
     pkg.install do
       [
-        "./macos_rpath_install_names.sh",
+        "LIBDIR=#{settings[:libdir]} ./macos_rpath_install_names.sh",
       ]
     end
   end

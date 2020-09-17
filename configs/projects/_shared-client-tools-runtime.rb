@@ -53,6 +53,11 @@ proj.setting(:mandir, File.join(proj.datadir, "man"))
 proj.setting(:host, "--host #{platform.platform_triple}") if platform.is_windows?
 proj.setting(:platform_triple, platform.platform_triple)
 
+# These are the boost libraries we care about for leatherman
+proj.setting(:boost_libs, ["chrono", "date_time", "filesystem", "locale", "log", "program_options",
+                           "regex", "system", "thread"])
+proj.setting(:boost_link_option, "")
+
 if platform.is_macos?
   # For OS X, we should optimize for an older architecture than Apple
   # currently ships for; there's a lot of older xeon chips based on
@@ -74,6 +79,7 @@ elsif platform.is_windows?
   proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir} -Wl,--nxcompat -Wl,--dynamicbase")
   proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
 else
+  proj.setting(:tools_root, "/opt/pl-build-tools")
   proj.setting(:cppflags, "-I#{proj.includedir} -I/opt/pl-build-tools/include")
   proj.setting(:cflags, "#{proj.cppflags}")
   proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
@@ -90,6 +96,7 @@ end
 proj.component "curl"
 proj.component "puppet-ca-bundle"
 proj.component "libicu"
+proj.component "boost"
 
 # What to include in package?
 proj.directory proj.prefix
