@@ -9,6 +9,10 @@ end
 # Export the settings for the current project and platform as yaml during builds
 proj.publish_yaml_settings
 
+if ENV['CPP_COMPONENT_DEBUG_SYM']
+  proj.setting(:debug_symbols, true)
+end
+
 # Use sparingly in component configurations to conditionally include
 # dependencies that should not be in other projects that use puppet-runtime
 proj.setting(:runtime_project, 'agent')

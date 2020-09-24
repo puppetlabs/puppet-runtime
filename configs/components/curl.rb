@@ -38,6 +38,10 @@ component 'curl' do |pkg, settings, platform|
     configure_options << "--disable-dependency-tracking"
   end
 
+  if settings[:debug_symbols]
+    configure_options << '--enable-debug'
+  end
+
   pkg.configure do
     ["CPPFLAGS='#{settings[:cppflags]}' \
       LDFLAGS='#{settings[:ldflags]}' \
