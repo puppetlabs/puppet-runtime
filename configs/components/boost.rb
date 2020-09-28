@@ -37,10 +37,12 @@ component "boost" do |pkg, settings, platform|
   with_toolset = "--with-toolset=#{toolset}"
   boost_dir = ""
   bootstrap_suffix = ".sh"
+  bootstrap_flags = settings[:boost_bootstrap_flags] || ""
   execute = "./"
   addtl_flags = ""
   gpp = "#{settings[:tools_root]}/bin/g++"
-  b2flags = ""
+  b2flags = settings[:boost_b2_flags] || ""
+  b2installflags = settings[:boost_b2_install_flags] || ""
   link_option = settings[:boost_link_option]
   b2location = "#{settings[:prefix]}/bin/b2"
   bjamlocation = "#{settings[:prefix]}/bin/bjam"
@@ -141,7 +143,7 @@ component "boost" do |pkg, settings, platform|
     [
       %Q{echo '#{userconfigjam}' > ~/user-config.jam},
       "cd tools/build",
-      "#{execute}bootstrap#{bootstrap_suffix} #{with_toolset}",
+      "#{execute}bootstrap#{bootstrap_suffix} #{with_toolset} #{bootstrap_flags}",
       "./b2 \
       install \
       variant=release \
@@ -162,6 +164,7 @@ component "boost" do |pkg, settings, platform|
       #{link_option} \
       toolset=#{toolset} \
       #{b2flags} \
+      #{b2installflags} \
       -d+2 \
       --debug-configuration \
       --prefix=#{settings[:prefix]} \
