@@ -57,6 +57,9 @@ proj.setting(:platform_triple, platform.platform_triple)
 proj.setting(:boost_libs, ["chrono", "date_time", "filesystem", "locale", "log", "program_options",
                            "regex", "system", "thread"])
 proj.setting(:boost_link_option, "")
+proj.setting(:boost_bootstrap_flags, "--without-icu")
+proj.setting(:boost_b2_flags, "--disable-icu")
+proj.setting(:boost_b2_install_flags, "boost.locale.icu=off")
 
 if platform.is_macos?
   # For OS X, we should optimize for an older architecture than Apple
