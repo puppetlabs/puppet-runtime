@@ -74,6 +74,19 @@ proj.component('runtime-pe-bolt-server')
 # R10k dependencies
 proj.component('rubygem-gettext-setup')
 
+# Puppet dependencies
+proj.component 'rubygem-deep_merge'
+proj.component 'rubygem-text'
+proj.component 'rubygem-locale'
+proj.component 'rubygem-gettext'
+proj.component 'rubygem-fast_gettext'
+proj.component 'rubygem-semantic_puppet'
+
+# hiera-eyaml and it's dependencies
+proj.component('rubygem-highline')
+proj.component('rubygem-optimist')
+proj.component('rubygem-hiera-eyaml')
+
 # Core dependencies
 proj.component('rubygem-addressable')
 proj.component('rubygem-aws-eventstream')
@@ -107,6 +120,7 @@ proj.component('rubygem-log4r')
 proj.component('rubygem-logging')
 proj.component('rubygem-minitar')
 proj.component('rubygem-molinillo')
+proj.component('rubygem-multi_json')
 proj.component('rubygem-multipart-post')
 proj.component('rubygem-net-http-persistent')
 proj.component('rubygem-net-scp')
