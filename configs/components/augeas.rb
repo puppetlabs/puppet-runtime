@@ -18,6 +18,8 @@ component 'augeas' do |pkg, settings, platform|
     pkg.md5sum 'abf51f4c0cf3901d167f23687f60434a'
   when '1.12.0'
     pkg.md5sum '74f1c7b8550f4e728486091f6b907175'
+
+    pkg.apply_patch 'resources/patches/augeas/augeas-1.12.0-allow-ad-groups-in-sudoers.patch'
   else
     raise "augeas version #{version} has not been configured; Cannot continue."
   end
