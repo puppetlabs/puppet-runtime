@@ -1,0 +1,26 @@
+From 3afe12b2a95f248862312ca56cbd7ce3df4af2ac Mon Sep 17 00:00:00 2001
+From: Luchian Nemes <luchian.nemes@puppet.com>
+Date: Mon, 12 Oct 2020 14:58:40 +0300
+Subject: [PATCH] Allow AD groups in '/etc/sudoers'
+
+Before this commit, `/etc/sudoers` files containing AD users or groups
+could not be parsed with the sudoers lens because it was containing `\\`
+in said users/groups name. Running `visudo -c` shows that a sudoers file
+containing these is valid so this case was added in the affected regex.
+---
+ lenses/sudoers.aug            |  2 +-
+ 1 files changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/lenses/sudoers.aug a/lenses/sudoers.aug
+index 043c563..59d8417 100644
+--- a/lenses/sudoers.aug
++++ a/lenses/sudoers.aug
+@@ -127,7 +127,7 @@ let sto_to_com_host = store /[^,=:#() \t\n\\]+/
+ Escaped spaces and NIS domains and allowed*)
+ let sto_to_com_user =
+       let nis_re = /([A-Z]([-A-Z0-9]|(\\\\[ \t]))*+\\\\\\\\)/
+-   in let user_re = /[%+@a-z]([-A-Za-z0-9._+]|(\\\\[ \t]))*/
++   in let user_re = /[%+@a-z]([-A-Za-z0-9._+]|(\\\\[ \t])|\\\\\\\\[A-Za-z0-9])*/
+    in let alias_re = /[A-Z_]+/
+    in store ((nis_re? . user_re) | alias_re)
+
