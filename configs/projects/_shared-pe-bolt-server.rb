@@ -61,8 +61,18 @@ proj.setting(:gem_build, "#{proj.host_gem} build")
 # These gem_* paths are specific to pe-bolt-server -- they allow gems built for
 # this runtime to be installed to pe-bolt-server's paths instead of
 # puppet-agent's:
-proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local --bindir=#{proj.bindir}")
 proj.setting(:gem_home, File.join(proj.libdir, 'ruby'))
+
+# We build bolt server with the ruby installed in the puppet-agent dep. For ruby 2.7 we need to use a --no-document flag
+# for gem installs instead of --no-ri --no-rdoc. This setting allows us to use this while we support both ruby 2.5 and 2.7
+# Once we are no longer using ruby 2.5 we can update.
+if proj.no_doc
+  proj.setting(:gem_install, "#{proj.host_gem} install --no-document --local --bindir=#{proj.bindir}")
+else
+  proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local --bindir=#{proj.bindir}")
+end
+
+
 
 
 # What to build?
