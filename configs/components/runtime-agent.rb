@@ -9,8 +9,10 @@ component "runtime-agent" do |pkg, settings, platform|
     else
       libdir = File.join("/opt/pl-build-tools", settings[:platform_triple], "lib")
     end
-  elsif platform.is_aix?
+  elsif platform.name == "aix-6.1-ppc"
     libdir = "/opt/pl-build-tools/lib/gcc/powerpc-ibm-aix6.1.0.0/5.2.0/"
+  elsif platform.name == "aix-7.1-ppc"
+    libdir = "/opt/pl-build-tools/lib/gcc/powerpc-ibm-aix7.1.0.0/5.2.0/"
   elsif platform.is_solaris? || platform.architecture =~ /i\d86/
     libdir = "/opt/pl-build-tools/lib"
   elsif platform.architecture =~ /64/

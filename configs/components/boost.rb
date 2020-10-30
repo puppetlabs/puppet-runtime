@@ -11,6 +11,10 @@ component "boost" do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/boost/force-SONAME-option-for-solaris.patch'
   end
 
+  if platform.name == 'aix-7.1-ppc'
+    pkg.apply_patch 'resources/patches/boost/no-O_CLOEXEC-on-aix71.patch'
+  end
+
   if platform.is_cisco_wrlinux?
     pkg.apply_patch 'resources/patches/boost/no-fionbio.patch'
   end

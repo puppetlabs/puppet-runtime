@@ -1,0 +1,17 @@
+# on AIX7.1(7100-04-02-1614), using O_CLOEXEC leads to
+# kopen("/dev/urandom", 040000000)                Err#22 EINVAL
+diff --git a/boost/uuid/detail/random_provider_posix.ipp b/boost/uuid/detail/random_provider_posix.ipp
+index 4a22235..1f61cd0 100644
+--- a/boost/uuid/detail/random_provider_posix.ipp
++++ b/boost/uuid/detail/random_provider_posix.ipp
+@@ -49,9 +49,6 @@ public:
+       : fd_(-1)
+     {
+         int flags = O_RDONLY;
+-#if defined(O_CLOEXEC)
+-        flags |= O_CLOEXEC;
+-#endif
+         fd_ = BOOST_UUID_RANDOM_PROVIDER_POSIX_IMPL_OPEN("/dev/urandom", flags);
+ 
+         if (BOOST_UNLIKELY(-1 == fd_))
+
