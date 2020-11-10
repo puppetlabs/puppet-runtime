@@ -198,6 +198,9 @@ component 'ruby-2.7.1' do |pkg, settings, platform|
     end
   elsif platform.is_windows?
     rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
+  elsif platform.name =~ /el-7-x86_64/
+    # EL 7 GCC (4.8.x) does not support -fstack-protector-strong
+    rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector -rdynamic -Wl,-export-dynamic -L/opt/puppetlabs/puppet/lib"
   end
 
   pkg.add_source("file://resources/files/ruby_vendor_gems/operating_system.rb")
