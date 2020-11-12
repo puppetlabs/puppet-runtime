@@ -43,6 +43,8 @@ project 'agent-runtime-master' do |proj|
   proj.component 'boost'
   proj.component 'yaml-cpp'
 
+  proj.component 'logrotate' if platform.is_solaris?
+
   if platform.is_windows?
     proj.component 'rubygem-win32-dir'
     proj.component 'rubygem-win32-process'

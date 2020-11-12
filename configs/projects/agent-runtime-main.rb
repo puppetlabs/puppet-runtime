@@ -57,4 +57,7 @@ project 'agent-runtime-main' do |proj|
 
   proj.component 'boost'
   proj.component 'yaml-cpp'
+
+  proj.component 'logrotate' if platform.is_solaris?
+
 end
