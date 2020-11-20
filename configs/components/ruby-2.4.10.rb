@@ -98,7 +98,6 @@ component 'ruby-2.4.10' do |pkg, settings, platform|
   end
 
   without_dtrace = [
-    'aix-6.1-ppc',
     'aix-7.1-ppc',
     'cisco-wrlinux-5-x86_64',
     'cisco-wrlinux-7-x86_64',
@@ -165,7 +164,6 @@ component 'ruby-2.4.10' do |pkg, settings, platform|
   end
 
   target_doubles = {
-    'powerpc-ibm-aix6.1.0.0' => 'powerpc-aix6.1.0.0',
     'aarch64-redhat-linux' => 'aarch64-linux',
     'ppc64-redhat-linux' => 'powerpc64-linux',
     'ppc64le-redhat-linux' => 'powerpc64le-linux',
