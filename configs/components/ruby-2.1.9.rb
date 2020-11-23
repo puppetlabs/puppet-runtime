@@ -140,7 +140,6 @@ component "ruby-2.1.9" do |pkg, settings, platform|
   end
 
   target_doubles = {
-    'powerpc-ibm-aix6.1.0.0' => 'powerpc-aix6.1.0.0',
     'aarch64-redhat-linux' => 'aarch64-linux',
     'ppc64-redhat-linux' => 'powerpc64-linux',
     'ppc64le-redhat-linux' => 'powerpc64le-linux',

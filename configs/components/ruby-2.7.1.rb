@@ -103,7 +103,6 @@ component 'ruby-2.7.1' do |pkg, settings, platform|
   end
 
   without_dtrace = [
-    'aix-6.1-ppc',
     'aix-7.1-ppc',
     'el-7-ppc64le',
     'el-7-aarch64',
@@ -160,7 +159,6 @@ component 'ruby-2.7.1' do |pkg, settings, platform|
   end
 
   target_doubles = {
-    'powerpc-ibm-aix6.1.0.0' => 'powerpc-aix6.1.0.0',
     'powerpc-ibm-aix7.1.0.0' => 'powerpc-aix7.1.0.0',
     'aarch64-redhat-linux' => 'aarch64-linux',
     'ppc64-redhat-linux' => 'powerpc64-linux',
