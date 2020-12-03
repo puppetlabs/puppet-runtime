@@ -4,7 +4,7 @@ FROM centos:${centos_version}
 
 ARG vcs_ref
 ARG build_date
-ARG version="201904091"
+ARG version="202011160"
 ARG project="agent"
 ARG project_branch="master"
 ARG artifactory=https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/${version}/el-7-x86_64
