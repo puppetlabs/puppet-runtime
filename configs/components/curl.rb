@@ -1,6 +1,6 @@
 component 'curl' do |pkg, settings, platform|
-  pkg.version '7.72.0'
-  pkg.sha256sum 'd4d5899a3868fbb6ae1856c3e55a32ce35913de3956d1973caccd37bd0174fa2'
+  pkg.version '7.74.0'
+  pkg.sha256sum 'e56b3921eeb7a2951959c02db0912b5fcd5fdba5aca071da819e1accf338bbd7'
   pkg.url "https://curl.haxx.se/download/curl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/curl-#{pkg.get_version}.tar.gz"
 
