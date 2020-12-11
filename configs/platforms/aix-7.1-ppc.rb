@@ -40,20 +40,7 @@ curl -O https://artifactory.delivery.puppetlabs.net/artifactory/generic__buildso
 uncompress openssl-1.0.2.1800.tar.Z;
 tar xvf openssl-1.0.2.1800.tar;
 cd openssl-1.0.2.1800 && /usr/sbin/installp -acgwXY -d $PWD openssl.base;
-cat >yum.patch <<EOF
---- yum.sh.orig	2020-12-04 14:51:35.103032555 +0200
-+++ yum.sh	2020-12-04 14:52:06.511040198 +0200
-@@ -70,6 +70,8 @@
-     expect "ftp>"
-     send "bin\\r"
-     expect "ftp>"
-+    send "passive\\r"
-+    expect "ftp>"
-     send "cd aix/freeSoftware/aixtoolbox/INSTALLP/ppc\\r"
-     expect "ftp>"
-     if {"\\$oslvl" == "6.1.0.0"} {
-EOF
-curl -O http://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/ezinstall/ppc/yum.sh && /opt/freeware/bin/patch yum.sh yum.patch && sh yum.sh;
+curl -O http://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/ezinstall/ppc/yum.sh && sh yum.sh;
 yum install -y gcc-c++]
 
   # We use --force with rpm because the pl-gettext and pl-autoconf
