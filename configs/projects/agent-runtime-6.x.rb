@@ -1,4 +1,4 @@
-project 'agent-runtime-master' do |proj|
+project 'agent-runtime-6.x' do |proj|
   # Set preferred component versions if they differ from defaults:
   proj.setting :ruby_version, '2.5.8'
   proj.setting :augeas_version, '1.12.0'
@@ -11,7 +11,7 @@ project 'agent-runtime-master' do |proj|
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-agent-settings.rb'))
 
   ########
-  # Settings specific to the master branch
+  # Settings specific to the 6.x branch
   ########
 
   # Directory for gems shared by puppet and puppetserver
@@ -24,7 +24,7 @@ project 'agent-runtime-master' do |proj|
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-agent-components.rb'))
 
   ########
-  # Components specific to the master branch
+  # Components specific to the 6.x branch
   ########
 
   proj.component 'rubygem-concurrent-ruby'
