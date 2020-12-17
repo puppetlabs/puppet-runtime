@@ -40,6 +40,7 @@ component 'ruby-2.7.1' do |pkg, settings, platform|
   pkg.apply_patch "#{base}/net_http_eof_14972_r2.5.patch"
   pkg.apply_patch "#{base}/ruby_15856.patch"
   pkg.apply_patch "#{base}/rubygems_3639.patch"
+  pkg.apply_patch "#{base}/ruby_avoid_realpath.patch"
 
   if platform.is_cross_compiled?
     pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.5.patch"
