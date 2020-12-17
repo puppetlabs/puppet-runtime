@@ -6,7 +6,7 @@ ARG vcs_ref
 ARG build_date
 ARG version="201904091"
 ARG project="agent"
-ARG project_branch="master"
+ARG project_branch="main"
 ARG artifactory=https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-runtime/${version}/el-7-x86_64
 ARG file_base=${project}-runtime-${project_branch}-${version}.el-7-x86_64
 # validate_downloads.sh consumes these values

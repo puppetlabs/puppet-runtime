@@ -13,7 +13,7 @@ export CENTOS_VERSION = 7
 export DOCKER_BUILDKIT = 1
 
 version = $(shell echo $(git_describe) | sed 's/-.*//')
-agent_branches := 1.10.x 5.5.x master
+agent_branches := 5.5.x 6.x main
 
 prep:
 	@git fetch --unshallow 2> /dev/null ||:
