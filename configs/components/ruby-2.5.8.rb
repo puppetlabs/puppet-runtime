@@ -84,7 +84,7 @@ component 'ruby-2.5.8' do |pkg, settings, platform|
 
   special_flags = " --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
 
-  if platform.name =~ /sles-15|el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 29)
+  if platform.name =~ /sles-15|el-8|debian-10/ || platform.is_fedora?
     special_flags += " CFLAGS='#{settings[:cflags]}' LDFLAGS='#{settings[:ldflags]}' CPPFLAGS='#{settings[:cppflags]}' "
   end
 

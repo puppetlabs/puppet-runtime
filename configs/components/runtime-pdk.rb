@@ -33,7 +33,7 @@ component "runtime-pdk" do |pkg, settings, platform|
     # Do nothing
 
   else # Linux and Solaris systems
-    if (platform.is_fedora? && platform.os_version.to_i >= 29) ||
+    if platform.is_fedora? && platform.os_version.to_i >= 29 ||
         (platform.is_el? && platform.os_version.to_i >= 8) ||
         (platform.is_debian? && platform.os_version.to_i >= 10) ||
         (platform.is_ubuntu? && platform.os_version.split('.').first.to_i >= 20)

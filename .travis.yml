@@ -8,7 +8,7 @@ matrix:
         - |
           stat=0
           for projfile in $(ls configs/projects/[a-z]*.rb); do
-            for plat in el-7-x86_64 ubuntu-18.04-amd64 osx-10.13-x86_64 windows-2012r2-x64; do
+            for plat in el-7-x86_64 ubuntu-18.04-amd64 osx-10.14-x86_64 windows-2012r2-x64; do
               proj=$(basename -s .rb $projfile)
               if [[ "$proj" =~ ^pe- && "$plat" =~ ^(windows|osx) ]]; then
                 echo Skipping ${proj} on ${plat}, pe projects don\'t support windows or osx
