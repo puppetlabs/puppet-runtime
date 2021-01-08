@@ -81,10 +81,10 @@ project 'pdk-runtime' do |proj|
       ruby_dir: File.join(proj.privatedir, "ruby", "2.5.8"),
       latest_puppet: "6.19.1", # TODO: make this a semver range
     },
-    "2.7.1" => {
-      ruby_version: "2.7.1",
+    "2.7.2" => {
+      ruby_version: "2.7.2",
       ruby_api: "2.7.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.7.1"),
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.7.2"),
     }
   }
 

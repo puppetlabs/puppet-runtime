@@ -1,6 +1,6 @@
-component 'ruby-2.7.1' do |pkg, settings, platform|
-  pkg.version '2.7.1'
-  pkg.sha256sum 'd418483bdd0000576c1370571121a6eb24582116db0b7bb2005e90e250eae418'
+component 'ruby-2.7.2' do |pkg, settings, platform|
+  pkg.version '2.7.2'
+  pkg.sha256sum '6e5706d0d4ee4e1e2f883db9d768586b4d06567debea353c796ec45e8321c3d4'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
@@ -48,7 +48,6 @@ component 'ruby-2.7.1' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/ruby2_keywords_guard.patch"
     pkg.apply_patch "#{base}/ruby_version_extra_guards.patch"
     pkg.apply_patch "#{base}/ruby_20_guards.patch"
-    pkg.apply_patch "#{base}/deprecate_rubyforge_project_rubygems.patch"
     pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
     pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
   end
