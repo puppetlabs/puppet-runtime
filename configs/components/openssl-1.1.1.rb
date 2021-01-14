@@ -74,6 +74,8 @@ component 'openssl' do |pkg, settings, platform|
       sslflags = '386'
     elsif platform.architecture =~ /aarch64$/
       target = 'linux-aarch64'
+    elsif platform.architecture =~ /ppc64le|ppc64el/ # Little-endian
+      target = 'linux-ppc64le'
     elsif platform.architecture =~ /64$/
       target = 'linux-x86_64'
     end
