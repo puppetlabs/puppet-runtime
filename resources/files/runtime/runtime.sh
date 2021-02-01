@@ -16,7 +16,7 @@ else
     LIBDIR="$1"
   else
     echo "$1 does not exist" >2
-    exit 1
+    exit 0
   fi
 fi
 
