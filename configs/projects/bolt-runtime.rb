@@ -130,6 +130,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-locale'
   proj.component 'rubygem-gettext'
   proj.component 'rubygem-fast_gettext'
+  proj.component 'rubygem-scanf'
   proj.component 'rubygem-semantic_puppet'
 
   # R10k dependencies
