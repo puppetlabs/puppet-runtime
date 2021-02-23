@@ -1,0 +1,70 @@
+From ce9e687588235f1ccc10edda429158b93338dd9b Mon Sep 17 00:00:00 2001
+From: =?UTF-8?q?Marcin=20Barczy=C5=84ski?= <mba.ogolny@gmail.com>
+Date: Thu, 22 Oct 2020 16:29:59 +0200
+Subject: [PATCH] postgresql.aug: Allow hyphen '-' in values that don't require
+ quotes (#700) (#701)
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Since PostgreSQL 10 password_encryption is enum.
+If the value is set to scram-sha-256 (which contains hyphens),
+saving postgresql.conf with augeas fails with:
+
+saving failed (run 'errors' for details)
+Error in /var/lib/pgsql/13/data/postgresql.conf:782.0 (parse_skel_failed)
+  Iterated lens matched less than it should
+  Lens: /usr/share/augeas/lenses/dist/postgresql.aug:69.10-.46:
+    Last matched: /usr/share/augeas/lenses/dist/postgresql.aug:30.10-.46:
+    Next (no match): /usr/share/augeas/lenses/dist/quote.aug:117.2-.35:
+
+This is because hyphen wasn't included in the definition of string
+that doesn't require quoting.
+
+Co-authored-by: Raphaël Pinson <raphael.pinson@camptocamp.com>
+---
+ lenses/postgresql.aug            | 2 +-
+ lenses/tests/test_postgresql.aug | 3 +++
+ 2 files changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/lenses/postgresql.aug b/lenses/postgresql.aug
+index 4946643c..1f3a5b4a 100644
+--- a/lenses/postgresql.aug
++++ b/lenses/postgresql.aug
+@@ -31,7 +31,7 @@ let sep = del /([ \t]+)|([ \t]*=[ \t]*)/ " = "
+ 
+ (* Variable: word_opt_quot_re
+      Strings that don't require quotes *)
+-let word_opt_quot_re = /[A-Za-z][A-Za-z0-9_]*/
++let word_opt_quot_re = /[A-Za-z][A-Za-z0-9_-]*/
+ 
+ (* View: word_opt_quot
+      Storing a <word_opt_quot_re>, with or without quotes *)
+diff --git a/lenses/tests/test_postgresql.aug b/lenses/tests/test_postgresql.aug
+index 94f485da..a692850a 100644
+--- a/lenses/tests/test_postgresql.aug
++++ b/lenses/tests/test_postgresql.aug
+@@ -107,6 +107,7 @@ lc_messages = 'en_US.UTF-8'
+ log_filename = log
+ archive_command = 'tar \'quoted option\''
+ search_path = '\"$user\",public'
++password_encryption = scram-sha-256
+ "
+ test Postgresql.lns get string_quotes =
+   { "listen_addresses" = "localhost" }
+@@ -115,6 +116,7 @@ test Postgresql.lns get string_quotes =
+   { "log_filename" = "log" }
+   { "archive_command" = "tar \'quoted option\'" }
+   { "search_path" = "\"$user\",public" }
++  { "password_encryption" = "scram-sha-256" }
+ test Postgresql.lns put string_quotes after
+   set "stats_temp_directory" "foo_bar";
+   set "log_filename" "postgresql-%Y-%m-%d_%H%M%S.log";
+@@ -124,6 +126,7 @@ lc_messages = 'en_US.UTF-8'
+ log_filename = 'postgresql-%Y-%m-%d_%H%M%S.log'
+ archive_command = 'tar \'quoted option\''
+ search_path = '\"$user\",public'
++password_encryption = scram-sha-256
+ log_statement = 'none'
+ "
+ 

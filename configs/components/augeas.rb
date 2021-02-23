@@ -20,6 +20,7 @@ component 'augeas' do |pkg, settings, platform|
     pkg.md5sum '74f1c7b8550f4e728486091f6b907175'
 
     pkg.apply_patch 'resources/patches/augeas/augeas-1.12.0-allow-ad-groups-in-sudoers.patch'
+    pkg.apply_patch 'resources/patches/augeas/augeas-1.12.0-allow-hyphen-postgresql-lens.patch'
   else
     raise "augeas version #{version} has not been configured; Cannot continue."
   end
