@@ -1,6 +1,6 @@
 component 'rubygem-bootsnap' do |pkg, settings, platform|
   pkg.version '1.7.2'
-  pkg.md5sum '3c16afcb468f7e98c9d5e93f8db1b29f'
+  pkg.md5sum 'dc8b1a2fc84e9a9f3e8934294418692d'
 
   pkg.build_requires 'rubygem-msgpack'
   

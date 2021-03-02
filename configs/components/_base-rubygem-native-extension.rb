@@ -20,7 +20,7 @@ pkg.build_requires "runtime-#{settings[:runtime_project]}"
 pkg.build_requires "pl-ruby-patch" if platform.is_cross_compiled?
 
 if platform.is_windows? 
-  ruby_gem_ver = 'ruby-2.5.0'
+  ruby_gem_ver = 'ruby-2.7.0'
   ruby_bindir ||= settings[:ruby_bindir]
   build_env_path = [
     "$(shell cygpath -u C:/ProgramData/chocolatey/lib/mingw/tools/install/mingw64/bin)",
