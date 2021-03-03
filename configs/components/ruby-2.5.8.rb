@@ -212,10 +212,14 @@ component 'ruby-2.5.8' do |pkg, settings, platform|
   pkg.directory(defaults_dir)
   pkg.install_file "../operating_system.rb", File.join(defaults_dir, 'operating_system.rb')
 
-  pkg.add_source("file://resources/files/rubygems/COMODO_RSA_Certification_Authority.pem")
-  defaults_dir = File.join(settings[:libdir], "ruby/2.5.0/rubygems/ssl_certs/puppetlabs.net")
-  pkg.directory(defaults_dir)
-  pkg.install_file "../COMODO_RSA_Certification_Authority.pem", File.join(defaults_dir, 'COMODO_RSA_Certification_Authority.pem')
+  certs_dir = File.join(settings[:libdir], 'ruby/2.5.0/rubygems/ssl_certs/puppetlabs.net')
+  pkg.directory(certs_dir)
+
+  pkg.add_source('file://resources/files/rubygems/COMODO_RSA_Certification_Authority.pem')
+  pkg.install_file '../COMODO_RSA_Certification_Authority.pem', File.join(certs_dir, 'COMODO_RSA_Certification_Authority.pem')
+
+  pkg.add_source('file://resources/files/rubygems/GlobalSignRootCA_R3.pem')
+  pkg.install_file '../GlobalSignRootCA_R3.pem', File.join(certs_dir, 'GlobalSignRootCA_R3.pem')
 
   unless rbconfig_changes.empty?
     pkg.install do
