@@ -79,7 +79,7 @@ project 'bolt-runtime' do |proj|
     proj.setting(:gcc_root, "C:/tools/mingw#{arch}")
     proj.setting(:gcc_bindir, "#{proj.gcc_root}/bin")
     proj.setting(:tools_root, "C:/tools/pl-build-tools")
-    proj.setting(:cppflags, "-I#{proj.tools_root}/include -I#{proj.gcc_root}/include -I#{proj.includedir}")
+    proj.setting(:cppflags, "-I#{settings[:includedir]}/ruby-2.7.0 -I#{proj.tools_root}/include -I#{proj.gcc_root}/include -I#{proj.includedir}")
     proj.setting(:cflags, "#{proj.cppflags}")
     proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir} -Wl,--nxcompat -Wl,--dynamicbase")
     proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
@@ -149,6 +149,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-aws-sdk-ec2'
   proj.component 'rubygem-aws-sigv4'
   proj.component 'rubygem-bindata'
+  proj.component 'rubygem-bootsnap'
   proj.component 'rubygem-builder'
   proj.component 'rubygem-CFPropertyList'
   proj.component 'rubygem-colored2'
@@ -171,6 +172,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-logging'
   proj.component 'rubygem-minitar'
   proj.component 'rubygem-molinillo'
+  proj.component 'rubygem-msgpack'
   proj.component 'rubygem-multi_json'
   proj.component 'rubygem-multipart-post'
   proj.component 'rubygem-net-http-persistent'
