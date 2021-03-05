@@ -6,7 +6,7 @@ component 'rubygem-msgpack' do |pkg, settings, platform|
     pkg.md5sum '8f5f47873696caf069f2076a2e0722d5'
   else
     pkg.version '1.4.2'
-    pkg.md5sum 'f58a6aace36cd82e9a39ffeeef925afc'
+    pkg.md5sum '4bffea317387a580386fa551b7711b58'
   end
 
   instance_eval File.read('configs/components/_base-rubygem-compiled.rb')
