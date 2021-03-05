@@ -1,6 +1,6 @@
 component "rubygem-aws-eventstream" do |pkg, settings, platform|
-  pkg.version "1.1.0"
-  pkg.md5sum "50f4916f0e7bdc4527f30fe02ad9197f"
+  pkg.version "1.1.1"
+  pkg.md5sum "15511340519ce63d360f33d8ae2c34a4"
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
