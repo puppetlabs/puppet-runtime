@@ -78,6 +78,8 @@ component 'openssl' do |pkg, settings, platform|
       target = 'linux-ppc64le'
     elsif platform.architecture =~ /64$/
       target = 'linux-x86_64'
+    elsif platform.architecture == 'armhf'
+      target = 'linux-armv4'
     end
   end
 
