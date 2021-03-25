@@ -1,7 +1,7 @@
 project 'pdk-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, "pdk")
-  proj.setting(:openssl_version, '1.0.2')
+  proj.setting(:openssl_version, '1.1.1')
   platform = proj.get_platform
 
   proj.version_from_git
