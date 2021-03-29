@@ -114,6 +114,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
     'ubuntu-16.04-ppc64el',
     'windows-2012r2-x64',
     'windows-2012r2-x86',
+    'windows-2019-x64',
     'windowsfips-2012r2-x64'
   ]
 
