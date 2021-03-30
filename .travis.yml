@@ -32,7 +32,7 @@ matrix:
       services:
         - docker
       env:
-        - DOCKER_COMPOSE_VERSION=1.25.5
+        - DOCKER_COMPOSE_VERSION=1.28.6
         # necessary to prevent overwhelming TravisCI build output limits
         - DOCKER_BUILD_FLAGS="--progress plain"
       before_install:
