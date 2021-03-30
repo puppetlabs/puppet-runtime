@@ -4,13 +4,13 @@ vcs_ref := $(shell git rev-parse HEAD)
 build_date := $(shell date -u +%FT%T)
 hadolint_available := $(shell hadolint --help > /dev/null 2>&1; echo $$?)
 hadolint_command := hadolint
-hadolint_container := hadolint/hadolint:latest
+hadolint_container := ghcr.io/hadolint/hadolint:latest
 pwd := $(shell pwd)
 export BUNDLE_PATH = $(pwd)/.bundle/gems
 export BUNDLE_BIN = $(pwd)/.bundle/bin
 export GEMFILE = $(pwd)/Gemfile
 export CENTOS_VERSION = 7
-export DOCKER_BUILDKIT = 1
+export DOCKER_BUILDKIT ?= 1
 
 version = $(shell echo $(git_describe) | sed 's/-.*//')
 agent_branches := 5.5.x 6.x main
