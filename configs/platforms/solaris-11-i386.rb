@@ -1,16 +1,12 @@
 platform "solaris-11-i386" do |plat|
-  plat.servicedir "/lib/svc/manifest"
-  plat.defaultdir "/lib/svc/method"
-  plat.servicetype "smf"
-  plat.vmpooler_template "solaris-11-x86_64"
-  plat.add_build_repository 'http://solaris-11-reposync.delivery.puppetlabs.net:81', 'puppetlabs.com'
+  plat.inherit_from_default
 
-  packages = [
-    "pl-binutils-i386",
-    "pl-cmake",
-    "pl-gcc-i386",
-    "pl-pkg-config"
-  ]
+  packages = %w(
+    pl-binutils-i386
+    pl-cmake
+    pl-gcc-i386
+    pl-pkg-config
+  )
 
   plat.provision_with("pkg install #{packages.join(' ')}")
 
@@ -47,7 +43,5 @@ basedir=default" > /var/tmp/vanagon-noask;
   /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i libffi_dev || exit 1;
 
   ntpdate pool.ntp.org]
-
-  plat.install_build_dependencies_with "pkg install ", " || [[ $? -eq 4 ]]"
   plat.output_dir File.join("solaris", "11", "PC1")
 end
