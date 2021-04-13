@@ -50,6 +50,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/ruby_20_guards.patch"
     pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
     pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+    pkg.apply_patch "#{base}/revert_host_value_changes.patch"
   end
 
   if platform.is_aix?
