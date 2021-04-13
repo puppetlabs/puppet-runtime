@@ -1,6 +1,6 @@
-component 'ruby-2.5.8' do |pkg, settings, platform|
-  pkg.version '2.5.8'
-  pkg.md5sum 'dea1ae6409955af8fee49923c07cf0c1'
+component 'ruby-2.5.9' do |pkg, settings, platform|
+  pkg.version '2.5.9'
+  pkg.md5sum '5c8f3634d80aff7c971aa264c313c5ba'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
