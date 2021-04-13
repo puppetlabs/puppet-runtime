@@ -1,6 +1,6 @@
-component 'ruby-2.7.2' do |pkg, settings, platform|
-  pkg.version '2.7.2'
-  pkg.sha256sum '6e5706d0d4ee4e1e2f883db9d768586b4d06567debea353c796ec45e8321c3d4'
+component 'ruby-2.7.3' do |pkg, settings, platform|
+  pkg.version '2.7.3'
+  pkg.sha256sum '8925a95e31d8f2c81749025a52a544ea1d05dad18794e6828709268b92e55338'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
@@ -50,6 +50,7 @@ component 'ruby-2.7.2' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/ruby_20_guards.patch"
     pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
     pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+    pkg.apply_patch "#{base}/revert_host_value_changes.patch"
   end
 
   if platform.is_aix?

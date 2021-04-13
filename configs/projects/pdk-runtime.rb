@@ -75,16 +75,16 @@ project 'pdk-runtime' do |proj|
 
   # TODO: build this with a helper method?
   additional_rubies = {
-    "2.5.8" => {
-      ruby_version: "2.5.8",
+    "2.5.9" => {
+      ruby_version: "2.5.9",
       ruby_api: "2.5.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.8"),
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.9"),
       latest_puppet: "6.21.1", # TODO: make this a semver range
     },
-    "2.7.2" => {
-      ruby_version: "2.7.2",
+    "2.7.3" => {
+      ruby_version: "2.7.3",
       ruby_api: "2.7.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.7.2"),
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.7.3"),
     }
   }
 

@@ -1,0 +1,19 @@
+# Revert "[Bug #17021] Make host_* values consistent with target_*"
+# This reverts commit 43a9a974e276dc49b03ec81ccace0adb534a3d20.
+
+diff --git a/configure b/configure
+index ee973ba..14de3e7 100755
+--- a/configure
++++ b/configure
+@@ -6540,11 +6540,6 @@ esac
+ 
+ 
+ fi
+-host_os=$target_os
+-host_vendor=$target_vendor
+-host_cpu=$target_cpu
+-host=$target
+-host_alias=$target_alias
+ 
+ case "$target_os" in #(
+   darwin*) :
