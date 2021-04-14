@@ -33,7 +33,8 @@ build: prep build-agent-runtimes
 
 build-agent-runtimes: prep
 	@for branch in $(agent_branches); do \
-		docker build \
+		docker buildx build \
+			--load \
 			${DOCKER_BUILD_FLAGS} \
 			--build-arg centos_version=$$CENTOS_VERSION \
 			--build-arg vcs_ref=$(vcs_ref) \
