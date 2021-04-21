@@ -1,6 +1,6 @@
 component 'rubygem-facter' do |pkg, settings, platform|
-  pkg.version '4.1.0'
-  pkg.md5sum '508055b1781d3c694902ca876022dc73'
+  pkg.version '4.1.1'
+  pkg.md5sum '4efbab3bd854c2bff992b641f08f2712'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
