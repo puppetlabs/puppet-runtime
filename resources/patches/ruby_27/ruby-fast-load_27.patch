@@ -1,0 +1,15 @@
+diff --git a/load.c b/load.c
+index 07acc9ac79..961323d5f3 100644
+--- a/load.c
++++ b/load.c
+@@ -898,6 +898,10 @@ search_required(VALUE fname, volatile VALUE *path, feature_func rb_feature_p)
+ 	if (loading) *path = rb_filesystem_str_new_cstr(loading);
+ 	return 'r';
+     }
++    else if ((ft = rb_feature_p(ftptr, 0, FALSE, FALSE, &loading)) == 's') {
++	if (loading) *path = rb_filesystem_str_new_cstr(loading);
++	return 's';
++    }
+     tmp = fname;
+     type = rb_find_file_ext(&tmp, loadable_ext);
+     switch (type) {

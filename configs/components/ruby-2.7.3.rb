@@ -39,6 +39,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
   # Patch for https://bugs.ruby-lang.org/issues/14972
   pkg.apply_patch "#{base}/net_http_eof_14972_r2.5.patch"
 
+  pkg.apply_patch "#{base}/ruby-fast-load_27.patch"
   pkg.apply_patch "#{base}/ruby-faster-load_27.patch"
 
   if platform.is_cross_compiled?
