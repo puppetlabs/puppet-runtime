@@ -139,6 +139,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
         --enable-bundled-libyaml \
         --disable-install-doc \
         --disable-install-rdoc \
+        --with-sitedir=no \
         #{settings[:host]} \
         #{special_flags}"
     ]
