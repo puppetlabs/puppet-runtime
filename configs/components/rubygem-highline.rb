@@ -1,6 +1,6 @@
 component 'rubygem-highline' do |pkg, settings, _platform|
-  pkg.version '1.6.21'
-  pkg.md5sum 'fc79952fb9d12957d828da76b94e4ecb'
+  pkg.version '2.0.3'
+  pkg.md5sum 'be63a46ed7eabcae9a4cf53032dba5bc'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
