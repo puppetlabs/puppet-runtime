@@ -139,21 +139,9 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
         --enable-bundled-libyaml \
         --disable-install-doc \
         --disable-install-rdoc \
-        --with-sitedir=no \
         #{settings[:host]} \
         #{special_flags}"
     ]
-  end
-
-  # Handle missing sitedir on cross-compiled el-7. This is ugly and at some
-  # point we might need to update our base ruby version on cross-compiled
-  # platforms. The following trick is for for ruby/rubygems 2.0.
-  if platform.name =~ /el-7-aarch64/
-    pkg.build do
-      [
-        %(#{platform[:sed]} -i 's/sitedir/vendordir/' /usr/share/rubygems/rubygems/defaults/operating_system.rb),
-      ]
-    end
   end
 
   #########
