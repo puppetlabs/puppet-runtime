@@ -4,7 +4,7 @@ platform "el-5-x86_64" do |plat|
   plat.servicetype "sysv"
 
   plat.add_build_repository "http://pl-build-tools.delivery.puppetlabs.net/yum/pl-build-tools-release-#{plat.get_os_name}-#{plat.get_os_version}.noarch.rpm"
-  plat.provision_with "echo '[build-tools]\nname=build-tools\nbaseurl=http://enterprise.delivery.puppetlabs.net/build-tools/el/5/$basearch\ngpgcheck=0' > /etc/yum.repos.d/build-tools.repo"
+  plat.provision_with "echo '[build-tools]\nname=build-tools\nbaseurl=https://artifactory.delivery.puppetlabs.net/artifactory/rpm_enterprise__local/build-tools/repos/el-5-$basearch\ngpgcheck=0' > /etc/yum.repos.d/build-tools.repo"
   packages = [
     "autoconf",
     "automake",
