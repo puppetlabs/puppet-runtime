@@ -67,6 +67,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
   if platform.is_windows?
     pkg.apply_patch "#{base}/windows_ruby_2.5_fixup_generated_batch_files.patch"
     pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
+    pkg.apply_patch "#{base}/win32_long_paths_support.patch"
   end
 
   ####################
