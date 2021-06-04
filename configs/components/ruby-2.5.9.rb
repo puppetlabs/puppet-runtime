@@ -66,6 +66,7 @@ component 'ruby-2.5.9' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/windows_socket_compat_error_r2.5.patch"
     pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
     pkg.apply_patch "#{base}/windows_env_block_size_limit.patch"
+    pkg.apply_patch "#{base}/win32_long_paths_support.patch"
   end
 
   ####################
