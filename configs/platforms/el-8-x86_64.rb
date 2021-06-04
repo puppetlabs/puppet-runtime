@@ -5,7 +5,7 @@ platform 'el-8-x86_64' do |plat|
 
   packages = %w[
     autoconf automake createrepo gcc gcc-c++ java-1.8.0-openjdk-devel
-    libsepol libsepol-devel libselinux-devel make pkgconfig cmake readline-devel
+    libsepol libsepol-devel libselinux-devel make pkgconfig cmake-3.11.4 readline-devel
     rsync rpm-build rpm-libs rpm-sign rpmdevtools swig yum-utils zlib-devel
     systemtap-sdt-devel
   ]
