@@ -28,8 +28,6 @@ component 'openssl' do |pkg, settings, platform|
     ldflags = "-Wl,-rpath=/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
     target = if platform.architecture == 'aarch64'
                'linux-aarch64'
-             elsif platform.name =~ /debian-8-arm/
-               'linux-armv4'
              elsif platform.architecture =~ /ppc64le|ppc64el/ # Litte-endian
                'linux-ppc64le'
              elsif platform.architecture =~ /ppc64/ # Big-endian
@@ -95,10 +93,6 @@ component 'openssl' do |pkg, settings, platform|
   elsif platform.is_solaris?
     pkg.apply_patch 'resources/patches/openssl/add-shell-to-engines_makefile.patch'
     pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
-  elsif platform.is_linux?
-    if platform.name =~ /debian-8-arm/
-      pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
-    end
   end
   pkg.apply_patch 'resources/patches/openssl/CVE-2020-1968.patch'
 
