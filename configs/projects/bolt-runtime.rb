@@ -8,7 +8,7 @@ project 'bolt-runtime' do |proj|
   # TODO: Can runtime projects use these updated versions?
   proj.setting(:rubygem_gettext_version, '3.2.9')
   proj.setting(:rubygem_deep_merge_version, '1.2.1')
-  proj.setting(:rubygem_puppet_version, '7.6.1')
+  proj.setting(:rubygem_puppet_version, '7.7.0')
 
   platform = proj.get_platform
 
