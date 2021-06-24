@@ -21,7 +21,7 @@ if platform.name =~ /^el-5-.*$/
   pkg.install do
     ["cp ../libselinux-1.33.4.pc #{settings[:libdir]}/pkgconfig/libselinux.pc"]
   end
-elsif platform.name =~ /el-(5|6|7)|debian-(8|9)|ubuntu-(16|18)/
+elsif platform.name =~ /el-(5|6|7)|debian-9|ubuntu-(16|18)/
   pkg.version "2.0.94"
   pkg.md5sum "544f75aab11c2af352facc51af12029f"
   pkg.url "https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20100525/devel/libselinux-#{pkg.get_version}.tar.gz"
@@ -49,7 +49,7 @@ end
 cflags = ""
 
 # The platforms below use pl-build-tools
-unless platform.name =~ /el-(5|6|7)|debian-(8|9)|ubuntu-(16|18)/
+unless platform.name =~ /el-(5|6|7)|debian-9|ubuntu-(16|18)/
   cc = '/usr/bin/gcc'
   cflags += "#{settings[:cppflags]} #{settings[:cflags]}"
 end

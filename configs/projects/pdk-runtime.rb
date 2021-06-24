@@ -1,7 +1,7 @@
 project 'pdk-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, "pdk")
-  proj.setting(:openssl_version, '1.0.2')
+  proj.setting(:openssl_version, '1.1.1')
   platform = proj.get_platform
 
   proj.version_from_git
@@ -75,16 +75,16 @@ project 'pdk-runtime' do |proj|
 
   # TODO: build this with a helper method?
   additional_rubies = {
-    "2.5.8" => {
-      ruby_version: "2.5.8",
+    "2.5.9" => {
+      ruby_version: "2.5.9",
       ruby_api: "2.5.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.8"),
-      latest_puppet: "6.21.1", # TODO: make this a semver range
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.9"),
+      latest_puppet: "6.22.1", # TODO: make this a semver range
     },
-    "2.7.2" => {
-      ruby_version: "2.7.2",
+    "2.7.3" => {
+      ruby_version: "2.7.3",
       ruby_api: "2.7.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.7.2"),
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.7.3"),
     }
   }
 

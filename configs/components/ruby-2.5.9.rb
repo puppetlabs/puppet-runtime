@@ -1,17 +1,17 @@
-component 'ruby-2.7.2' do |pkg, settings, platform|
-  pkg.version '2.7.2'
-  pkg.sha256sum '6e5706d0d4ee4e1e2f883db9d768586b4d06567debea353c796ec45e8321c3d4'
+component 'ruby-2.5.9' do |pkg, settings, platform|
+  pkg.version '2.5.9'
+  pkg.md5sum '5c8f3634d80aff7c971aa264c313c5ba'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
 
   # PDK packages multiple rubies and we need to tweak some settings
   # if this is not the *primary* ruby.
-  if pkg.get_version != settings[:ruby_version]
+  if (pkg.get_version != settings[:ruby_version])
     # not primary ruby
 
     # ensure we have config for this ruby
-    unless settings.key?(:additional_rubies) && settings[:additional_rubies].key?(pkg.get_version)
+    unless settings.has_key?(:additional_rubies) && settings[:additional_rubies].has_key?(pkg.get_version)
       raise "missing config for additional ruby #{pkg.get_version}"
     end
 
@@ -35,46 +35,48 @@ component 'ruby-2.7.2' do |pkg, settings, platform|
   # PATCHES
   #########
 
-  base = 'resources/patches/ruby_27'
+  base = 'resources/patches/ruby_25'
+  pkg.apply_patch "#{base}/ostruct_remove_safe_nav_operator_r2.5.patch"
+  pkg.apply_patch "#{base}/Check-for-existance-of-O_CLOEXEC.patch"
+  # Fix errant document end markers in libyaml 0.1.7; This is fixed in later versions
+  pkg.apply_patch "#{base}/libyaml_document_end_r2.5.patch"
   # Patch for https://bugs.ruby-lang.org/issues/14972
   pkg.apply_patch "#{base}/net_http_eof_14972_r2.5.patch"
 
   if platform.is_cross_compiled?
     pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.5.patch"
-    pkg.apply_patch "#{base}/lib_optparse_remove_safe_nav_operator.patch"
-    pkg.apply_patch "#{base}/revert_delete_prefix.patch"
-    pkg.apply_patch "#{base}/remove_squiggly_heredocs.patch"
-    pkg.apply_patch "#{base}/remove_deprecate_constant_statements.patch"
-    pkg.apply_patch "#{base}/ruby2_keywords_guard.patch"
-    pkg.apply_patch "#{base}/ruby_version_extra_guards.patch"
-    pkg.apply_patch "#{base}/ruby_20_guards.patch"
-    pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
-    pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+    if platform.name =~ /^solaris-10-sparc/
+      pkg.apply_patch "#{base}/Solaris-only-Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+    else
+      pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+    end
   end
 
   if platform.is_aix?
     # TODO: Remove this patch once PA-1607 is resolved.
     pkg.apply_patch "#{base}/aix_configure.patch"
     pkg.apply_patch "#{base}/aix-fix-libpath-in-configure.patch"
-    pkg.apply_patch "#{base}/aix-do-not-use-realpath.patch"
+    pkg.apply_patch "#{base}/aix_use_pl_build_tools_autoconf_r2.5.patch"
     pkg.apply_patch "#{base}/aix_ruby_2.1_fix_make_test_failure_r2.5.patch"
     pkg.apply_patch "#{base}/Remove-O_CLOEXEC-check-for-AIX-builds_r2.5.patch"
   end
 
   if platform.is_windows?
     pkg.apply_patch "#{base}/windows_ruby_2.5_fixup_generated_batch_files.patch"
+    pkg.apply_patch "#{base}/windows_socket_compat_error_r2.5.patch"
     pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
+    pkg.apply_patch "#{base}/windows_env_block_size_limit.patch"
+    pkg.apply_patch "#{base}/win32_long_paths_support.patch"
   end
 
   ####################
   # ENVIRONMENT, FLAGS
   ####################
 
-  if platform.is_macos?
+  if platform.is_macos? || platform.name =~ /^sles-11-i386/  # -O(>0) flags produce errors on 32-bit SLES 11 with GCC 4.8.2, see PA-2138
     pkg.environment 'optflags', settings[:cflags]
   elsif platform.is_windows?
     pkg.environment 'optflags', settings[:cflags] + ' -O3'
-    pkg.environment 'MAKE', 'make'
   elsif platform.is_cross_compiled?
     pkg.environment 'CROSS_COMPILING', 'true'
   else
@@ -83,7 +85,7 @@ component 'ruby-2.7.2' do |pkg, settings, platform|
 
   special_flags = " --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
 
-  if platform.name =~ /sles-15|el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 29)
+  if platform.name =~ /sles-15|el-8|debian-10/ || platform.is_fedora?
     special_flags += " CFLAGS='#{settings[:cflags]}' LDFLAGS='#{settings[:ldflags]}' CPPFLAGS='#{settings[:cppflags]}' "
   end
 
@@ -95,22 +97,29 @@ component 'ruby-2.7.2' do |pkg, settings, platform|
     special_flags += " --with-baseruby=#{host_ruby} "
   elsif platform.is_solaris? && platform.architecture == "sparc"
     special_flags += " --with-baseruby=#{host_ruby} --enable-close-fds-by-recvmsg-with-peek "
-  elsif platform.name =~ /el-6/
-    special_flags += " --with-baseruby=no "
   elsif platform.is_windows?
     special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
   end
 
   without_dtrace = [
     'aix-7.1-ppc',
+    'cisco-wrlinux-5-x86_64',
+    'cisco-wrlinux-7-x86_64',
     'el-7-ppc64le',
     'el-7-aarch64',
+    'eos-4-i386',
     'redhatfips-7-x86_64',
+    'sles-11-x86_64',
+    'sles-11-i386',
     'sles-12-ppc64le',
+    'solaris-10-sparc',
     'solaris-11-sparc',
+    'ubuntu-14.04-amd64',
+    'ubuntu-14.04-i386',
     'ubuntu-16.04-ppc64el',
     'windows-2012r2-x64',
     'windows-2012r2-x86',
+    'windows-2019-x64',
     'windowsfips-2012r2-x64'
   ]
 
@@ -137,7 +146,7 @@ component 'ruby-2.7.2' do |pkg, settings, platform|
         --disable-install-rdoc \
         #{settings[:host]} \
         #{special_flags}"
-    ]
+     ]
   end
 
   #########
@@ -173,8 +182,8 @@ component 'ruby-2.7.2' do |pkg, settings, platform|
     'x86_64-w64-mingw32' => 'x64-mingw32',
     'i686-w64-mingw32' => 'i386-mingw32'
   }
-  if target_doubles.key?(settings[:platform_triple])
-    rbconfig_topdir = File.join(ruby_dir, 'lib', 'ruby', '2.7.0', target_doubles[settings[:platform_triple]])
+  if target_doubles.has_key?(settings[:platform_triple])
+    rbconfig_topdir = File.join(ruby_dir, 'lib', 'ruby', '2.5.0', target_doubles[settings[:platform_triple]])
   else
     rbconfig_topdir = "$$(#{ruby_bindir}/ruby -e \"puts RbConfig::CONFIG[\\\"topdir\\\"]\")"
   end
@@ -190,20 +199,22 @@ component 'ruby-2.7.2' do |pkg, settings, platform|
       # will remove that entry
       # Matches both endians
       rbconfig_changes["DLDFLAGS"] = "-Wl,-rpath=/opt/puppetlabs/puppet/lib -L/opt/puppetlabs/puppet/lib  -Wl,-rpath,/opt/puppetlabs/puppet/lib"
-    elsif platform.name =~ /sles-12-ppc64le/
-      # the ancient gcc version on sles-12-ppc64le does not understand -fstack-protector-strong, so remove the `strong` part
-      rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector -rdynamic -Wl,-export-dynamic -L/opt/puppetlabs/puppet/lib"
+    elsif platform.name =~ /solaris-10-sparc/
+      # ld on solaris 10 sparc does not understand `-Wl,-E` - this is what remains after removing it:
+      rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector"
+      # `-Wl,--compress-debug-sections=zlib` is also a problem here:
+      rbconfig_changes["DLDFLAGS"] = "-Wl,-rpath=/opt/puppetlabs/puppet/lib"
     end
   elsif platform.is_windows?
     rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
   end
 
   pkg.add_source("file://resources/files/ruby_vendor_gems/operating_system.rb")
-  defaults_dir = File.join(settings[:libdir], "ruby/2.7.0/rubygems/defaults")
+  defaults_dir = File.join(settings[:libdir], "ruby/2.5.0/rubygems/defaults")
   pkg.directory(defaults_dir)
   pkg.install_file "../operating_system.rb", File.join(defaults_dir, 'operating_system.rb')
 
-  certs_dir = File.join(settings[:libdir], 'ruby/2.7.0/rubygems/ssl_certs/puppetlabs.net')
+  certs_dir = File.join(settings[:libdir], 'ruby/2.5.0/rubygems/ssl_certs/puppetlabs.net')
   pkg.directory(certs_dir)
 
   pkg.add_source('file://resources/files/rubygems/COMODO_RSA_Certification_Authority.pem')
@@ -212,7 +223,7 @@ component 'ruby-2.7.2' do |pkg, settings, platform|
   pkg.add_source('file://resources/files/rubygems/GlobalSignRootCA_R3.pem')
   pkg.install_file '../GlobalSignRootCA_R3.pem', File.join(certs_dir, 'GlobalSignRootCA_R3.pem')
 
-  if rbconfig_changes.any?
+  unless rbconfig_changes.empty?
     pkg.install do
       [
         "#{host_ruby} ../rbconfig-update.rb \"#{rbconfig_changes.to_s.gsub('"', '\"')}\" #{rbconfig_topdir}",
