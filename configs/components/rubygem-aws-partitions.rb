@@ -1,6 +1,6 @@
 component "rubygem-aws-partitions" do |pkg, settings, platform|
-  pkg.version "1.465.0"
-  pkg.md5sum "09f616bb878976ebe5333c4899a4edf0"
+  pkg.version "1.470.0"
+  pkg.md5sum "364c2925fbaa664be7db168f0e935eb4"
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
