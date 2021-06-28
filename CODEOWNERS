@@ -5,5 +5,3 @@
 # * PDK
 # * Installer and Management
 * @puppetlabs/night-s-watch @puppetlabs/bolt @puppetlabs/skeletor @puppetlabs/pdk @puppetlabs/installer-and-management
-
-/docker/ @puppetlabs/pupperware
