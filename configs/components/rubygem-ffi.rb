@@ -48,7 +48,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
   pkg.environment "CPATH", "/opt/csw/lib/libffi-3.2.1/include" if platform.name =~ /solaris-11/
   pkg.environment "MAKE", platform[:make] if platform.is_solaris?
 
-  if platform.is_cross_compiled? || platform.is_solaris?
+  if platform.is_cross_compiled_linux? || platform.is_solaris?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$$PATH"
   end
 
@@ -64,7 +64,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
 
   pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
 
-  if platform.is_cross_compiled?
+  if platform.is_cross_compiled? && !platform.is_macos?
     base_ruby = case platform.name
                 when /solaris-10/
                   "/opt/csw/lib/ruby/2.0.0"

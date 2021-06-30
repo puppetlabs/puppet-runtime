@@ -42,16 +42,19 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
   pkg.apply_patch "#{base}/ruby-faster-load_27.patch"
 
   if platform.is_cross_compiled?
-    pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.5.patch"
-    pkg.apply_patch "#{base}/lib_optparse_remove_safe_nav_operator.patch"
-    pkg.apply_patch "#{base}/revert_delete_prefix.patch"
-    pkg.apply_patch "#{base}/remove_squiggly_heredocs.patch"
-    pkg.apply_patch "#{base}/remove_deprecate_constant_statements.patch"
-    pkg.apply_patch "#{base}/ruby2_keywords_guard.patch"
-    pkg.apply_patch "#{base}/ruby_version_extra_guards.patch"
-    pkg.apply_patch "#{base}/ruby_20_guards.patch"
-    pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
-    pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+    unless platform.is_macos?
+      pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.5.patch"
+      pkg.apply_patch "#{base}/lib_optparse_remove_safe_nav_operator.patch"
+      pkg.apply_patch "#{base}/revert_delete_prefix.patch"
+      pkg.apply_patch "#{base}/remove_squiggly_heredocs.patch"
+      pkg.apply_patch "#{base}/remove_deprecate_constant_statements.patch"
+      pkg.apply_patch "#{base}/ruby2_keywords_guard.patch"
+      pkg.apply_patch "#{base}/ruby_version_extra_guards.patch"
+      pkg.apply_patch "#{base}/ruby_20_guards.patch"
+      pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
+      pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+    end
+
     pkg.apply_patch "#{base}/revert_host_value_changes.patch"
   end
 
@@ -95,7 +98,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
     # This normalizes the build string to something like AIX 7.1.0.0 rather
     # than AIX 7.1.0.2 or something
     special_flags += " --build=#{settings[:platform_triple]} "
-  elsif platform.is_cross_compiled_linux?
+  elsif platform.is_cross_compiled? && (platform.is_linux? || platform.is_macos?)
     special_flags += " --with-baseruby=#{host_ruby} "
   elsif platform.is_solaris? && platform.architecture == "sparc"
     special_flags += " --with-baseruby=#{host_ruby} --enable-close-fds-by-recvmsg-with-peek "
@@ -109,6 +112,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
     'aix-7.1-ppc',
     'el-7-ppc64le',
     'el-7-aarch64',
+    'osx-11-arm64',
     'redhatfips-7-x86_64',
     'sles-12-ppc64le',
     'solaris-11-sparc',
@@ -164,6 +168,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
 
   target_doubles = {
     'powerpc-ibm-aix7.1.0.0' => 'powerpc-aix7.1.0.0',
+    'aarch64-apple-darwin' => 'aarch64-darwin',
     'aarch64-redhat-linux' => 'aarch64-linux',
     'ppc64-redhat-linux' => 'powerpc64-linux',
     'ppc64le-redhat-linux' => 'powerpc64le-linux',
@@ -188,8 +193,12 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
   if platform.is_aix?
     rbconfig_changes["CC"] = "gcc"
   elsif platform.is_cross_compiled? || platform.is_solaris?
-    rbconfig_changes["CC"] = "gcc"
-    rbconfig_changes["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
+    if platform.is_macos?
+      rbconfig_changes["CC"] = "clang -target arm64-apple-macos11"
+    else
+      rbconfig_changes["CC"] = "gcc"
+      rbconfig_changes["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
+    end
     if platform.name =~ /el-7-ppc64/
       # EL 7 on POWER will fail with -Wl,--compress-debug-sections=zlib so this
       # will remove that entry

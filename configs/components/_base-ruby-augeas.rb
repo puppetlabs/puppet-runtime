@@ -33,10 +33,13 @@ if platform.is_solaris?
     pkg.environment "RUBY", host_ruby
   end
   ruby = "#{host_ruby} -r#{settings[:datadir]}/doc/rbconfig-#{ruby_version}-orig.rb"
-elsif platform.is_cross_compiled_linux?
-  pkg.environment "RUBY", host_ruby
-  ruby = "#{host_ruby} -r#{settings[:datadir]}/doc/rbconfig-#{ruby_version}-orig.rb"
-  pkg.environment "LDFLAGS", settings[:ldflags]
+elsif platform.is_cross_compiled?
+  if platform.is_linux? || platform.is_macos?
+    pkg.environment "RUBY", host_ruby
+    pkg.environment "CC", "clang -target arm64-apple-macos11" if platform.is_macos?
+    ruby = "#{host_ruby} -r#{settings[:datadir]}/doc/rbconfig-#{ruby_version}-orig.rb"
+    pkg.environment "LDFLAGS", settings[:ldflags]
+  end
 else
   ruby = File.join(ruby_bindir, 'ruby')
 end

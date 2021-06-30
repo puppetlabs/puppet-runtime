@@ -33,6 +33,11 @@ component 'curl' do |pkg, settings, platform|
      configure_options << "--with-ssl=#{settings[:prefix]}"
   end
 
+  extra_cflags = []
+  if platform.is_cross_compiled? && platform.is_macos?
+    extra_cflags << '-mmacosx-version-min=11.0 -arch arm64'
+  end
+
   if (platform.is_solaris? && platform.os_version == "11") || platform.is_aix?
     # Makefile generation with automatic dependency tracking fails on these platforms
     configure_options << "--disable-dependency-tracking"
@@ -48,7 +53,7 @@ component 'curl' do |pkg, settings, platform|
         --disable-ldaps \
         --with-ca-bundle=#{settings[:prefix]}/ssl/cert.pem \
         --with-ca-path=#{settings[:prefix]}/ssl/certs \
-        CFLAGS='#{settings[:cflags]}' \
+        CFLAGS='#{settings[:cflags]} #{extra_cflags.join(" ")}' \
         #{settings[:host]}"]
   end
 

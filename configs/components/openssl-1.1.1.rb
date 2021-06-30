@@ -63,7 +63,11 @@ component 'openssl' do |pkg, settings, platform|
     pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
 
     cflags = settings[:cflags]
-    target = 'darwin64-x86_64-cc'
+    target = if platform.is_cross_compiled?
+               'darwin64-arm64-cc'
+             else
+               'darwin64-x86_64-cc'
+             end
   elsif platform.is_linux?
     pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
 
