@@ -105,6 +105,10 @@ component 'openssl' do |pkg, settings, platform|
     # 11 SPARC despite it using an older version of ld (2.25 vs. 2.27).
     if platform.is_cross_compiled?
       pkg.apply_patch 'resources/patches/openssl/openssl-1.1.1a-revert-7a061312.patch'
+    else
+      # Work around gcc not conforming to Solaris 32-bit ABI by expecting 16-byte stack alignment
+      # https://github.com/openssl/openssl/issues/13666
+      cflags += " -mincoming-stack-boundary=2"
     end
   end
 
