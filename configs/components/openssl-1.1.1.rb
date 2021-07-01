@@ -106,7 +106,9 @@ component 'openssl' do |pkg, settings, platform|
     if platform.is_cross_compiled?
       pkg.apply_patch 'resources/patches/openssl/openssl-1.1.1a-revert-7a061312.patch'
     else
-      pkg.apply_patch 'resources/patches/openssl/openssl-1.1.1i-remove-aes-ctr-drbg-performance-improvement.patch'
+      # Work around gcc not conforming to Solaris 32-bit ABI by expecting 16-byte stack alignment
+      # https://github.com/openssl/openssl/issues/13666
+      cflags += " -mincoming-stack-boundary=2"
     end
   end
 
