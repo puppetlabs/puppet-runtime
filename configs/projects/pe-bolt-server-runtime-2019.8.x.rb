@@ -4,5 +4,6 @@ project 'pe-bolt-server-runtime-2019.8.x' do |proj|
   # for gem installs instead of --no-document. This setting allows us to use this while we support both ruby 2.5 and 2.7
   # Once we are no longer using ruby 2.5 we can update.
   proj.setting(:no_doc, false)
+  proj.setting(:rubygem_puppet_version, '6.23.0')
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-bolt-server.rb'))
 end
