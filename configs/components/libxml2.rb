@@ -30,6 +30,9 @@ component "libxml2" do |pkg, settings, platform|
   elsif platform.is_macos?
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
+    if platform.is_cross_compiled?
+      pkg.environment "CC", "clang -target arm64-apple-macos11"
+    end
   else
     if platform.is_el? && platform.name =~ /-5/
       # RHEL 5 uses GCC 4.1.2, which does not support the -Wno-array-bounds option required

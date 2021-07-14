@@ -23,6 +23,7 @@ component "yaml-cpp" do |pkg, settings, platform|
   elsif platform.is_macos?
     cmake_toolchain_file = ""
     cmake = "/usr/local/bin/cmake"
+    pkg.environment "CXX" => "clang++ -target arm64-apple-macos11" if platform.is_cross_compiled?
   elsif platform.is_windows?
     make = "#{settings[:gcc_bindir]}/mingw32-make"
     mkdir = '/usr/bin/mkdir'

@@ -41,7 +41,7 @@ if platform.is_solaris? || platform.is_aix?
   proj.component 'libedit'
 end
 
-proj.component 'pl-ruby-patch'
+proj.component 'pl-ruby-patch' if platform.is_cross_compiled?
 
 proj.component 'rubygem-hocon'
 proj.component 'rubygem-deep_merge'

@@ -1,6 +1,19 @@
 component "rubygem-ffi" do |pkg, settings, platform|
-  pkg.version '1.13.1'
-  pkg.md5sum "569d4561359cb3c8d8360d26bd1be4ed"
+  if platform.is_cross_compiled? && (platform.is_linux? || platform.is_solaris?)
+    # Installing ffi >= 1.14.0 blows up horribly if we're cross compiling on Linux and Solaris.
+    # This is because we're using old rubies (2.1 and 2.0) to install gems which do not have
+    # methods like `append_ldflags`.
+    # (see https://github.com/ffi/ffi/commit/3aa6b25f5423a64ad4afa7f2a5a5855483bae3c2)
+    #
+    # A more long term solution would be to update the host rubies on those
+    # platforms to something newer (preferably the same API version as the ruby
+    # we're building for). We can probably avoid this until we start shipping Ruby 3.
+    pkg.version '1.13.1'
+    pkg.sha256sum '4e15f52ee45af7c5674d656041855448adbb5022618be252cd602d81b8e2978a'
+  else
+    pkg.version '1.15.3'
+    pkg.sha256sum '98d5c5c4281c9c0466acc60cf0e79124bf3c311417fd97e7473e41722953fbf1'
+  end
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
@@ -20,9 +33,9 @@ component "rubygem-ffi" do |pkg, settings, platform|
     if platform.architecture == "x64"
       case pkg.get_version
       when '1.9.25'
-        pkg.md5sum "e263997763271fba35562245b450576f"
-      when '1.13.1'
-        pkg.sha256sum "029c5c65c4b862a901d8751b8265f46cdcedf6f9186f59121e7511cbeb6e36be"
+        pkg.sha256sum '5473ac958b78f271f53e9a88197c35cd3e990fbe625d21e525c56d62ae3750da'
+      when '1.15.3'
+        pkg.sha256sum '606486bf10f4dcaedcf630be04d0470ff16923da9d7a44efd544484d50e9b9f0'
       end
 
       pkg.url "https://rubygems.org/downloads/ffi-#{pkg.get_version}-x64-mingw32.gem"
@@ -30,9 +43,9 @@ component "rubygem-ffi" do |pkg, settings, platform|
     else
       case pkg.get_version
       when '1.9.25'
-        pkg.md5sum "3303124f1ca0ee3e59829301ffcad886"
-      when '1.13.1'
-        pkg.sha256sum "10d30fca1ddeac3ca27b39c60ef408248a4714692bb22b4789da7598a9ded69e"
+        pkg.sha256sum '43d357732a6a0e3e41dc7e28a9c9c5112ac66f4a6ed9e1de40afba9ffcb836c1'
+      when '1.15.3'
+        pkg.sha256sum '9ae5b0d5e15fb638b177bc697e7510e29df68a021504f0be57ef9f2ffb4fafe1'
       end
 
       pkg.url "https://rubygems.org/downloads/ffi-#{pkg.get_version}-x86-mingw32.gem"
@@ -48,7 +61,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
   pkg.environment "CPATH", "/opt/csw/lib/libffi-3.2.1/include" if platform.name =~ /solaris-11/
   pkg.environment "MAKE", platform[:make] if platform.is_solaris?
 
-  if platform.is_cross_compiled? || platform.is_solaris?
+  if platform.is_cross_compiled_linux? || platform.is_solaris?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$$PATH"
   end
 
@@ -64,7 +77,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
 
   pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
 
-  if platform.is_cross_compiled?
+  if platform.is_cross_compiled? && !platform.is_macos?
     base_ruby = case platform.name
                 when /solaris-10/
                   "/opt/csw/lib/ruby/2.0.0"

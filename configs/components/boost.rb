@@ -67,7 +67,11 @@ component "boost" do |pkg, settings, platform|
   elsif platform.is_macos?
     pkg.environment "PATH" => "/opt/pl-build-tools/bin:$$PATH"
     linkflags = ""
-    gpp = "clang++"
+    gpp = if platform.is_cross_compiled?
+            "clang++ -target arm64-apple-macos11"
+          else
+            "clang++"
+          end
     toolset = 'gcc'
     with_toolset = "--with-toolset=clang"
   elsif platform.is_solaris?
