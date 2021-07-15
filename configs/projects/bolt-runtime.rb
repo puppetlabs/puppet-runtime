@@ -6,8 +6,9 @@ project 'bolt-runtime' do |proj|
   proj.setting(:rubygem_net_ssh_version, '6.1.0')
   proj.setting(:augeas_version, '1.11.0')
   # TODO: Can runtime projects use these updated versions?
-  proj.setting(:rubygem_gettext_version, '3.2.9')
   proj.setting(:rubygem_deep_merge_version, '1.2.1')
+  proj.setting(:rubygem_ffi_version, '1.13.1')
+  proj.setting(:rubygem_gettext_version, '3.2.9')
   proj.setting(:rubygem_puppet_version, '7.7.0')
 
   platform = proj.get_platform
