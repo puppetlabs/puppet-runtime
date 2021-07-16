@@ -1,5 +1,6 @@
 component "rubygem-ffi" do |pkg, settings, platform|
-  if platform.is_cross_compiled? && (platform.is_linux? || platform.is_solaris?)
+  if (platform.is_cross_compiled? && (platform.is_linux? || platform.is_solaris?)) ||
+      settings[:rubygem_ffi_version] == '1.13.1'
     # Installing ffi >= 1.14.0 blows up horribly if we're cross compiling on Linux and Solaris.
     # This is because we're using old rubies (2.1 and 2.0) to install gems which do not have
     # methods like `append_ldflags`.
@@ -34,6 +35,8 @@ component "rubygem-ffi" do |pkg, settings, platform|
       case pkg.get_version
       when '1.9.25'
         pkg.sha256sum '5473ac958b78f271f53e9a88197c35cd3e990fbe625d21e525c56d62ae3750da'
+      when '1.13.1'
+        pkg.sha256sum '029c5c65c4b862a901d8751b8265f46cdcedf6f9186f59121e7511cbeb6e36be'
       when '1.15.3'
         pkg.sha256sum '606486bf10f4dcaedcf630be04d0470ff16923da9d7a44efd544484d50e9b9f0'
       end
@@ -44,6 +47,8 @@ component "rubygem-ffi" do |pkg, settings, platform|
       case pkg.get_version
       when '1.9.25'
         pkg.sha256sum '43d357732a6a0e3e41dc7e28a9c9c5112ac66f4a6ed9e1de40afba9ffcb836c1'
+      when '1.13.1'
+        pkg.sha256sum '10d30fca1ddeac3ca27b39c60ef408248a4714692bb22b4789da7598a9ded69e'
       when '1.15.3'
         pkg.sha256sum '9ae5b0d5e15fb638b177bc697e7510e29df68a021504f0be57ef9f2ffb4fafe1'
       end

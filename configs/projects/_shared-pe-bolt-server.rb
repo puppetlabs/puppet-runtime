@@ -40,8 +40,9 @@ proj.setting(:runtime_project, 'pe-bolt-server')
 
 # Set desired versions for gem components that offer multiple versions:
 # TODO: Can runtime projects use these updated versions?
-proj.setting(:rubygem_gettext_version, '3.2.9')
 proj.setting(:rubygem_deep_merge_version, '1.2.1')
+proj.setting(:rubygem_ffi_version, '1.13.1')
+proj.setting(:rubygem_gettext_version, '3.2.9')
 proj.setting(:rubygem_net_ssh_version, '6.1.0')
 
 # (pe-bolt-server does not run on Windows, so only the *nix path is here)
