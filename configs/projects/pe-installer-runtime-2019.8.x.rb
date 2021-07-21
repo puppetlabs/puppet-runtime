@@ -1,4 +1,4 @@
-project 'pe-installer-runtime' do |proj|
+project 'pe-installer-runtime-2019.8.x' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'pe-installer')
   proj.setting(:ruby_version, '2.5.9')
