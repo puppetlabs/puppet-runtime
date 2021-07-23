@@ -79,7 +79,14 @@ project 'pdk-runtime' do |proj|
       ruby_version: "2.7.3",
       ruby_api: "2.7.0",
       ruby_dir: File.join(proj.privatedir, "ruby", "2.7.3"),
-    }
+    },
+    # Adding puppet 5 back into build, but as a selectable option
+    "2.4.10" => {
+      ruby_version: "2.4.10",
+      ruby_api: "2.4.0",
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.4.10"),
+      latest_puppet: "5.5.22",
+    },
   }
 
   additional_rubies.each do |rubyver, local_settings|
@@ -186,6 +193,11 @@ project 'pdk-runtime' do |proj|
     proj.additional_rubies.keys.each do |rubyver|
       proj.component "ruby-#{rubyver}"
 
+      # Ruby 2.4 was original cast as the default, with updated gems for
+      # additional rubies tagged with their supported ruby version.
+      # With ruby 2.4 being added back in as additional we can skip looking for a
+      # spacific version
+      break if rubyver == "2.4.10"
       ruby_minor = rubyver.split('.')[0,2].join('.')
 
       proj.component "ruby-#{ruby_minor}-augeas" unless platform.is_windows?
