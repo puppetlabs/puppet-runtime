@@ -8,20 +8,7 @@ ruby_version ||= settings[:ruby_version]
 host_ruby ||= settings[:host_ruby]
 ruby_bindir ||= settings[:ruby_bindir]
 
-if platform.name =~ /^el-5-.*$/
-  # This is a _REALLY_ old version of libselinux found only in Fedora/RH archives and not upstream
-  pkg.version "1.33.4"
-  pkg.md5sum "08762379de2242926854080dad649b67"
-  pkg.apply_patch "resources/patches/ruby-selinux/libselinux-rhat.patch"
-  pkg.url "http://pkgs.fedoraproject.org/repo/pkgs/libselinux/libselinux-1.33.4.tgz/08762379de2242926854080dad649b67/libselinux-1.33.4.tgz"
-  pkg.mirror "#{settings[:buildsources_url]}/libselinux-#{pkg.get_version}.tgz"
-
-  # This version of libselinux does not supply a file for pkg-config; Augeas 1.10.1 expects one, though:
-  pkg.add_source "file://resources/files/ruby-selinux/libselinux-1.33.4.pc"
-  pkg.install do
-    ["cp ../libselinux-1.33.4.pc #{settings[:libdir]}/pkgconfig/libselinux.pc"]
-  end
-elsif platform.name =~ /el-(5|6|7)|debian-9|ubuntu-(16|18)/
+if platform.name =~ /el-(6|7)|debian-9|ubuntu-(16|18)/
   pkg.version "2.0.94"
   pkg.md5sum "544f75aab11c2af352facc51af12029f"
   pkg.url "https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20100525/devel/libselinux-#{pkg.get_version}.tar.gz"
@@ -49,7 +36,7 @@ end
 cflags = ""
 
 # The platforms below use pl-build-tools
-unless platform.name =~ /el-(5|6|7)|debian-9|ubuntu-(16|18)/
+unless platform.name =~ /el-(6|7)|debian-9|ubuntu-(16|18)/
   cc = '/usr/bin/gcc'
   cflags += "#{settings[:cppflags]} #{settings[:cflags]}"
 end

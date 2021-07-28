@@ -53,7 +53,7 @@ else
     proj.setting(:sysconfdir, "/etc/puppetlabs")
   end
   proj.setting(:logdir, "/var/log/puppetlabs")
-  if platform.is_linux? && platform.name !~ /sles-11|el-(5|6)/
+  if platform.is_linux? && platform.name !~ /sles-11|el-6/
     proj.setting(:piddir, "/run/puppetlabs")
   else
     proj.setting(:piddir, "/var/run/puppetlabs")

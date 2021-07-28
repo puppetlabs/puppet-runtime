@@ -71,9 +71,6 @@ component "rubygem-ffi" do |pkg, settings, platform|
     pkg.install_file "/opt/csw/lib/libffi.so.6", "#{settings[:libdir]}/libffi.so.6"
   end
 
-  if platform.name =~ /el-5-x86_64/
-    pkg.install_file "/usr/lib64/libffi.so.5", "#{settings[:libdir]}/libffi.so.5"
-  end
 
   pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
 
