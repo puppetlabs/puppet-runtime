@@ -47,12 +47,12 @@ project 'pdk-runtime' do |proj|
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:bindir, File.join(proj.prefix, "bin"))
 
-  proj.setting(:ruby_version, "2.4.10")
-  proj.setting(:ruby_api, "2.4.0")
+  proj.setting(:ruby_version, "2.5.9")
+  proj.setting(:ruby_api, "2.5.0")
 
   # this is the latest puppet that will be installed into the default ruby version above
-  # newer versions of puppet will be installed into the Ruby 2.5.6 runtime
-  proj.setting(:latest_puppet, "5.5.21")
+  # newer versions of puppet will be installed into the Ruby 2.7 runtime
+  proj.setting(:latest_puppet, "~> 6")
 
   proj.setting(:privatedir, File.join(proj.prefix, "private"))
   proj.setting(:ruby_dir, File.join(proj.privatedir, "ruby", proj.ruby_version))
@@ -75,17 +75,18 @@ project 'pdk-runtime' do |proj|
 
   # TODO: build this with a helper method?
   additional_rubies = {
-    "2.5.9" => {
-      ruby_version: "2.5.9",
-      ruby_api: "2.5.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.9"),
-      latest_puppet: "6.22.1", # TODO: make this a semver range
-    },
     "2.7.3" => {
       ruby_version: "2.7.3",
       ruby_api: "2.7.0",
       ruby_dir: File.join(proj.privatedir, "ruby", "2.7.3"),
-    }
+    },
+    # Adding puppet 5 back into build, but as a selectable option
+    "2.4.10" => {
+      ruby_version: "2.4.10",
+      ruby_api: "2.4.0",
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.4.10"),
+      latest_puppet: "5.5.22",
+    },
   }
 
   additional_rubies.each do |rubyver, local_settings|
@@ -192,6 +193,11 @@ project 'pdk-runtime' do |proj|
     proj.additional_rubies.keys.each do |rubyver|
       proj.component "ruby-#{rubyver}"
 
+      # Ruby 2.4 was originally set as the default, with updated gems for
+      # additional rubies tagged with their supported ruby version.
+      # With ruby 2.4 being added back in as additional we can skip looking for a
+      # specific version
+      break if rubyver == "2.4.10"
       ruby_minor = rubyver.split('.')[0,2].join('.')
 
       proj.component "ruby-#{ruby_minor}-augeas" unless platform.is_windows?
