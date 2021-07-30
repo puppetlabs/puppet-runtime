@@ -193,10 +193,10 @@ project 'pdk-runtime' do |proj|
     proj.additional_rubies.keys.each do |rubyver|
       proj.component "ruby-#{rubyver}"
 
-      # Ruby 2.4 was original cast as the default, with updated gems for
+      # Ruby 2.4 was originally set as the default, with updated gems for
       # additional rubies tagged with their supported ruby version.
       # With ruby 2.4 being added back in as additional we can skip looking for a
-      # spacific version
+      # specific version
       break if rubyver == "2.4.10"
       ruby_minor = rubyver.split('.')[0,2].join('.')
 
