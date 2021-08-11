@@ -11,7 +11,7 @@ component "runtime-client-tools" do |pkg, settings, platform|
     # zlib is a runtime dependency of libcurl
     pkg.build_requires "pl-zlib-#{platform.architecture}"
     pkg.install_file "#{settings[:tools_root]}/bin/zlib1.dll", "#{settings[:bindir]}/zlib1.dll"
-  elsif platform.name =~ /el-[67]|redhatfips-7|sles-12|ubuntu-(?:16.04|18.04)/
+  elsif platform.name =~ /el-[67]|redhatfips-7|sles-12|ubuntu-(?:16.04|18.04-amd64)/
     libbase = platform.architecture =~ /64/ ? 'lib64' : 'lib'
     libdir = "/opt/pl-build-tools/#{libbase}"
     pkg.add_source "file://resources/files/runtime/runtime.sh"
