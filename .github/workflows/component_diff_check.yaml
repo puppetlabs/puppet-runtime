@@ -1,0 +1,41 @@
+---
+name: Vanagon Component Diff
+
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  vanagon_component_diff_check:
+    runs-on: ubuntu-latest
+    name: Check
+    steps:
+      - name: Checkout current PR
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Install ruby version ${{ matrix.cfg.ruby }}
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+
+      - name: Bundle project
+        run: |
+          gem install bundler
+          bundle config set without packaging documentation
+          bundle install --jobs 3 --retry 3 --with development
+
+      - name: Save artifacts data
+        run: |
+          mkdir -p ./output
+          echo '${{ github.event.number }}' > ./output/nr
+          bundle exec rake vanagon:component_diff -- '-mpall' > ./output/text
+          cat ./output/text
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: artifacts
+          path: output/
