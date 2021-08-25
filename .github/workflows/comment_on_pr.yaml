@@ -1,0 +1,79 @@
+---
+name: Comment output on PR
+
+on:
+  workflow_run:
+    workflows: ["Vanagon Component Diff"]
+    types:
+      - completed
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: 'Download artifacts'
+        uses: actions/github-script@v3.1.0
+        with:
+          script: |
+            var artifacts = await github.actions.listWorkflowRunArtifacts({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               run_id: ${{github.event.workflow_run.id }},
+            });
+            var matchArtifact = artifacts.data.artifacts.filter((artifact) => {
+              return artifact.name == "artifacts"
+            })[0];
+            var download = await github.actions.downloadArtifact({
+               owner: context.repo.owner,
+               repo: context.repo.repo,
+               artifact_id: matchArtifact.id,
+               archive_format: 'zip',
+            });
+            var fs = require('fs');
+            fs.writeFileSync('${{github.workspace}}/artifacts.zip', Buffer.from(download.data));
+            fs.writeFileSync('./artifactid', matchArtifact.id)
+
+      - name: 'Unzip artifacts'      
+        run: unzip artifacts.zip
+
+      - name: 'Check comment limits'
+        run: |
+          chars=$(cat ./text | wc -m)
+          if ((chars > 65300)); then
+            # Trim output to 65300 characters
+            truncate -s 65300 ./text
+
+            # Close all code blocks
+            nr_code_keyword=$(cat ./text | grep '\`\`\`' | wc -l)
+            if [ $((nr_code_keyword%2)) -ne 0 ];then
+              echo >> ./text
+              echo "\`\`\`" >> ./text
+            fi
+
+            # Close all collapsible blocks
+            nr_open_details=$(cat ./text | grep '<details>' | wc -l)
+            nr_closed_details=$(cat ./text | grep '</details>' | wc -l)
+            for i in `seq $(($nr_open_details-$nr_closed_details))`; do echo >> ./text; echo "</details>" >> ./text;done
+
+            # Output artifact info
+            echo >> ./text
+            echo "# ..." >> ./text
+            echo >> ./text
+            printf "Comment size limit reached. " >> ./text
+            echo "Please download full artifacts from [here](https://github.com/${{ github.repository }}/suites/${{github.event.workflow_run.check_suite_id }}/artifacts/$(cat ./artifactid))." >> ./text
+          fi
+
+      - name: 'Add comment'
+        uses: actions/github-script@v3
+        with:
+          script: |
+            var fs = require('fs');
+            var issue_number = Number(fs.readFileSync('./nr'));
+            var issue_text = String(fs.readFileSync('./text'));
+            await github.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: issue_number,
+              body: issue_text
+            });
