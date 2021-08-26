@@ -95,6 +95,11 @@ component 'openssl' do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/openssl/openssl-1.0.0l-use-gcc-instead-of-makedepend.patch'
   end
   pkg.apply_patch 'resources/patches/openssl/CVE-2020-1968.patch'
+  pkg.apply_patch 'resources/patches/openssl/CVE-2020-1971.patch'
+  pkg.apply_patch 'resources/patches/openssl/CVE-2021-23839.patch'
+  pkg.apply_patch 'resources/patches/openssl/CVE-2021-23840.patch'
+  pkg.apply_patch 'resources/patches/openssl/CVE-2021-23841.patch'
+  pkg.apply_patch 'resources/patches/openssl/CVE-2021-3712.patch'
 
   ###########
   # CONFIGURE
