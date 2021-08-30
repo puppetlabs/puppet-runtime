@@ -1,3 +1,4 @@
+# coding: utf-8
 namespace :vanagon do |args|
   desc 'Show component diff'
   task(:component_diff) do
@@ -12,40 +13,42 @@ namespace :vanagon do |args|
       @@markdown = false
       @@diff_open = false
 
-      def self.format_as_markdown
-        @@markdown = true
-      end
+      class << self
+        def format_as_markdown
+          @@markdown = true
+        end
 
-      def self.is_in_markdown?
-        @@markdown
-      end
+        def is_in_markdown?
+          @@markdown
+        end
 
-      def self.start_diff(alternative = '')
-        return alternative unless @@markdown
-        @@diff_open = true
-        '```diff'
-      end
+        def start_diff(alternative = '')
+          return alternative unless @@markdown
+          @@diff_open = true
+          '```diff'
+        end
 
-      def self.end_diff(alternative = '')
-        return alternative unless @@markdown
-        @@diff_open = false
-        '```'
-      end
+        def end_diff(alternative = '')
+          return alternative unless @@markdown
+          @@diff_open = false
+          '```'
+        end
 
-      def self.start_collapsible(text)
-        return text unless @@markdown
-        text.delete!('`~*_').gsub!('&nbsp;','')
-        "<details>\n  <summary>#{text}</summary>\n\n"
-      end
+        def start_collapsible(text)
+          return text unless @@markdown
+          text.delete!('`~*_').gsub!('&nbsp;','')
+          "<details>\n  <summary>#{text}</summary>\n\n"
+        end
 
-      def self.end_collapsible
-        return '' unless @@markdown
-        '</details>'
-      end
+        def end_collapsible
+          return '' unless @@markdown
+          '</details>'
+        end
 
-      def self.hr
-        return "\n---\n" if @@markdown
-        ''
+        def hr
+          return "\n---\n" if @@markdown
+          ''
+        end
       end
 
       def +(text)
@@ -96,9 +99,15 @@ namespace :vanagon do |args|
         return "#{'#'*number}" + self if @@markdown
         self.bold
       end
+
+      def unwrap
+        return self unless @@markdown
+        self.gsub! /([^\n])\n([^\n])/, '\1 \2'
+      end
     end
 
     MAX_CPU = Etc.nprocessors - 1
+    TASK_NAME = ARGV.first
 
     def vanagon_inspect(project, ref, platforms)
       files = {}
@@ -126,36 +135,36 @@ namespace :vanagon do |args|
     platforms = []
 
     parser = OptionParser.new do |opts|
-      opts.banner = 'Usage: ruby vanagon_component_diff.rb [options]'
+      opts.banner = "Usage: rake #{TASK_NAME} -- [options]"
 
       opts.on('-f', '--from from_rev', "from git revision (default: #{git_from_rev})") do |from_rev|
-        git_from_rev = from_rev;
+        git_from_rev = from_rev
       end
 
       opts.on('-t', '--to to_rev', "to git revision (default: #{git_to_rev})") do |to_rev|
-        git_to_rev = to_rev;
+        git_to_rev = to_rev
       end
 
-      opts.on('-P', '--project vanagon_project', "vanagon project name (default: #{projects}, can be specified multiple times); use 'all' to add all available") do |project_name|
-        if project_name == "all"
-          Dir.entries('configs/projects').each do | file_name |
+      opts.on('-P', '--project vanagon_project', "vanagon project name (default: #{default_projects}, can be specified multiple times); use 'all' to add all available") do |project_name|
+        if project_name == 'all'
+          Dir.entries('configs/projects').each do |file_name|
             next unless file_name.end_with?('.rb')
             next if file_name.start_with?('_')
             projects << File.basename(file_name, '.rb')
           end
         else
-          projects << project_name;
+          projects << project_name
         end
       end
 
       opts.on('-p', '--platform vanagon_platform', "vanagon platform names (default: #{default_platforms}, can be specified multiple times); use 'all' to add all available") do |platform_name|
-        if platform_name == "all"
-          Dir.entries('configs/platforms').each do | file_name |
+        if platform_name == 'all'
+          Dir.entries('configs/platforms').each do |file_name|
             next unless file_name.end_with?('.rb')
             platforms << File.basename(file_name, '.rb')
           end
         else
-          platforms << platform_name;
+          platforms << platform_name
         end
       end
 
@@ -193,9 +202,23 @@ namespace :vanagon do |args|
       projects = default_projects
     end
 
+    puts <<~DISCLAIMER.unwrap
+      #{'⚠️ DISCLAIMER'.h(3)}
+
+      This task is still experimental, it can be invoked locally provided that
+      development dependencies are installed (#{'bundle install --with development'.code}).
+
+      Ensure all your local changes are committed, then run
+      #{"bundle exec rake #{TASK_NAME} -- [options]".code}.
+
+      Run the task with #{'--help'.code} to see all available options. If you notice unexpected
+      behavior or want to suggest improvements, ping #prod-puppet-agent on Slack.
+
+    DISCLAIMER
+
     puts "Here is what your code changes would affect:".h(1)
     puts
-    projects.each do | project |
+    projects.each do |project|
       puts "Project #{project.code}".h(2)
       new_files = vanagon_inspect(project, git_to_rev, platforms)
       old_files = vanagon_inspect(project, git_from_rev, platforms)
@@ -227,6 +250,13 @@ namespace :vanagon do |args|
 
       changes_found = false
       diff.each do |platform, diff|
+        diff.reject! do |hunk|
+          # these are repos added by vanagon using SecureRandom hashes so we should exclude them from the diff output
+          hunk[1].include?('platform|provisioning') &&
+            hunk.last.is_a?(String) &&
+            hunk.last.start_with?('curl --silent --show-error --fail --location -o')
+        end
+
         next if diff.empty?
         puts String.hr if changes_found
         changes_found = true
@@ -238,7 +268,7 @@ namespace :vanagon do |args|
           puts "Platform".bold.h(3) + platform.cyan.code + "was removed, not showing diff for it".red
           next
         end
-        
+
         puts "Platform name:".h(3) + platform.cyan.code
         ordered_diff = diff.each_with_object({}) do |k, v|
           name, field = k[1].match(/^([a-zA-Z\-._0-9]+)\|?(.*)?/).captures
@@ -254,8 +284,6 @@ namespace :vanagon do |args|
           end
 
           diff = [k[0], k[2], k[3]].compact
-          next if field.start_with?('platform|provisioning') && ['/etc/yum.repos.d', '/etc/yum/repos.d', '/etc/apt/sources.list.d'].any?{ |noise| diff.last().include?(noise) }
-
           v[name] ||= {}
           v[name][field] ||= []
           v[name][field] << diff unless v[name][field].include?(diff)
@@ -286,5 +314,6 @@ namespace :vanagon do |args|
       end
       puts "Nothing is affected 😊" if !changes_found
     end
+    exit 0
   end
 end
