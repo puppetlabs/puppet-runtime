@@ -1,0 +1,18 @@
+--- /dev/null	2021-08-26 12:37:58.583000762 +0000
++++ b/SOURCES/openssl-1.1.1l-ec-group-new-from-ecparameters.patch	2021-08-26 12:43:58.517039490 +0000
+@@ -0,0 +1,15 @@
++diff -up openssl-1.1.1/crypto/ec/ec_asn1.c.ec-parameters openssl-1.1.1/crypto/ec/ec_asn1.c
++--- openssl-1.1.1/crypto/ec/ec_asn1.c.ec-parameters	2018-09-11 14:48:23.000000000 +0200
+++++ openssl-1.1.1/crypto/ec/ec_asn1.c	2018-09-17 12:53:33.850637181 +0200
++@@ -761,7 +761,10 @@ EC_GROUP *EC_GROUP_new_from_ecparameters(const ECPARAMETERS *params)
++         ret->seed_len = params->curve->seed->length;
++     }
++
++-    if (!params->order || !params->base || !params->base->data) {
+++    if (params->order == NULL
+++            || params->base == NULL
+++            || params->base->data == NULL
+++            || params->base->length == 0) {
++         ECerr(EC_F_EC_GROUP_NEW_FROM_ECPARAMETERS, EC_R_ASN1_ERROR);
++         goto err;
++     }
