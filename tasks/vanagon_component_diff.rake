@@ -261,13 +261,6 @@ namespace :vanagon do |args|
         puts String.hr if changes_found
         changes_found = true
         puts
-        if diff.all? { |elem| elem.first == '+' }
-          puts "Platform".bold.h(3) + platform.cyan.code + "was newly added, not showing diff for it".green
-          next
-        elsif diff.all? { |elem| elem.first == '-' }
-          puts "Platform".bold.h(3) + platform.cyan.code + "was removed, not showing diff for it".red
-          next
-        end
 
         puts "Platform name:".h(3) + platform.cyan.code
         ordered_diff = diff.each_with_object({}) do |k, v|
