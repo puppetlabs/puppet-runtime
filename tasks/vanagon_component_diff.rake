@@ -232,13 +232,19 @@ namespace :vanagon do |args|
       old_hash = old.each_with_object({}) do |k, v|
         v[k.first] ||= {} # k.first = platform name
         k.last.each do |component| # k.last = components
+          component["platform"].delete("settings")
+          v[k.first]["_settings"] = component.delete("settings")
+          v[k.first]["_platform"] = component.delete("platform")
           v[k.first][component.delete("name")] = component
         end
       end
 
       new_hash = new.each_with_object({}) do |k, v|
-        v[k.first] ||= {}
-        k.last.each do |component|
+        v[k.first] ||= {} # k.first = platform name
+        k.last.each do |component| # k.last = components
+          component["platform"].delete("settings")
+          v[k.first]["_settings"] = component.delete("settings")
+          v[k.first]["_platform"] = component.delete("platform")
           v[k.first][component.delete("name")] = component
         end
       end
@@ -283,7 +289,16 @@ namespace :vanagon do |args|
         end
 
         ordered_diff.each do |component, field_hash|
-          puts String.start_collapsible("Component".tab.bold + "'#{component.cyan}'")
+          title = case component
+                  when '_settings'
+                    'Project settings'.tab.bold
+                  when '_platform'
+                    'Platform settings'.tab.bold
+                  else
+                    'Component'.tab.bold + "'#{component.cyan}'"
+                  end
+
+          puts String.start_collapsible(title)
 
           field_hash.each do |field, diff|
             puts "Field:".tab(2).bold + field.code.cyan
