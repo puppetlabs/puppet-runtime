@@ -1,6 +1,6 @@
 --- a/SPECS/openssl.spec	2019-05-11 00:45:45.000000000 +0000
 +++ b/SPECS/openssl.spec	2020-01-13 15:16:29.224852120 +0000
-@@ -81,16 +81,22 @@
+@@ -81,16 +81,21 @@
  Patch56: openssl-1.1.1-s390x-ecc.patch
  Patch74: openssl-1.1.1-addrconfig.patch
  Patch75: openssl-1.1.1-tls13-curves.patch
@@ -9,7 +9,6 @@
 +Patch102: openssl-1.1.1-remove-env-check.patch
 +Patch103: openssl-1.1.1l-sm2-plaintext.patch
 +Patch104: openssl-1.1.1l-ec-group-new-from-ecparameters.patch
-+Patch105: openssl-1.1.1l-remove-non-fips-ciphers.patch
  
  License: OpenSSL and ASL 2.0
  URL: http://www.openssl.org/
@@ -42,7 +41,7 @@
  Requires: %{name}%{?_isa} = %{epoch}:%{version}-%{release}
  
  %description perl
-@@ -200,6 +204,12 @@
+@@ -200,6 +204,11 @@
  %patch78 -p1 -b .addr-ipv6
  %patch79 -p1 -b .servername-cb
  %patch80 -p1 -b .s390x-test-aes
@@ -51,7 +50,6 @@
 +%patch102 -p1 -b .remove-env-check
 +%patch103 -p1 -b .sm2-plaintext
 +%patch104 -p1 -b .ec-parameters
-+%patch105 -p1 -b .non-fips-ciphers
  
  
  %build
