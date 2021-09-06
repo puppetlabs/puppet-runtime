@@ -33,7 +33,6 @@ component 'openssl-1.1.1-fips' do |pkg, settings, _platform|
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-edk2-build.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1l-ec-group-new-from-ecparameters.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1l-sm2-plaintext.patch'
-  pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1l-remove-non-fips-ciphers.patch'
 
   topdir = "--define \"_topdir `pwd`/openssl-#{pkg.get_version}\""
   libdir = "--define '%_libdir %{_prefix}/lib'"
@@ -49,8 +48,7 @@ component 'openssl-1.1.1-fips' do |pkg, settings, _platform|
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-remove-env-check.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-edk2-build.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-ec-group-new-from-ecparameters.patch && cd -",
-      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-sm2-plaintext.patch && cd -",
-      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-remove-non-fips-ciphers.patch && cd -",
+      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-sm2-plaintext.patch && cd -"
     ]
   end
 
