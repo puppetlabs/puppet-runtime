@@ -271,6 +271,7 @@ namespace :vanagon do |args|
         puts "Platform name:".h(3) + platform.cyan.code
         ordered_diff = diff.each_with_object({}) do |k, v|
           name, field = k[1].match(/^([a-zA-Z\-._0-9]+)\|?(.*)?/).captures
+          next if ['_settings', '_platform'].include?(name)
           if field.nil? || field.empty?
             case k.first
             when '+'
