@@ -41,6 +41,12 @@ component 'openssl-1.1.1-fips' do |pkg, settings, platform|
   libdir = "--define '%_libdir %{_prefix}/lib'"
   prefix = "--define '%_prefix #{settings[:prefix]}'"
 
+  pkg.configure do
+    [
+      "rpm -i #{topdir} openssl-#{pkg.get_version}.el8.src.rpm"
+    ]
+  end
+
   if platform.name =~ /-7-/
     pkg.configure do
       [
@@ -52,7 +58,6 @@ component 'openssl-1.1.1-fips' do |pkg, settings, platform|
 
   pkg.configure do
     [
-      "rpm -i #{topdir} openssl-#{pkg.get_version}.el8.src.rpm",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-patch-openssl-cnf.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-force-fips-mode.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-spec-file.patch && cd -",
