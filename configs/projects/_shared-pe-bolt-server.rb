@@ -18,7 +18,7 @@ unless pe_version && !pe_version.empty?
   exit(1)
 end
 
-if platform.name =~ /^redhatfips-7-.*/
+if platform.name =~ /^redhatfips-.*/
   # Link against the system openssl instead of our vendored version:
   proj.setting(:system_openssl, true)
 end

@@ -88,7 +88,7 @@ end
 
 # Common deps
 proj.component "runtime-client-tools"
-if platform.name =~ /^redhatfips-7-.*/
+if platform.name =~ /^redhatfips-.*/
   proj.component "openssl-1.1.1-fips"
 else
   proj.component "openssl-#{proj.openssl_version}"
