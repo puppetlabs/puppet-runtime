@@ -1,4 +1,4 @@
-component 'openssl-1.1.1-fips' do |pkg, settings, _platform|
+component 'openssl-1.1.1-fips' do |pkg, settings, platform|
   pkg.version '1.1.1k-4'
   pkg.sha256sum '9448292689f8d5e55d419500b16a5e9da980d55429d02531d75a99a1e4ec4cdc'
   pkg.url "https://vault.centos.org/centos/8-stream/BaseOS/Source/SPackages/openssl-#{pkg.get_version}.el8.src.rpm"
@@ -27,26 +27,36 @@ component 'openssl-1.1.1-fips' do |pkg, settings, _platform|
   # proper fix would be extension in vanagon for source rpm handling
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-patch-openssl-cnf.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-force-fips-mode.patch'
-  pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-post-rand.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-spec-file.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-remove-env-check.patch'
-  pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-edk2-build.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1l-ec-group-new-from-ecparameters.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1l-sm2-plaintext.patch'
+
+  if platform.name =~ /-7-/
+    pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-post-rand.patch'
+    pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-edk2-build.patch'
+  end
 
   topdir = "--define \"_topdir `pwd`/openssl-#{pkg.get_version}\""
   libdir = "--define '%_libdir %{_prefix}/lib'"
   prefix = "--define '%_prefix #{settings[:prefix]}'"
+
+  if platform.name =~ /-7-/
+    pkg.configure do
+      [
+        "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-edk2-build.patch && cd -",
+        "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-post-rand.patch && cd -",
+      ]
+    end
+  end
 
   pkg.configure do
     [
       "rpm -i #{topdir} openssl-#{pkg.get_version}.el8.src.rpm",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-patch-openssl-cnf.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-force-fips-mode.patch && cd -",
-      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-post-rand.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-spec-file.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-remove-env-check.patch && cd -",
-      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-edk2-build.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-ec-group-new-from-ecparameters.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-sm2-plaintext.patch && cd -"
     ]

@@ -176,6 +176,14 @@ if platform.name =~ /sles-15|el-8|debian-10/ || platform.is_fedora?
   proj.setting(:ldflags, "-L#{proj.libdir} -Wl,-rpath=#{proj.libdir},-z,relro,-z,now")
 end
 
+if platform.name =~ /^redhatfips-/
+  proj.setting(:openssl_version, '1.1.1-fips')
+elsif platform.name =~ /^windowsfips-2012r2/
+  proj.setting(:openssl_version, '1.0.2')
+else
+  proj.setting(:openssl_version, '1.1.1')
+end
+
 if platform.is_windows?
   arch = platform.architecture == "x64" ? "64" : "32"
   proj.setting(:gcc_root, "C:/tools/mingw#{arch}")
