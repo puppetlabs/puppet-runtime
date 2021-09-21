@@ -39,8 +39,6 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
   # Patch for https://bugs.ruby-lang.org/issues/14972
   pkg.apply_patch "#{base}/net_http_eof_14972_r2.5.patch"
 
-  pkg.apply_patch "#{base}/ruby-faster-load_27.patch"
-
   if platform.is_cross_compiled?
     unless platform.is_macos?
       pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.5.patch"
@@ -71,6 +69,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/windows_ruby_2.5_fixup_generated_batch_files.patch"
     pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
     pkg.apply_patch "#{base}/win32_long_paths_support.patch"
+    pkg.apply_patch "#{base}/ruby-faster-load_27.patch"
   end
 
   ####################
