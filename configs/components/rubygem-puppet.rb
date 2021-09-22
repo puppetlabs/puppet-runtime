@@ -9,9 +9,14 @@ component 'rubygem-puppet' do |pkg, settings, platform|
     pkg.md5sum '801e1945b1c483d1d5a4cb9b1caf7578'
   when '6.24.0'
     pkg.md5sum 'af6bbabf8ba8b11184f3ff143d4217ac'
+  when '6.24.0.167.g62c2cba'
+    pkg.md5sum 'e6b598b24e68d6e97d071757559d44bf'
   else
     raise "Invalid version #{version} for rubygem-puppet; Cannot continue."
   end
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
+  if version == '6.24.0.167.g62c2cba'
+    pkg.url("#{settings[:artifactory_url]}/rubygems/gems/puppet-#{version}.gem")
+  end
 end
