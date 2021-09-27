@@ -1,0 +1,23 @@
+---
+name: vanagon check PRs
+ 
+on:
+ pull_request:
+    branches:
+      - main
+
+jobs:
+ snyk_vanagon:
+   runs-on: ubuntu-latest
+   steps:
+    - name: checkout the current PR
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Run Vanagon Snyk Scan
+      uses: puppetlabs/security-snyk-vanagon-action
+      with:
+        snykToken: ${{ secrets.SNYK_TOKEN }}
+        snykOrg: 'sectest'
+        skipProjects: 'agent-runtime-5.5.x,agent-runtime-1.10.x,client-tools-runtime-irving,pdk-runtime'
+        skipPlatforms: 'cisco-wrlinux-5-x86_64,cisco-wrlinux-7-x86_64,debian-10-armhf,eos-4-i386,fedora-30-x86_64,fedora-31-x86_64,osx-10.14-x86_64'
