@@ -43,7 +43,6 @@ proj.setting(:runtime_project, 'pe-bolt-server')
 proj.setting(:rubygem_gettext_version, '3.2.9')
 proj.setting(:rubygem_deep_merge_version, '1.2.1')
 proj.setting(:rubygem_net_ssh_version, '6.1.0')
-proj.setting(:rubygem_puppet_version, '6.24.0.167.g62c2cba')
 
 # (pe-bolt-server does not run on Windows, so only the *nix path is here)
 proj.setting(:prefix, '/opt/puppetlabs/server/apps/bolt-server')
@@ -72,9 +71,6 @@ if proj.no_doc
 else
   proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local --bindir=#{proj.bindir}")
 end
-
-
-
 
 # What to build?
 # --------------
@@ -151,6 +147,7 @@ proj.component('rubygem-rgen')
 proj.component('rubygem-rubyntlm')
 proj.component('rubygem-ruby_smb')
 proj.component('rubygem-rubyzip')
+proj.component('rubygem-scanf')
 proj.component('rubygem-terminal-table')
 proj.component('rubygem-thor')
 proj.component('rubygem-unicode-display_width')
