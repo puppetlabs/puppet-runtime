@@ -1,5 +1,5 @@
 ---
-name: vanagon check PRs
+name: vanagon snyk merge
 
 on:
   push:
@@ -16,12 +16,19 @@ jobs:
         fetch-depth: 0
         persist-credentials: false
     - name: Run Vanagon Snyk Scan
-      uses: puppetlabs/security-snyk-vanagon-action@v1.0.0
+      uses: puppetlabs/security-snyk-vanagon-action@v2.1.1
       with:
         snykToken: ${{ secrets.SNYK_PE_TOKEN }}
         snykOrg: 'puppet-enterprise'
         skipProjects: 'agent-runtime-5.5.x,agent-runtime-1.10.x,client-tools-runtime-irving,pdk-runtime'
         skipPlatforms: 'cisco-wrlinux-5-x86_64,cisco-wrlinux-7-x86_64,debian-10-armhf,eos-4-i386,fedora-30-x86_64,fedora-31-x86_64,osx-10.14-x86_64'
+        urlsToReplace: 'artifactory.delivery.puppetlabs.net,%s/xart,builds.delivery.puppetlabs.net,%s/xbuild'
+        newHost: 'localhost'
+        rproxyUser: '${{ secrets.SEC_PUBLIC_RPROXY_USER }}'
+        rproxyKey: '${{ secrets.SEC_PUBLIC_RPROXY_KEY }}'
+        sshKey: '${{ secrets.SEC_SECBOT_SSH_PUBLIC }}'
+        sshKeyName: 'id_ed25519'
+        branch : {{ github.ref_name }}
     - name: Check output
       if: steps.scan.outputs.vulns != ''
       run: echo "Vulnerabilities detected; ${{ steps.scan.outputs.vulns }}" && exit 1
