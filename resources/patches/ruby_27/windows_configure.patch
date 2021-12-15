@@ -1,0 +1,22 @@
+--- a/configure.ac	2021-12-08 13:40:18.537723500 +0000
++++ b/configure.ac	2021-12-08 13:43:09.128848800 +0000
+@@ -150,9 +150,6 @@
+ 
+ AC_ARG_PROGRAM
+ 
+-# checks for UNIX variants that set C preprocessor variables
+-AC_USE_SYSTEM_EXTENSIONS
+-
+ dnl Checks for programs.
+ 
+ cflagspat=
+@@ -410,6 +407,9 @@
+ AC_CHECK_PROG(PKG_CONFIG, pkg-config, [pkg-config], [], [],
+     [`"$as_dir/$ac_word$ac_exec_ext" --print-errors --version > /dev/null 2>&1 || echo "$as_dir/$ac_word$ac_exec_ext"`])
+ 
++# checks for UNIX variants that set C preprocessor variables
++AC_USE_SYSTEM_EXTENSIONS
++
+ AC_SUBST(RM, ['rm -f'])
+ AC_SUBST(CP, ['cp'])
+ RMDIRS='$(top_srcdir)/tool/rmdirs'
