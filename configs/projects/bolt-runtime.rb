@@ -8,7 +8,7 @@ project 'bolt-runtime' do |proj|
   # TODO: Can runtime projects use these updated versions?
   proj.setting(:rubygem_gettext_version, '3.2.9')
   proj.setting(:rubygem_deep_merge_version, '1.2.1')
-  proj.setting(:rubygem_puppet_version, '7.12.0')
+  proj.setting(:rubygem_puppet_version, '7.13.1')
 
   platform = proj.get_platform
 
@@ -191,6 +191,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-rubyntlm'
   proj.component 'rubygem-ruby_smb'
   proj.component 'rubygem-rubyzip'
+  proj.component 'rubygem-sys-filesystem'
   proj.component 'rubygem-terminal-table'
   proj.component 'rubygem-thor'
   proj.component 'rubygem-unicode-display_width'
