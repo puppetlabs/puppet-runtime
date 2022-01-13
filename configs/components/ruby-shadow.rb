@@ -1,5 +1,5 @@
 component "ruby-shadow" do |pkg, settings, platform|
-  pkg.url "git://github.com/apalmblad/ruby-shadow"
+  pkg.url "https://github.com/apalmblad/ruby-shadow"
   pkg.ref "refs/tags/2.5.0"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
