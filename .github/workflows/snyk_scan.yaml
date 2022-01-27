@@ -13,10 +13,10 @@ jobs:
     - name: checkout the current PR
       uses: actions/checkout@v2
       with:
-        fetch-depth: 0
+        fetch-depth: 1
         persist-credentials: false
     - name: Run Vanagon Snyk Scan
-      uses: puppetlabs/security-snyk-vanagon-action@v2.1.1
+      uses: puppetlabs/security-snyk-vanagon-action@v2.2.0
       with:
         snykToken: ${{ secrets.SNYK_PE_TOKEN }}
         snykOrg: 'puppet-enterprise'
@@ -28,7 +28,7 @@ jobs:
         rproxyKey: '${{ secrets.SEC_PUBLIC_RPROXY_KEY }}'
         sshKey: '${{ secrets.SEC_SECBOT_SSH_PUBLIC }}'
         sshKeyName: 'id_ed25519'
-        branch : {{ github.ref_name }}
+        branch : ${{ github.ref_name }}
     - name: Check output
       if: steps.scan.outputs.vulns != ''
       run: echo "Vulnerabilities detected; ${{ steps.scan.outputs.vulns }}" && exit 1
