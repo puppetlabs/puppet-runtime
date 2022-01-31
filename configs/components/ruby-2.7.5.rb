@@ -1,6 +1,6 @@
-component 'ruby-2.7.3' do |pkg, settings, platform|
-  pkg.version '2.7.3'
-  pkg.sha256sum '8925a95e31d8f2c81749025a52a544ea1d05dad18794e6828709268b92e55338'
+component 'ruby-2.7.5' do |pkg, settings, platform|
+  pkg.version '2.7.5'
+  pkg.sha256sum '2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
@@ -70,6 +70,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
     pkg.apply_patch "#{base}/win32_long_paths_support.patch"
     pkg.apply_patch "#{base}/ruby-faster-load_27.patch"
+    pkg.apply_patch "#{base}/windows_configure.patch"
   end
 
   ####################
@@ -89,7 +90,7 @@ component 'ruby-2.7.3' do |pkg, settings, platform|
 
   special_flags = " --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
 
-  if platform.name =~ /sles-15|el-8|debian-10/ || (platform.is_fedora? && platform.os_version.to_i >= 29)
+  if platform.name =~ /sles-15|el-8|debian-10/
     special_flags += " CFLAGS='#{settings[:cflags]}' LDFLAGS='#{settings[:ldflags]}' CPPFLAGS='#{settings[:cppflags]}' "
   end
 

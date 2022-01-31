@@ -1,6 +1,6 @@
 project 'agent-runtime-main' do |proj|
   # Set preferred component versions if they differ from defaults:
-  proj.setting :ruby_version, '2.7.3'
+  proj.setting :ruby_version, '2.7.5'
   proj.setting :augeas_version, '1.12.0'
   proj.setting :rubygem_deep_merge_version, '1.2.1'
 

@@ -1,5 +1,5 @@
 component "yaml-cpp" do |pkg, settings, platform|
-  pkg.url "git://github.com/jbeder/yaml-cpp.git"
+  pkg.url "https://github.com/jbeder/yaml-cpp.git"
   pkg.ref "refs/tags/yaml-cpp-0.6.2"
 
   # Build-time Configuration
