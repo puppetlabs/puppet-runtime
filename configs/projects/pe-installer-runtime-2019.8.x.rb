@@ -144,12 +144,6 @@ project 'pe-installer-runtime-2019.8.x' do |proj|
     proj.component 'rubygem-ed25519'
   end
 
-  # Core Windows dependencies
-  proj.component 'rubygem-win32-dir'
-  proj.component 'rubygem-win32-process'
-  proj.component 'rubygem-win32-security'
-  proj.component 'rubygem-win32-service'
-
   # Components from puppet-runtime included to support apply on localhost
   # Only bundle SELinux gem for RHEL,Centos,Fedora
   if platform.is_el? || platform.is_fedora?
