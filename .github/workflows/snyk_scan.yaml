@@ -10,7 +10,7 @@ jobs:
     - name: checkout the current PR
       uses: actions/checkout@v2
       with:
-        fetch-depth: 1
+        fetch-depth: 0
         persist-credentials: false
     - name: Run Vanagon Snyk Scan
       uses: puppetlabs/security-snyk-vanagon-action@v2.2.0
