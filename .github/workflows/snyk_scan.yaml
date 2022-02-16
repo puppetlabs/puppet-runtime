@@ -1,5 +1,5 @@
 ---
-name: vanagon snyk merge
+name: vanagon snyk monitor
 
 on: [pull_request]
 
@@ -13,7 +13,7 @@ jobs:
         fetch-depth: 0
         persist-credentials: false
     - name: Run Vanagon Snyk Scan
-      uses: puppetlabs/security-snyk-vanagon-action@v2.2.0
+      uses: puppetlabs/security-snyk-vanagon-action@v2.3.0
       with:
         snykToken: ${{ secrets.SNYK_PE_TOKEN }}
         snykOrg: 'puppet-enterprise'
