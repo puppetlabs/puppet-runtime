@@ -95,7 +95,7 @@ component 'augeas' do |pkg, settings, platform|
       pkg.environment "PKG_CONFIG", "/opt/pl-build-tools/bin/pkg-config"
     end
   elsif platform.is_macos?
-    pkg.environment "PATH", "$$PATH:/usr/local/bin"
+    pkg.environment "PATH", "$(PATH):/usr/local/bin"
     pkg.environment "CFLAGS", settings[:cflags]
     pkg.environment "CC", "clang -target arm64-apple-macos11" if platform.is_cross_compiled?
   end

@@ -52,7 +52,7 @@ component "boost" do |pkg, settings, platform|
   bjamlocation = "#{settings[:prefix]}/bin/bjam"
 
   if platform.is_cross_compiled_linux?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$$PATH"
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-rpath=#{settings[:libdir]}"
     # The boost b2 build requires a c++11 compatible compiler,
     # so we need to install g++ and force the b2 build to use
@@ -65,7 +65,7 @@ component "boost" do |pkg, settings, platform|
     pkg.environment "CXX", "/usr/bin/g++"
     gpp = "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
   elsif platform.is_macos?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$$PATH"
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
     linkflags = ""
     gpp = if platform.is_cross_compiled?
             "clang++ -target arm64-apple-macos11"
@@ -86,7 +86,7 @@ component "boost" do |pkg, settings, platform|
     pkg.environment("LD_LIBRARY_PATH", '/opt/pl-build-tools/lib') if platform.name =~ /solaris-10/
   elsif platform.is_windows?
     arch = platform.architecture == "x64" ? "64" : "32"
-    pkg.environment "PATH", "C:/tools/mingw#{arch}/bin:$$PATH"
+    pkg.environment "PATH", "C:/tools/mingw#{arch}/bin:$(PATH)"
     pkg.environment "CYGWIN", "nodosfilewarning"
     b2location = "#{settings[:prefix]}/bin/b2.exe"
     bjamlocation = "#{settings[:prefix]}/bin/bjam.exe"
@@ -120,11 +120,11 @@ component "boost" do |pkg, settings, platform|
     pkg.environment "PATH", "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
   elsif platform.name =~ /cisco-wrlinux-[57]|debian-9|el-[567]|eos-4|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04-amd64)/
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:#{settings[:bindir]}:$$PATH"
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:#{settings[:bindir]}:$(PATH)"
     linkflags = "-Wl,-rpath=#{settings[:libdir]},-rpath=#{settings[:libdir]}64"
     pkg.environment("LD_LIBRARY_PATH", '/opt/pl-build-tools/lib64') if platform.name =~ /cisco-wrlinux-5/
   else
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:#{settings[:bindir]}:$$PATH"
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:#{settings[:bindir]}:$(PATH)"
     linkflags = "#{settings[:ldflags]},-rpath=#{settings[:libdir]}64"
     gpp = '/usr/bin/g++'
   end
