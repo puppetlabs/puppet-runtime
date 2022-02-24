@@ -38,11 +38,11 @@ component "libxml2" do |pkg, settings, platform|
       # RHEL 5 uses GCC 4.1.2, which does not support the -Wno-array-bounds option required
       # by libxml2. This option was introduced in GCC 4.6. Thus for RHEL 5, we use pl-gcc
       # instead.
-      pkg.environment "CC" => "/opt/pl-build-tools/bin/gcc"
+      pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
     end
 
-    pkg.environment "LDFLAGS" => settings[:ldflags]
-    pkg.environment "CFLAGS" => settings[:cflags]
+    pkg.environment "LDFLAGS", settings[:ldflags]
+    pkg.environment "CFLAGS", settings[:cflags]
   end
 
   pkg.build_requires "runtime-#{settings[:runtime_project]}"

@@ -27,12 +27,12 @@ component "libxslt" do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/libxslt/disable-version-script.patch'
     pkg.apply_patch 'resources/patches/libxslt/Update-missing-script-to-return-0.patch'
   elsif platform.is_macos?
-    pkg.environment "CC" => "clang -target arm64-apple-macos11" if platform.is_cross_compiled?
+    pkg.environment "CC", "clang -target arm64-apple-macos11" if platform.is_cross_compiled?
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
   else
-    pkg.environment "LDFLAGS" => settings[:ldflags]
-    pkg.environment "CFLAGS" => settings[:cflags]
+    pkg.environment "LDFLAGS", settings[:ldflags]
+    pkg.environment "CFLAGS", settings[:cflags]
   end
 
   pkg.configure do
