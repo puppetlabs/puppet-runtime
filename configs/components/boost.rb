@@ -15,10 +15,6 @@ component "boost" do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/boost/no-O_CLOEXEC-on-aix71.patch'
   end
 
-  if platform.is_cisco_wrlinux?
-    pkg.apply_patch 'resources/patches/boost/no-fionbio.patch'
-  end
-
   if platform.architecture == "aarch64"
     #pkg.apply_patch 'resources/patches/boost/boost-aarch64-flags.patch'
   end
@@ -119,10 +115,9 @@ component "boost" do |pkg, settings, platform|
     pkg.environment "CXXFLAGS", "-pthread"
     pkg.environment "PATH", "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
-  elsif platform.name =~ /cisco-wrlinux-[57]|debian-9|el-[567]|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04-amd64)/
+  elsif platform.name =~ /debian-9|el-[567]|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04-amd64)/
     pkg.environment "PATH", "/opt/pl-build-tools/bin:#{settings[:bindir]}:$(PATH)"
     linkflags = "-Wl,-rpath=#{settings[:libdir]},-rpath=#{settings[:libdir]}64"
-    pkg.environment("LD_LIBRARY_PATH", '/opt/pl-build-tools/lib64') if platform.name =~ /cisco-wrlinux-5/
   else
     pkg.environment "PATH", "/opt/pl-build-tools/bin:#{settings[:bindir]}:$(PATH)"
     linkflags = "#{settings[:ldflags]},-rpath=#{settings[:libdir]}64"

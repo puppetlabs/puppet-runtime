@@ -43,7 +43,7 @@ component "runtime-agent" do |pkg, settings, platform|
     pkg.install_file "#{settings[:tools_root]}/bin/libiconv-2.dll", "#{settings[:ruby_bindir]}/libiconv-2.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libffi-6.dll", "#{settings[:ruby_bindir]}/libffi-6.dll"
   elsif platform.is_solaris? ||
-        platform.name =~ /cisco-wrlinux-[57]|debian-9|el-[567]|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04-amd64)/
+        platform.name =~ /debian-9|el-[567]|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04-amd64)/
     pkg.install do
       "bash runtime.sh #{libdir} puppet"
     end
