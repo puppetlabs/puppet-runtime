@@ -6,8 +6,6 @@ component 'augeas' do |pkg, settings, platform|
   case version
   when '1.8.1'
     pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
-  when '1.10.1'
-    pkg.md5sum '6c0b2ea6eec45e8bc374b283aedf27ce'
   when '1.11.0'
     pkg.md5sum 'abf51f4c0cf3901d167f23687f60434a'
   when '1.12.0'
@@ -19,9 +17,9 @@ component 'augeas' do |pkg, settings, platform|
     raise "augeas version #{version} has not been configured; Cannot continue."
   end
 
-  if ['1.10.1', '1.11.0', '1.12.0'].include?(version)
+  if ['1.11.0', '1.12.0'].include?(version)
     if platform.is_el? || platform.is_fedora?
-      # Augeas 1.10.1/1.11.0 needs a libselinux pkgconfig file on these platforms:
+      # Augeas 1.11.0 needs a libselinux pkgconfig file on these platforms:
       pkg.build_requires 'ruby-selinux'
     end
 
