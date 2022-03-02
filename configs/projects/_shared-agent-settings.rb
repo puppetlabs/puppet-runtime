@@ -44,10 +44,7 @@ if platform.is_windows?
   proj.setting(:tmpfilesdir, "C:/Windows/Temp")
 else
   proj.setting(:install_root, "/opt/puppetlabs")
-  if platform.is_eos?
-    proj.setting(:sysconfdir, "/persist/sys/etc/puppetlabs")
-    proj.setting(:link_sysconfdir, "/etc/puppetlabs")
-  elsif platform.is_macos?
+  if platform.is_macos?
     proj.setting(:sysconfdir, "/private/etc/puppetlabs")
   else
     proj.setting(:sysconfdir, "/etc/puppetlabs")

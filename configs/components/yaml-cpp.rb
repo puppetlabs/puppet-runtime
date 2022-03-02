@@ -31,7 +31,7 @@ component "yaml-cpp" do |pkg, settings, platform|
     pkg.environment "CYGWIN", settings[:cygwin]
     cmake = "C:/ProgramData/chocolatey/bin/cmake.exe -G \"MinGW Makefiles\""
     cmake_toolchain_file = "-DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/pl-build-toolchain.cmake"
-  elsif platform.is_aix? || platform.name =~ /cisco-wrlinux-[57]|debian-9|el-[567]|eos-4|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04-amd64)/
+  elsif platform.is_aix? || platform.name =~ /cisco-wrlinux-[57]|debian-9|el-[567]|redhatfips-7|sles-(:?11|12)|ubuntu-(:?14.04|16.04|18.04-amd64)/
     cmake = "#{settings[:tools_root]}/bin/cmake"
     cmake_toolchain_file = "-DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/pl-build-toolchain.cmake"
   else
