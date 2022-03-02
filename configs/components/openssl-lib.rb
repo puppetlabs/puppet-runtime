@@ -21,7 +21,7 @@ component 'openssl-lib' do |pkg, settings, platform|
     cflags = settings[:cflags]
     ldflags = settings[:ldflags]
   elsif platform.is_cross_compiled_linux?
-    pkg.environment 'PATH', "/opt/pl-build-tools/bin:$$PATH"
+    pkg.environment 'PATH', "/opt/pl-build-tools/bin:$(PATH)"
     pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
 
     cflags = "#{settings[:cflags]} -fPIC"

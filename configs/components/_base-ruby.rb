@@ -26,7 +26,7 @@ if platform.is_aix?
   pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
   pkg.environment 'LDFLAGS', "#{settings[:ldflags]} -Wl,-bmaxdata:0x80000000"
 elsif platform.is_solaris?
-  pkg.environment 'PATH', "#{settings[:bindir]}:/usr/ccs/bin:/usr/sfw/bin:$$PATH:/opt/csw/bin"
+  pkg.environment 'PATH', "#{settings[:bindir]}:/usr/ccs/bin:/usr/sfw/bin:$(PATH):/opt/csw/bin"
   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
   pkg.environment 'CXX', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
   pkg.environment 'LDFLAGS', "-Wl,-rpath=#{settings[:libdir]}"
@@ -36,7 +36,7 @@ elsif platform.is_solaris?
     pkg.environment 'CONFIG_SHELL', '/bin/bash'
   end
 elsif platform.is_cross_compiled_linux?
-  pkg.environment 'PATH', "#{settings[:bindir]}:$$PATH"
+  pkg.environment 'PATH', "#{settings[:bindir]}:$(PATH)"
   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
   pkg.environment 'CXX', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-g++"
   pkg.environment 'LDFLAGS', "-Wl,-rpath=#{settings[:libdir]}"

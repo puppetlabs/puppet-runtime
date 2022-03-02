@@ -62,7 +62,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
   pkg.environment "MAKE", platform[:make] if platform.is_solaris?
 
   if platform.is_cross_compiled_linux? || platform.is_solaris?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$$PATH"
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$(PATH)"
   end
 
   if platform.name =~ /solaris-11-i386/
