@@ -54,6 +54,9 @@ project 'agent-runtime-main' do |proj|
     proj.component 'rubygem-sys-filesystem'
   end
 
+  if platform.is_macos?
+    proj.component 'rubygem-nokogiri'
+  end
 
   proj.component 'boost' if ENV['NO_PXP_AGENT'].to_s.empty?
   proj.component 'yaml-cpp' if ENV['NO_PXP_AGENT'].to_s.empty?
