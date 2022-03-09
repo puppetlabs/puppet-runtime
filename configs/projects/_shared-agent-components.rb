@@ -61,5 +61,4 @@ if platform.is_macos?
   proj.component 'rubygem-CFPropertyList'
   proj.component 'rubygem-racc'
   proj.component 'rubygem-mini_portile2'
-  proj.component 'rubygem-nokogiri'
 end

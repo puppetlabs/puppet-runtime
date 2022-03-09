@@ -1,6 +1,6 @@
 component 'rubygem-nokogiri' do |pkg, _settings, _platform|
-  pkg.version '1.12.5'
-  pkg.sha256sum '2b20905942acc580697c8c496d0d1672ab617facb9d30d156b3c7676e67902ec'
+  pkg.version '1.13.3'
+  pkg.sha256sum 'bf1b1bceff910abb0b7ad825535951101a0361b859c2ad1be155c010081ecbdc'
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
   pkg.build_requires 'rubygem-racc'
