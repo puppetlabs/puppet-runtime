@@ -2,7 +2,9 @@ component "git" do |pkg, settings, platform|
   if platform.is_windows?
     pkg.version "2.31.0"
     pkg.md5sum "0c3442bf598f096a4d19b904a0f99513"
-    pkg.url "https://github.com/git-for-windows/git/releases/download/v#{pkg.get_version.split('.')[0..2].join('.')}.windows.#{pkg.get_version.split('.').last}/MinGit-#{pkg.get_version}-64-bit.zip"
+
+    release = "1"
+    pkg.url "https://github.com/git-for-windows/git/releases/download/v#{pkg.get_version.split('.')[0..2].join('.')}.windows.#{release}/MinGit-#{pkg.get_version}-64-bit.zip"
     pkg.mirror "#{settings[:buildsources_url]}/MinGit-#{pkg.get_version}-64-bit.zip"
   else
     pkg.version "2.31.0"
