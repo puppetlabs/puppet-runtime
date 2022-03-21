@@ -26,7 +26,7 @@ platform "windows-2012r2-x64" do |plat|
     "pl-zlib-#{self._platform.architecture}",
     "mingw-w64 -version 5.2.0 -debug",
     "mingw",
-    "Wix310 -version 3.10.2 -debug -x86"
+    "Wix310 -version 3.10.2 -debug -x86 --use-system-powershell"
   ]
 
   packages.each do |name|
