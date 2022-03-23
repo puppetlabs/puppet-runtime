@@ -7,7 +7,6 @@ unless defined?(proj)
 end
 
 proj.setting(:runtime_project, 'client-tools')
-proj.setting(:openssl_version, '1.1.1')
 
 proj.generate_archives true
 proj.generate_packages false
@@ -20,6 +19,15 @@ proj.identifier "com.puppetlabs"
 proj.version_from_git
 
 platform = proj.get_platform
+
+# We need to explicitly define 1.1.1k here to avoid
+# build dep conflicts between openssl-1.1.1 needed by curl
+# and krb5-devel
+if platform.name =~ /^redhatfips-8/
+  proj.setting(:openssl_version, '1.1.1k')
+else 
+  proj.setting(:openssl_version, '1.1.1')
+end
 
 proj.setting(:artifactory_url, "https://artifactory.delivery.puppetlabs.net/artifactory")
 proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
