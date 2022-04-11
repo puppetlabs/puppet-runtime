@@ -26,6 +26,8 @@ project 'agent-runtime-6.x' do |proj|
   # Components specific to the 6.x branch
   ########
 
+  # When adding components to this list, please
+  # add them to pe-installer-runtime-2019.8.x as well
   proj.component 'rubygem-concurrent-ruby'
   proj.component 'rubygem-ffi'
   proj.component 'rubygem-multi_json'

@@ -16,21 +16,7 @@ project 'pe-installer-runtime-2019.8.x' do |proj|
   proj.homepage "https://puppet.com"
   proj.identifier "com.puppetlabs"
 
-  if platform.is_windows?
-    proj.setting(:company_id, "PuppetLabs")
-    proj.setting(:product_id, "PE Installer")
-    if platform.architecture == "x64"
-      proj.setting(:base_dir, "ProgramFiles64Folder")
-    else
-      proj.setting(:base_dir, "ProgramFilesFolder")
-    end
-    # We build for windows not in the final destination, but in the paths that correspond
-    # to the directory ids expected by WIX. This will allow for a portable installation (ideally).
-    proj.setting(:prefix, File.join("C:", proj.base_dir, proj.company_id, proj.product_id))
-  else
-    proj.setting(:prefix, "/opt/puppetlabs/installer")
-  end
-
+  proj.setting(:prefix, "/opt/puppetlabs/installer")
   proj.setting(:ruby_dir, proj.prefix)
   proj.setting(:bindir, File.join(proj.prefix, 'bin'))
   proj.setting(:ruby_bindir, proj.bindir)
@@ -38,25 +24,12 @@ project 'pe-installer-runtime-2019.8.x' do |proj|
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:datadir, File.join(proj.prefix, "share"))
   proj.setting(:mandir, File.join(proj.datadir, "man"))
-
-  if platform.is_windows?
-    proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
-    proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem.bat"))
-
-    # For windows, we need to ensure we are building for mingw not cygwin
-    platform_triple = platform.platform_triple
-    host = "--host #{platform_triple}"
-  else
-    proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby"))
-    proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
-  end
+  proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby"))
+  proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
 
   ruby_base_version = proj.ruby_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2.0')
   proj.setting(:gem_home, File.join(proj.libdir, 'ruby', 'gems', ruby_base_version))
   proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local --bindir=#{proj.ruby_bindir}")
-
-  proj.setting(:platform_triple, platform_triple)
-  proj.setting(:host, host)
 
   proj.setting(:artifactory_url, "https://artifactory.delivery.puppetlabs.net/artifactory")
   proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
@@ -66,30 +39,6 @@ project 'pe-installer-runtime-2019.8.x' do |proj|
   proj.setting(:cppflags, "-I#{proj.includedir} -I/opt/pl-build-tools/include")
   proj.setting(:cflags, "#{proj.cppflags}")
   proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
-
-  # Platform specific overrides or settings, which may override the defaults
-  if platform.is_windows?
-    arch = platform.architecture == "x64" ? "64" : "32"
-    proj.setting(:gcc_root, "C:/tools/mingw#{arch}")
-    proj.setting(:gcc_bindir, "#{proj.gcc_root}/bin")
-    proj.setting(:tools_root, "C:/tools/pl-build-tools")
-    proj.setting(:cppflags, "-I#{proj.tools_root}/include -I#{proj.gcc_root}/include -I#{proj.includedir}")
-    proj.setting(:cflags, "#{proj.cppflags}")
-    proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir} -Wl,--nxcompat -Wl,--dynamicbase")
-    proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
-  end
-
-  if platform.is_macos?
-    # For OS X, we should optimize for an older architecture than Apple
-    # currently ships for; there's a lot of older xeon chips based on
-    # that architecture still in use throughout the Mac ecosystem.
-    # Additionally, OS X doesn't use RPATH for linking. We shouldn't
-    # define it or try to force it in the linker, because this might
-    # break gcc or clang if they try to use the RPATH values we forced.
-    proj.setting(:cppflags, "-I#{proj.includedir}")
-    proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
-    proj.setting(:ldflags, "-L#{proj.libdir} ")
-  end
 
   # These flags are applied in addition to the defaults in configs/component/openssl.rb.
   proj.setting(:openssl_extra_configure_flags, [
@@ -104,62 +53,46 @@ project 'pe-installer-runtime-2019.8.x' do |proj|
   # What to build?
   # --------------
   #
-  if platform.name =~ /^redhatfips-.*/
-    # Link against the system openssl instead of our vendored version.
-    # This is also used by components within this vanagon project (i.e. curl, ruby, ca-bundle)
-    proj.setting(:system_openssl, true)
-  else
-    proj.component "openssl-#{proj.openssl_version}"
-  end
 
-  # Ruby and deps
-  proj.component "runtime-pe-installer"
-  proj.component "puppet-ca-bundle"
-  proj.component "ruby-#{proj.ruby_version}"
+  ########
+  # Load shared agent components
+  # When we want to run Bolt from the pe-installer package, we want our
+  # puppet to have the same gems as the default puppet agent install.
+  ########
 
-  # Puppet dependencies
-  proj.component 'rubygem-deep_merge'
-  proj.component 'rubygem-text'
-  proj.component 'rubygem-locale'
-  proj.component 'rubygem-gettext'
-  proj.component 'rubygem-fast_gettext'
-  proj.component 'rubygem-semantic_puppet'
+  instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-agent-components.rb'))
+
+  # pl-build-tools
+  proj.component 'runtime-pe-installer'
 
   # R10k dependencies
   proj.component 'rubygem-gettext-setup'
 
-  # Core dependencies
-  proj.component 'rubygem-ffi'
-  proj.component 'rubygem-minitar'
-  proj.component 'rubygem-multi_json'
-
+  # rubygem-net-ssh included in shared-agent-components
   proj.setting(:rubygem_net_ssh_version, '5.2.0')
-  proj.component 'rubygem-net-ssh'
 
   # net-ssh dependencies for el8's OpenSSH default key format
-  # since we do not need these for Windows (`puppet infra run` does not work for Windows platforms),
-  #   and building these can finicky, don't install for Windows
-  unless platform.is_windows?
-    proj.component 'rubygem-bcrypt_pbkdf'
-    proj.component 'rubygem-ed25519'
-  end
+  proj.component 'rubygem-bcrypt_pbkdf'
+  proj.component 'rubygem-ed25519'
 
   # Components from puppet-runtime included to support apply on localhost
-  # Only bundle SELinux gem for RHEL,Centos,Fedora
-  if platform.is_el? || platform.is_fedora?
+  # Only bundle SELinux gem for EL/Ubuntu
+  if platform.is_el? || platform.name =~ /ubuntu/
     proj.component 'ruby-selinux'
   end
 
-  # Non-windows specific components
-  unless platform.is_windows?
-    # C Augeas + deps
-    proj.component 'augeas'
-    proj.component 'libxml2'
-    proj.component 'libxslt'
-    # Ruby Augeas and shadow
-    proj.component 'ruby-augeas'
-    proj.component 'ruby-shadow'
-  end
+  # 6.x puppet agent components
+  # boost and yaml-cpp omitted since we don't need
+  # pxp-agent deps
+  proj.component 'rubygem-concurrent-ruby'
+  proj.component 'rubygem-ffi'
+  proj.component 'rubygem-multi_json'
+  proj.component 'rubygem-optimist'
+  proj.component 'rubygem-highline'
+  proj.component 'rubygem-hiera-eyaml'
+  proj.component 'rubygem-httpclient'
+  proj.component 'rubygem-thor'
+  proj.component 'rubygem-sys-filesystem'
 
   # What to include in package?
   proj.directory proj.prefix
