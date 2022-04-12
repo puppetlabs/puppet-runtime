@@ -1,6 +1,6 @@
-component 'ruby-2.7.5' do |pkg, settings, platform|
-  pkg.version '2.7.5'
-  pkg.sha256sum '2755b900a21235b443bb16dadd9032f784d4a88f143d852bc5d154f22b8781f1'
+component 'ruby-2.7.6' do |pkg, settings, platform|
+  pkg.version '2.7.6'
+  pkg.sha256sum 'e7203b0cc09442ed2c08936d483f8ac140ec1c72e37bb5c401646b7866cb5d10'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
