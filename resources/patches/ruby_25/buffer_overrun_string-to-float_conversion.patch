@@ -1,0 +1,103 @@
+From 1cc5567b46249e6b4bd2dd3cfdd348ab885f59e3 Mon Sep 17 00:00:00 2001
+From: NAKAMURA Usaku <usa@ruby-lang.org>
+Date: Fri, 31 Dec 2021 19:48:29 +0900
+Subject: [PATCH] merge revision(s)
+ 0846c2da457e7523819236ac7da492029b3ef73d,6c7cb00c094332a208cf36e5cd723a9ba60c41b8:
+ [Backport #16376]
+
+	Check backref number buffer overrun [Bug #16376]
+
+	---
+	 regcomp.c                | 21 ++++++++++++---------
+	 test/ruby/test_regexp.rb |  6 ++++++
+	 2 files changed, 18 insertions(+), 9 deletions(-)
+
+	test/ruby/test_regexp.rb: Avoid "ambiguity between regexp and two
+	 divisions"
+
+	---
+	 test/ruby/test_regexp.rb | 2 +-
+	 1 file changed, 1 insertion(+), 1 deletion(-)
+---
+ regcomp.c                | 21 ++++++++++++---------
+ test/ruby/test_regexp.rb |  6 ++++++
+ version.h                |  2 +-
+ 3 files changed, 19 insertions(+), 10 deletions(-)
+
+diff --git a/regcomp.c b/regcomp.c
+index df7f73bac5..00d3746348 100644
+--- a/regcomp.c
++++ b/regcomp.c
+@@ -1914,7 +1914,7 @@ noname_disable_map(Node** plink, GroupNumRemap* map, int* counter)
+ }
+ 
+ static int
+-renumber_node_backref(Node* node, GroupNumRemap* map)
++renumber_node_backref(Node* node, GroupNumRemap* map, const int num_mem)
+ {
+   int i, pos, n, old_num;
+   int *backs;
+@@ -1930,6 +1930,7 @@ renumber_node_backref(Node* node, GroupNumRemap* map)
+     backs = bn->back_dynamic;
+ 
+   for (i = 0, pos = 0; i < old_num; i++) {
++    if (backs[i] > num_mem)  return ONIGERR_INVALID_BACKREF;
+     n = map[backs[i]].new_val;
+     if (n > 0) {
+       backs[pos] = n;
+@@ -1942,7 +1943,7 @@ renumber_node_backref(Node* node, GroupNumRemap* map)
+ }
+ 
+ static int
+-renumber_by_map(Node* node, GroupNumRemap* map)
++renumber_by_map(Node* node, GroupNumRemap* map, const int num_mem)
+ {
+   int r = 0;
+ 
+@@ -1950,28 +1951,30 @@ renumber_by_map(Node* node, GroupNumRemap* map)
+   case NT_LIST:
+   case NT_ALT:
+     do {
+-      r = renumber_by_map(NCAR(node), map);
++      r = renumber_by_map(NCAR(node), map, num_mem);
+     } while (r == 0 && IS_NOT_NULL(node = NCDR(node)));
+     break;
+   case NT_QTFR:
+-    r = renumber_by_map(NQTFR(node)->target, map);
++    r = renumber_by_map(NQTFR(node)->target, map, num_mem);
+     break;
+   case NT_ENCLOSE:
+     {
+       EncloseNode* en = NENCLOSE(node);
+-      if (en->type == ENCLOSE_CONDITION)
++      if (en->type == ENCLOSE_CONDITION) {
++	if (en->regnum > num_mem)  return ONIGERR_INVALID_BACKREF;
+ 	en->regnum = map[en->regnum].new_val;
+-      r = renumber_by_map(en->target, map);
++      }
++      r = renumber_by_map(en->target, map, num_mem);
+     }
+     break;
+ 
+   case NT_BREF:
+-    r = renumber_node_backref(node, map);
++    r = renumber_node_backref(node, map, num_mem);
+     break;
+ 
+   case NT_ANCHOR:
+     if (NANCHOR(node)->target)
+-      r = renumber_by_map(NANCHOR(node)->target, map);
++      r = renumber_by_map(NANCHOR(node)->target, map, num_mem);
+     break;
+ 
+   default:
+@@ -2033,7 +2036,7 @@ disable_noname_group_capture(Node** root, regex_t* reg, ScanEnv* env)
+   r = noname_disable_map(root, map, &counter);
+   if (r != 0) return r;
+ 
+-  r = renumber_by_map(*root, map);
++  r = renumber_by_map(*root, map, env->num_mem);
+   if (r != 0) return r;
+ 
+   for (i = 1, pos = 1; i <= env->num_mem; i++) {
+
