@@ -38,9 +38,11 @@ project 'agent-runtime-main' do |proj|
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-agent-components.rb'))
 
   ########
-  # Components specific to the master branch
+  # Components specific to the main branch
   ########
 
+  # When adding components to this list, please
+  # add them to pe-installer-runtime-main as well
   proj.component 'rubygem-concurrent-ruby'
   proj.component 'rubygem-ffi'
   proj.component 'rubygem-multi_json'
