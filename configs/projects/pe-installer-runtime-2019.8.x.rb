@@ -2,8 +2,15 @@ project 'pe-installer-runtime-2019.8.x' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'pe-installer')
   proj.setting(:ruby_version, '2.5.9')
-  proj.setting(:openssl_version, '1.1.1')
   proj.setting(:augeas_version, '1.11.0')
+  # We need to explicitly define 1.1.1k here to avoid
+  # build dep conflicts between openssl-1.1.1 needed by curl
+  # and krb5-devel
+  if platform.name =~ /^redhatfips-8/
+    proj.setting(:openssl_version, '1.1.1k')
+  else 
+    proj.setting(:openssl_version, '1.1.1')
+  end
   platform = proj.get_platform
 
   proj.version_from_git
