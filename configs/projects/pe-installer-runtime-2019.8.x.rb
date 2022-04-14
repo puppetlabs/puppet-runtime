@@ -75,12 +75,6 @@ project 'pe-installer-runtime-2019.8.x' do |proj|
   proj.component 'rubygem-bcrypt_pbkdf'
   proj.component 'rubygem-ed25519'
 
-  # Components from puppet-runtime included to support apply on localhost
-  # Only bundle SELinux gem for EL/Ubuntu
-  if platform.is_el? || platform.name =~ /ubuntu/
-    proj.component 'ruby-selinux'
-  end
-
   # 6.x puppet agent components
   # boost and yaml-cpp omitted since we don't need
   # pxp-agent deps
