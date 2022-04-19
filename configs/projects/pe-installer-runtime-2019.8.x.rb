@@ -61,6 +61,9 @@ project 'pe-installer-runtime-2019.8.x' do |proj|
   # --------------
   #
 
+  # rubygem-net-ssh included in shared-agent-components
+  proj.setting(:rubygem_net_ssh_version, '5.2.0')
+
   ########
   # Load shared agent components
   # When we want to run Bolt from the pe-installer package, we want our
@@ -75,8 +78,6 @@ project 'pe-installer-runtime-2019.8.x' do |proj|
   # R10k dependencies
   proj.component 'rubygem-gettext-setup'
 
-  # rubygem-net-ssh included in shared-agent-components
-  proj.setting(:rubygem_net_ssh_version, '5.2.0')
 
   # net-ssh dependencies for el8's OpenSSH default key format
   proj.component 'rubygem-bcrypt_pbkdf'
