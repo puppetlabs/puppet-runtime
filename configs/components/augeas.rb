@@ -4,16 +4,8 @@ component 'augeas' do |pkg, settings, platform|
   pkg.version version
 
   case version
-  when '1.4.0'
-    pkg.md5sum 'a2536a9c3d744dc09d234228fe4b0c93'
-
-    pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-osx-stub-needed-readline-functions.patch'
-    pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-sudoers-negated-command-alias.patch'
-    pkg.apply_patch 'resources/patches/augeas/augeas-1.4.0-src-pathx.c-parse_name-correctly-handle-trailing-ws.patch'
   when '1.8.1'
     pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
-  when '1.10.1'
-    pkg.md5sum '6c0b2ea6eec45e8bc374b283aedf27ce'
   when '1.11.0'
     pkg.md5sum 'abf51f4c0cf3901d167f23687f60434a'
   when '1.12.0'
@@ -25,9 +17,9 @@ component 'augeas' do |pkg, settings, platform|
     raise "augeas version #{version} has not been configured; Cannot continue."
   end
 
-  if ['1.10.1', '1.11.0', '1.12.0'].include?(version)
+  if ['1.11.0', '1.12.0'].include?(version)
     if platform.is_el? || platform.is_fedora?
-      # Augeas 1.10.1/1.11.0 needs a libselinux pkgconfig file on these platforms:
+      # Augeas 1.11.0 needs a libselinux pkgconfig file on these platforms:
       pkg.build_requires 'ruby-selinux'
     end
 
