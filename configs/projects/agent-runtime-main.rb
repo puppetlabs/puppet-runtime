@@ -52,6 +52,11 @@ project 'agent-runtime-main' do |proj|
   proj.component 'rubygem-thor'
   proj.component 'rubygem-scanf'
 
+  if platform.is_linux?
+    proj.component "virt-what"
+    proj.component "dmidecode" unless platform.architecture =~ /ppc64/
+  end
+
   unless platform.is_windows?
     proj.component 'rubygem-sys-filesystem'
   end
