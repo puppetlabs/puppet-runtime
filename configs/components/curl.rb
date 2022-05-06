@@ -35,7 +35,8 @@ component 'curl' do |pkg, settings, platform|
 
   extra_cflags = []
   if platform.is_cross_compiled? && platform.is_macos?
-    extra_cflags << '-mmacosx-version-min=11.0 -arch arm64'
+    extra_cflags << '-mmacosx-version-min=11.0 -arch arm64' if platform.name =~ /osx-11/ 
+    extra_cflags << '-mmacosx-version-min=12.0 -arch arm64' if platform.name =~ /osx-12/ 
   end
 
   if (platform.is_solaris? && platform.os_version == "11") || platform.is_aix?
