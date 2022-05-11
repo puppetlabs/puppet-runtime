@@ -31,8 +31,8 @@ component "libxml2" do |pkg, settings, platform|
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
     if platform.is_cross_compiled?
-      pkg.environment "CC", "clang -target arm64-apple-macos11" if platform.name =~ /osx-11/ 
-      pkg.environment "CC", "clang -target arm64-apple-macos12" if platform.name =~ /osx-12/ 
+      pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
+      pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
     end
   else
     if platform.is_el? && platform.name =~ /-5/

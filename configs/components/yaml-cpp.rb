@@ -24,8 +24,8 @@ component "yaml-cpp" do |pkg, settings, platform|
     cmake_toolchain_file = ""
     cmake = "/usr/local/bin/cmake"
     if platform.is_cross_compiled?
-      pkg.environment "CXX", "clang++ -target arm64-apple-macos11" if platform.name =~ /osx-11/
-      pkg.environment "CXX", "clang++ -target arm64-apple-macos12" if platform.name =~ /osx-12/
+      pkg.environment 'CXX', 'clang++ -target arm64-apple-macos11' if platform.name =~ /osx-11/
+      pkg.environment 'CXX', 'clang++ -target arm64-apple-macos12' if platform.name =~ /osx-12/
     end
   elsif platform.is_windows?
     make = "#{settings[:gcc_bindir]}/mingw32-make"

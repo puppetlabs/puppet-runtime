@@ -195,9 +195,9 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
     rbconfig_changes["CC"] = "gcc"
   elsif platform.is_cross_compiled? || platform.is_solaris?
     if platform.name =~ /osx-11/
-      rbconfig_changes["CC"] = "clang -target arm64-apple-macos11"
+      rbconfig_changes["CC"] = 'clang -target arm64-apple-macos11'
     elsif platform.name =~ /osx-12/
-      rbconfig_changes["CC"] = "clang -target arm64-apple-macos12"
+      rbconfig_changes["CC"] = 'clang -target arm64-apple-macos12'
     else
       rbconfig_changes["CC"] = "gcc"
       rbconfig_changes["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
