@@ -64,11 +64,11 @@ component "boost" do |pkg, settings, platform|
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
     linkflags = ""
     gpp = if platform.is_cross_compiled? && platform.name =~ /osx-11/
-            "clang++ -target arm64-apple-macos11"
+            'clang++ -target arm64-apple-macos11'
           elsif platform.is_cross_compiled? && platform.name =~ /osx-12/
-            "clang++ -target arm64-apple-macos12"
+            'clang++ -target arm64-apple-macos12'
           else
-            "clang++"
+            'clang++'
           end
     toolset = 'gcc'
     with_toolset = "--with-toolset=clang"
