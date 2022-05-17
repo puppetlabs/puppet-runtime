@@ -16,10 +16,14 @@ component "puppet-ca-bundle" do |pkg, settings, platform|
     "#{platform[:make]} install OPENSSL=#{openssl_cmd} USER=0 GROUP=0 DESTDIR=#{File.join(settings[:prefix], 'ssl')}"
   ]
 
-  # Include the keystore for the agent if the agent has a java
+  # Include the keystore for the agent if the agent has a java and is NOT FIPS
   if settings[:runtime_project] == 'agent'
-    if platform.name =~ /el-(6|7|8)|sles-(11|12)|debian-(9|10)|ubuntu-(14|15|16|18)/
-      install_commands << "#{platform[:make]} keystore OPENSSL=#{openssl_cmd} DESTDIR=#{File.join(settings[:prefix], 'ssl')}"
+    # To build the type of FIPS compliant keystore PE uses requires the BCFIPS
+    # library. It is assumed that FIPS users do not, in general, want their hosts
+    # to easily connect to the larger Internet and so it is not worth the effort
+    # to support FIPS keystores in the agent builds. 
+    if platform.name !~ /fips/
+      install_commands << "if [[ `which keytool` ]]; then #{platform[:make]} keystore OPENSSL=#{openssl_cmd} DESTDIR=#{File.join(settings[:prefix], 'ssl')}; fi"
     end
   end
 
