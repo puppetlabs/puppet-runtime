@@ -13,7 +13,7 @@ component "runtime-bolt" do |pkg, settings, platform|
     pkg.install_file "#{settings[:tools_root]}/bin/libgdbm_compat-4.dll", "#{settings[:ruby_bindir]}/libgdbm_compat-4.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libiconv-2.dll", "#{settings[:ruby_bindir]}/libiconv-2.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libffi-6.dll", "#{settings[:ruby_bindir]}/libffi-6.dll"
-  elsif platform.is_macos? or platform.name =~ /sles-15|el-8|debian-10|ubuntu-20.04/ || platform.is_fedora?
+  elsif platform.is_macos? or platform.name =~ /sles-15|el-8|debian-10|ubuntu-20.04|ubuntu-22.04/ || platform.is_fedora?
 
     # Do nothing for distros that have a suitable compiler do not use pl-build-tools
 
