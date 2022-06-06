@@ -187,6 +187,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-puppet-strings'
   proj.component 'rubygem-puppetfile-resolver'
   proj.component 'rubygem-r10k'
+  proj.component 'rubygem-rexml'
   proj.component 'rubygem-rgen'
   proj.component 'rubygem-rubyntlm'
   proj.component 'rubygem-ruby_smb'
