@@ -1,6 +1,6 @@
 component 'curl' do |pkg, settings, platform|
-  pkg.version '7.77.0'
-  pkg.sha256sum 'b0a3428acb60fa59044c4d0baae4e4fc09ae9af1d8a3aa84b2e3fbcd99841f77'
+  pkg.version '7.83.1'
+  pkg.sha256sum '93fb2cd4b880656b4e8589c912a9fd092750166d555166370247f09d18f5d0c0'
   pkg.url "https://curl.se/download/curl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/curl-#{pkg.get_version}.tar.gz"
 
@@ -35,8 +35,8 @@ component 'curl' do |pkg, settings, platform|
 
   extra_cflags = []
   if platform.is_cross_compiled? && platform.is_macos?
-    extra_cflags << '-mmacosx-version-min=11.0 -arch arm64' if platform.name =~ /osx-11/ 
-    extra_cflags << '-mmacosx-version-min=12.0 -arch arm64' if platform.name =~ /osx-12/ 
+    extra_cflags << '-mmacosx-version-min=11.0 -arch arm64' if platform.name =~ /osx-11/
+    extra_cflags << '-mmacosx-version-min=12.0 -arch arm64' if platform.name =~ /osx-12/
   end
 
   if (platform.is_solaris? && platform.os_version == "11") || platform.is_aix?
