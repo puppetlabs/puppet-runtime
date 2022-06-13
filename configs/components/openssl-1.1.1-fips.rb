@@ -1,6 +1,6 @@
 component 'openssl-1.1.1-fips' do |pkg, settings, platform|
-  pkg.version '1.1.1k-4'
-  pkg.sha256sum '9448292689f8d5e55d419500b16a5e9da980d55429d02531d75a99a1e4ec4cdc'
+  pkg.version '1.1.1k-6'
+  pkg.sha256sum 'da536944410a0cbf5c0b6ee0b8f3ec62a9121be3b72bf2819bb4395a761662aa'
   pkg.url "https://vault.centos.org/centos/8-stream/BaseOS/Source/SPackages/openssl-#{pkg.get_version}.el8.src.rpm"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.el8.src.rpm"
 
@@ -29,7 +29,6 @@ component 'openssl-1.1.1-fips' do |pkg, settings, platform|
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-force-fips-mode.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-spec-file.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-remove-env-check.patch'
-  pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1l-ec-group-new-from-ecparameters.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1l-sm2-plaintext.patch'
 
   if platform.name =~ /-7-/
@@ -62,7 +61,6 @@ component 'openssl-1.1.1-fips' do |pkg, settings, platform|
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-force-fips-mode.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-spec-file.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-remove-env-check.patch && cd -",
-      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-ec-group-new-from-ecparameters.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-sm2-plaintext.patch && cd -"
     ]
   end
