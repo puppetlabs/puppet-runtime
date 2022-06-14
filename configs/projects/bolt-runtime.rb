@@ -136,10 +136,25 @@ project 'bolt-runtime' do |proj|
   # R10k dependencies
   proj.component 'rubygem-gettext-setup'
 
-  # hiera-eyaml and it's dependencies
+  # hiera-eyaml and its dependencies
   proj.component 'rubygem-highline'
   proj.component 'rubygem-optimist'
   proj.component 'rubygem-hiera-eyaml'
+
+  # faraday and its dependencies
+  proj.component 'rubygem-faraday'
+  proj.component 'rubygem-faraday-em_http'
+  proj.component 'rubygem-faraday-em_synchrony'
+  proj.component 'rubygem-faraday-excon'
+  proj.component 'rubygem-faraday-httpclient'
+  proj.component 'rubygem-faraday-multipart'
+  proj.component 'rubygem-faraday-net_http'
+  proj.component 'rubygem-faraday-net_http_persistent'
+  proj.component 'rubygem-faraday-patron'
+  proj.component 'rubygem-faraday-rack'
+  proj.component 'rubygem-faraday-retry'
+  proj.component 'rubygem-faraday_middleware'
+  proj.component 'rubygem-ruby2_keywords'
 
   # Core dependencies
   proj.component 'rubygem-addressable'
@@ -157,8 +172,6 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-cri'
   proj.component 'rubygem-erubi'
   proj.component 'rubygem-facter'
-  proj.component 'rubygem-faraday'
-  proj.component 'rubygem-faraday_middleware'
   proj.component 'rubygem-ffi'
   proj.component 'rubygem-gssapi'
   proj.component 'rubygem-gyoku'
