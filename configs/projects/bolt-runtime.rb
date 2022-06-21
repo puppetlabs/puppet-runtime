@@ -200,7 +200,6 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-puppet-strings'
   proj.component 'rubygem-puppetfile-resolver'
   proj.component 'rubygem-r10k'
-  proj.component 'rubygem-rexml'
   proj.component 'rubygem-rgen'
   proj.component 'rubygem-rubyntlm'
   proj.component 'rubygem-ruby_smb'
@@ -209,7 +208,6 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-terminal-table'
   proj.component 'rubygem-thor'
   proj.component 'rubygem-unicode-display_width'
-  proj.component 'rubygem-webrick'
   proj.component 'rubygem-yard'
 
   # Core Windows dependencies
