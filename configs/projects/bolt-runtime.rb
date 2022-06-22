@@ -208,6 +208,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-terminal-table'
   proj.component 'rubygem-thor'
   proj.component 'rubygem-unicode-display_width'
+  proj.component 'rubygem-webrick'
   proj.component 'rubygem-yard'
 
   # Core Windows dependencies
