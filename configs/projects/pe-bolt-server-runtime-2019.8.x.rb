@@ -6,4 +6,7 @@ project 'pe-bolt-server-runtime-2019.8.x' do |proj|
   # Once we are no longer using ruby 2.5 we can update.
   proj.setting(:no_doc, false)
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-bolt-server.rb'))
+
+  # Ruby 2.5 does not include rexml as a vendored gem, so include it in 2019.8.x only.
+  proj.component('rubygem-rexml')
 end
