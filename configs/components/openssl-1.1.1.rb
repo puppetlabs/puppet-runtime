@@ -116,6 +116,13 @@ component 'openssl' do |pkg, settings, platform|
     end
   end
 
+  # OpenSSL 1.1.1q has a bug with a test not including a required library that caueses
+  # packing failures on macos. Probably safe to look at the 1.1.1r release to see if
+  # this can be removed.
+  if platform.is_macos?
+    pkg.apply_patch 'resources/patches/openssl/openssl_1.1.1q_fix_c_include.patch'
+  end
+
   # OpenSSL Configure doesn't honor CFLAGS or LDFLAGS as environment variables.
   # Instead, those should be passed to Configure at the end of its options, as
   # any unrecognized options are passed straight through to ${CC}. Defining
