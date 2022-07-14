@@ -49,10 +49,10 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
       pkg.apply_patch "#{base}/ruby2_keywords_guard.patch"
       pkg.apply_patch "#{base}/ruby_version_extra_guards.patch"
       pkg.apply_patch "#{base}/ruby_20_guards.patch"
-      pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
       pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
     end
 
+    pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
     pkg.apply_patch "#{base}/revert_host_value_changes.patch"
   end
 
