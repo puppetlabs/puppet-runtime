@@ -65,15 +65,21 @@ proj.setting(:boost_b2_flags, "--disable-icu")
 proj.setting(:boost_b2_install_flags, "boost.locale.icu=off")
 
 if platform.is_macos?
-  # For OS X, we should optimize for an older architecture than Apple
+  # For macOS, we should optimize for an older architecture than Apple
   # currently ships for; there's a lot of older xeon chips based on
   # that architecture still in use throughout the Mac ecosystem.
-  # Additionally, OS X doesn't use RPATH for linking. We shouldn't
+  # Additionally, macOS doesn't use RPATH for linking. We shouldn't
   # define it or try to force it in the linker, because this might
   # break gcc or clang if they try to use the RPATH values we forced.
   proj.setting(:cppflags, "-I#{proj.includedir}")
-  proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
   proj.setting(:ldflags, "-L#{proj.libdir} ")
+  if platform.is_cross_compiled?
+    # The core2 architecture is not available on M1 Macs
+    proj.setting(:cflags, "#{proj.cppflags}")
+    proj.setting(:host, "--host aarch64-apple-darwin --build x86_64-apple-darwin --target aarch64-apple-darwin")
+  else
+    proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
+  end
 elsif platform.is_windows?
   arch = platform.architecture == "x64" ? "64" : "32"
   proj.setting(:gcc_root, "C:/tools/mingw#{arch}")
