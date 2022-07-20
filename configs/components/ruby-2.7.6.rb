@@ -98,8 +98,13 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
     # This normalizes the build string to something like AIX 7.1.0.0 rather
     # than AIX 7.1.0.2 or something
     special_flags += " --build=#{settings[:platform_triple]} "
-  elsif platform.is_cross_compiled? && (platform.is_linux? || platform.is_macos?)
+  elsif platform.is_cross_compiled? && platform.is_linux?
     special_flags += " --with-baseruby=#{host_ruby} "
+  elsif platform.is_cross_compiled? && platform.is_macos?
+    # When the target arch is aarch64, ruby incorrectly selects the 'ucontext' coroutine
+    # implementation instead of 'arm64', so specify 'amd64' explicitly
+    # https://github.com/ruby/ruby/blob/c9c2245c0a25176072e02db9254f0e0c84c805cd/configure.ac#L2329-L2330
+    special_flags += " --with-baseruby=#{host_ruby} --with-coroutine=arm64 "
   elsif platform.is_solaris? && platform.architecture == "sparc"
     special_flags += " --with-baseruby=#{host_ruby} --enable-close-fds-by-recvmsg-with-peek "
   elsif platform.name =~ /el-6/
