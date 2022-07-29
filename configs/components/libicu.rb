@@ -67,11 +67,35 @@ component 'libicu' do |pkg, settings, platform|
   end
 
   pkg.build do
-    ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"]
+    if platform.is_macos? && platform.is_cross_compiled?
+      # In order to cross compile icu on macOS, we have to build twice. Once for
+      # the current build platform, then again for the intended host platform in
+      # a different directory, while passing the first directory as the
+      # `with-cross-build` option.
+      #
+      # The `runConfigureICU` script doesn't support cross-compiling, so copy
+      # the icu_flags from above and call `./configure` directly with the
+      # options needed to cross compile.
+      icu_flags = '--enable-rpath'
+      [
+        "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) VERBOSE=1",
+        "mkdir build.arm64",
+        "cd build.arm64",
+        "CXX='clang++ -target arm64-apple-macos12' CC='clang -target arm64-apple-macos12' ../configure #{icu_flags} --prefix=#{settings[:prefix]} --host=arm-apple-darwin --build=x86_64-apple-darwin --with-cross-build=$$PWD/..",
+        "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) VERBOSE=1"
+      ]
+    else
+      ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"]
+    end
   end
 
   pkg.install do
-    install_cmds = ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install"]
+    if platform.is_macos? && platform.is_cross_compiled?
+      install_cmds = ["cd build.arm64 && #{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install"]
+    else
+      install_cmds = ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install"]
+    end
+
     # ICU incorrectly installs its .dlls to lib instead of bin on windows, so
     # we have to move them...
     if platform.is_windows?
