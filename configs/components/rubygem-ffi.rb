@@ -31,21 +31,23 @@ component "rubygem-ffi" do |pkg, settings, platform|
     @component.install = []
 
     if platform.architecture == "x64"
+      # NOTE: make sure to verify the shas for the x64-mingw32 gem!
       case pkg.get_version
       when '1.9.25'
         pkg.sha256sum '5473ac958b78f271f53e9a88197c35cd3e990fbe625d21e525c56d62ae3750da'
       when '1.15.5'
-        pkg.sha256sum '6f2ed2fa68047962d6072b964420cba91d82ce6fa8ee251950c17fca6af3c2a0'
+        pkg.sha256sum '9acc4e474bef25dbcf827b1e6fce4067e9a1eff74a0296d25f0af392fafcd096'
       end
 
       pkg.url "https://rubygems.org/downloads/ffi-#{pkg.get_version}-x64-mingw32.gem"
       pkg.mirror "#{settings[:buildsources_url]}/ffi-#{pkg.get_version}-x64-mingw32.gem"
     else
+      # Note make sure to verify the shas from the x86-mingw32 gem!
       case pkg.get_version
       when '1.9.25'
         pkg.sha256sum '43d357732a6a0e3e41dc7e28a9c9c5112ac66f4a6ed9e1de40afba9ffcb836c1'
       when '1.15.5'
-        pkg.sha256sum '6f2ed2fa68047962d6072b964420cba91d82ce6fa8ee251950c17fca6af3c2a0'
+        pkg.sha256sum '6e52c39fdbbccc085ae05d489d1b835ce05dcdf2a4c88ba739e3b42afd2b5404'
       end
 
       pkg.url "https://rubygems.org/downloads/ffi-#{pkg.get_version}-x86-mingw32.gem"
