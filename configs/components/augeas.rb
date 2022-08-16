@@ -4,11 +4,18 @@ component 'augeas' do |pkg, settings, platform|
   pkg.version version
 
   case version
+  # Starting with the 1.13.0 release where the tarball is staged looks to have changed, now on github
+  when '1.13.0'
+    pkg.md5sum '909b9934190f32ffcbc2c5a92efaf9d2'
+    pkg.url "https://github.com/hercules-team/augeas/releases/download/release-1.13.0/augeas-1.13.0.tar.gz"
   when '1.8.1'
+    pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
     pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
   when '1.11.0'
+    pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
     pkg.md5sum 'abf51f4c0cf3901d167f23687f60434a'
   when '1.12.0'
+    pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
     pkg.md5sum '74f1c7b8550f4e728486091f6b907175'
 
     pkg.apply_patch 'resources/patches/augeas/augeas-1.12.0-allow-ad-groups-in-sudoers.patch'
@@ -36,7 +43,6 @@ component 'augeas' do |pkg, settings, platform|
     extra_config_flags = platform.name =~ /solaris-11|aix/ ? " --disable-dependency-tracking" : ""
   end
 
-  pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/augeas-#{pkg.get_version}.tar.gz"
 
   pkg.build_requires "libxml2"
