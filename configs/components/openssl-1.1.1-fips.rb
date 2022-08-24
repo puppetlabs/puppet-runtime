@@ -77,7 +77,7 @@ component 'openssl-1.1.1-fips' do |pkg, settings, platform|
     [
       "cd openssl-#{pkg.get_version}/BUILD/openssl-1.1.1#{patch_version} && make install",
       # This chmod command is a work around, once we're off 1.1.1k-6 for openssl the below should be patched and we can remove the below line (PA-4621)
-      'chmod -x /opt/puppetlabs/puppet/bin/c_rehash',
+      "chmod -x #{settings[:prefix]}/bin/c_rehash",
       'if [ -f /etc/system-fips ]; then mv /etc/system-fips /etc/system-fips.off; fi',
       "/usr/bin/strip #{settings[:prefix]}/lib/libcrypto.so.1.1 && LD_LIBRARY_PATH=. crypto/fips/fips_standalone_hmac #{settings[:prefix]}/lib/libcrypto.so.1.1 > #{settings[:prefix]}/lib/.libcrypto.so.1.1.hmac",
       "/usr/bin/strip #{settings[:prefix]}/lib/libssl.so.1.1    && LD_LIBRARY_PATH=. crypto/fips/fips_standalone_hmac #{settings[:prefix]}/lib/libssl.so.1.1    > #{settings[:prefix]}/lib/.libssl.so.1.1.hmac",
