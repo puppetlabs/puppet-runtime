@@ -212,11 +212,11 @@ if platform.is_macos?
   # define it or try to force it in the linker, because this might
   # break gcc or clang if they try to use the RPATH values we forced.
   proj.setting(:cppflags, "-I#{proj.includedir}")
-  proj.setting(:ldflags, "-L#{proj.libdir} ")
+  proj.setting(:ldflags, "-L#{proj.libdir} -L/usr/local/opt/readline/lib ")
   if platform.is_cross_compiled?
-    proj.setting(:cflags, "#{proj.cppflags}")
+    proj.setting(:cflags, "#{proj.cppflags} -I/usr/local/opt/readline/include -DHAVE_RL_CRLF -DHAVE_RL_REPLACE_LINE")
   else
-    proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
+    proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags} -I/usr/local/opt/readline/include -DHAVE_RL_CRLF -DHAVE_RL_REPLACE_LINE -DHAVE_SELINUX_LABEL_H")
   end
 end
 

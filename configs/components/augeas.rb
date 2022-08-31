@@ -4,6 +4,10 @@ component 'augeas' do |pkg, settings, platform|
   pkg.version version
 
   case version
+  when '1.13.0'
+    pkg.md5sum '909b9934190f32ffcbc2c5a92efaf9d2'
+    pkg.url "https://github.com/hercules-team/augeas/releases/download/release-1.13.0/augeas-1.13.0.tar.gz"
+    pkg.apply_patch 'resources/patches/augeas/augeas-1.13.0-patch_security_context-t_out.patch'
   when '1.8.1'
     pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
   when '1.11.0'
@@ -17,7 +21,7 @@ component 'augeas' do |pkg, settings, platform|
     raise "augeas version #{version} has not been configured; Cannot continue."
   end
 
-  if ['1.11.0', '1.12.0'].include?(version)
+  if ['1.11.0', '1.12.0', '1.13.0'].include?(version)
     if platform.is_el? || platform.is_fedora?
       # Augeas 1.11.0 needs a libselinux pkgconfig file on these platforms:
       pkg.build_requires 'ruby-selinux'

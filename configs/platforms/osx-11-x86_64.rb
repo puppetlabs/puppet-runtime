@@ -19,7 +19,7 @@ platform 'osx-11-x86_64' do |plat|
     plat.provision_with 'su test -c \'echo | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"\''
     plat.provision_with 'sudo chown -R test:admin /Users/test/Library/'
 
-    packages = %w[cmake pkg-config yaml-cpp]
+    packages = %w[cmake pkg-config yaml-cpp readline]
 
     plat.provision_with "su test -c '/usr/local/bin/brew install #{packages.join(' ')}'"
 
