@@ -1,0 +1,52 @@
+name: Runtime tests
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  vanagon_inspect:
+    name: Vanagon inspect
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout current PR
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Install Ruby version 2.7
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 2.7
+      - name: Update rubygems and install gems
+        run: |
+          gem update --system --silent --no-document
+          bundle config set without development
+          bundle install --jobs 4 --retry 3
+      - name: Vanagon inspect
+        run: |
+          stat=0
+          for projfile in $(ls configs/projects/[a-z]*.rb); do
+            for plat in el-7-x86_64 ubuntu-18.04-amd64 ubuntu-20.04-amd64 ubuntu-22.04-amd64 windows-2012r2-x64; do
+              proj=$(basename -s .rb "$projfile")
+              if [[ "$proj" =~ ^pe- && "$plat" =~ ^(windows|osx) ]]; then
+                echo Skipping ${proj} on ${plat}, PE projects don\'t support Windows or macOS
+                continue
+              fi
+              echo Inspecting ${proj} on ${plat}
+              output=$(bundle exec vanagon inspect "$proj" "$plat")
+              if [ $? -ne 0 ]; then
+                stat=1
+              else
+                echo "$output" | jq '.[].name'
+              fi
+            done
+          done
+          # fail this step if there were any failures
+          if [ $stat -eq 1 ]; then
+            false
+          fi
