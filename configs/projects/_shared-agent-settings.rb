@@ -68,23 +68,11 @@ proj.setting(:datadir, File.join(proj.prefix, "share"))
 proj.setting(:mandir, File.join(proj.datadir, "man"))
 
 if platform.is_windows?
-  if proj.settings[:legacy_windows_paths]
-    # These ruby paths are used in puppet 4/5; puppet6+ can use the defaults we just set above
-    proj.setting(:ruby_dir, File.join(proj.install_root, "sys/ruby"))
-    proj.setting(:ruby_bindir, File.join(proj.ruby_dir, "bin"))
-    # The libdir should match ruby's libdir here, too
-    proj.setting(:libdir, File.join(proj.ruby_dir, "lib"))
-
-    proj.setting(:windows_tools, File.join(proj.install_root, "sys/tools/bin"))
-  else
-    proj.setting(:windows_tools, proj.bindir)
-    proj.setting(:ruby_dir, proj.prefix)
-    proj.setting(:ruby_bindir, proj.bindir)
-  end
-else
-  proj.setting(:ruby_dir, proj.prefix)
-  proj.setting(:ruby_bindir, proj.bindir)
+  proj.setting(:windows_tools, proj.bindir)
 end
+
+proj.setting(:ruby_dir, proj.prefix)
+proj.setting(:ruby_bindir, proj.bindir)
 
 raise "Couldn't find a :ruby_version setting in the project file" unless proj.ruby_version
 ruby_base_version = proj.ruby_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2.0')
@@ -141,11 +129,6 @@ elsif platform.is_windows?
 end
 
 proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local ")
-
-if platform.is_windows? && proj.settings[:legacy_windows_paths]
-  # The ruby bindir is different from the usual bindir when using the old windows layout
-  proj.setting(:gem_install, "#{proj.gem_install} --bindir #{proj.ruby_bindir} ")
-end
 
 # For AIX, we use the triple to install a better rbconfig
 if platform.is_aix?
