@@ -1,7 +1,13 @@
 project 'agent-runtime-6.x' do |proj|
   # Set preferred component versions if they differ from defaults:
   proj.setting :ruby_version, '2.5.9'
-  proj.setting :augeas_version, '1.12.0'
+
+  # Solaris and AIX depend on libedit which breaks augeas compliation starting with 1.13.0
+  if platform.is_solaris? || platform.is_aix?
+    proj.setting :augeas_version, '1.12.0'
+  else
+    proj.setting :augeas_version, '1.13.0'
+  end
 
   ########
   # Load shared agent settings
