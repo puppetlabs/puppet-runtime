@@ -92,10 +92,22 @@ component 'augeas' do |pkg, settings, platform|
     end
   elsif platform.is_macos?
     pkg.environment "PATH", "$(PATH):/usr/local/bin"
-    pkg.environment "CFLAGS", settings[:cflags]
-    if platform.is_cross_compiled?
-      pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
-      pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
+    if version == '1.13.0'
+      pkg.environment 'CPPFLAGS', settings[:cppflags]
+      pkg.environment "LDFLAGS", "#{settings[:ldflags]} -L/usr/local/opt/readline/lib"
+      if platform.is_cross_compiled?
+        pkg.environment "CFLAGS", "#{settings[:cflags]} -I/usr/local/opt/readline/include -DHAVE_RL_CRLF -DHAVE_RL_REPLACE_LINE"
+        pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
+        pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
+      else
+        pkg.environment "CFLAGS", "#{settings[:cflags]} -I/usr/local/opt/readline/include -DHAVE_RL_CRLF -DHAVE_RL_REPLACE_LINE -DHAVE_SELINUX_LABEL_H"
+      end
+    else
+      pkg.environment "CFLAGS", settings[:cflags]
+      if platform.is_cross_compiled?
+        pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
+        pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
+      end
     end
   end
 
