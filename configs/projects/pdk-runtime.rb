@@ -157,6 +157,7 @@ project 'pdk-runtime' do |proj|
   proj.component "runtime-pdk"
   proj.component "puppet-ca-bundle"
 
+  proj.component "readline" if platform.is_macos?
   proj.component "augeas" unless platform.is_windows?
   proj.component "libxml2" unless platform.is_windows?
   proj.component "libxslt" unless platform.is_windows?

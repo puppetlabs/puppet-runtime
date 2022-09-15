@@ -234,6 +234,7 @@ project 'bolt-runtime' do |proj|
   # Non-windows specific components
   unless platform.is_windows?
     # C Augeas + deps
+    proj.component 'readline' if platform.is_macos?
     proj.component 'augeas'
     proj.component 'libxml2'
     proj.component 'libxslt'
