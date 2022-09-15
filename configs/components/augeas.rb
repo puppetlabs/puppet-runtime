@@ -40,7 +40,7 @@ component 'augeas' do |pkg, settings, platform|
     extra_config_flags = platform.name =~ /solaris-11|aix/ ? " --disable-dependency-tracking" : ""
   end
 
-  pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
+  pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz" if not pkg.get_url
   pkg.mirror "#{settings[:buildsources_url]}/augeas-#{pkg.get_version}.tar.gz"
 
   pkg.build_requires "libxml2"
