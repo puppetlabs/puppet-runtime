@@ -22,9 +22,6 @@ platform 'osx-12-arm64' do |plat|
     packages = %w[cmake pkg-config yaml-cpp]
 
     plat.provision_with "su test -c '/usr/local/bin/brew install #{packages.join(' ')}'"
-    plat.provision_with 'chmod 777 /etc/homebrew'
-    plat.provision_with "su test -c 'HOMEBREW_CACHE=/etc/homebrew /usr/local/bin/brew fetch --force --bottle-tag=arm64_monterey readline'"
-    plat.provision_with "su test -c '/usr/local/bin/brew install /etc/homebrew/downloads/*'"
 
     plat.vmpooler_template 'macos-12-x86_64'
     plat.cross_compiled true

@@ -37,6 +37,13 @@ component 'augeas' do |pkg, settings, platform|
       end
     end
 
+    if platform.is_macos?
+      pkg.build_requires 'readline'
+      pkg.build_requires 'autoconf'
+      pkg.build_requires 'automake'
+      pkg.build_requires 'libtool'
+    end
+
     extra_config_flags = platform.name =~ /solaris-11|aix/ ? " --disable-dependency-tracking" : ""
   end
 
@@ -92,22 +99,12 @@ component 'augeas' do |pkg, settings, platform|
     end
   elsif platform.is_macos?
     pkg.environment "PATH", "$(PATH):/usr/local/bin"
-    if version == '1.13.0'
-      pkg.environment 'CPPFLAGS', settings[:cppflags]
-      pkg.environment "LDFLAGS", "#{settings[:ldflags]} -L/usr/local/opt/readline/lib"
-      if platform.is_cross_compiled?
-        pkg.environment "CFLAGS", "#{settings[:cflags]} -I/usr/local/opt/readline/include -DHAVE_RL_CRLF -DHAVE_RL_REPLACE_LINE"
-        pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
-        pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
-      else
-        pkg.environment "CFLAGS", "#{settings[:cflags]} -I/usr/local/opt/readline/include -DHAVE_RL_CRLF -DHAVE_RL_REPLACE_LINE -DHAVE_SELINUX_LABEL_H"
-      end
-    else
-      pkg.environment "CFLAGS", settings[:cflags]
-      if platform.is_cross_compiled?
-        pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
-        pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
-      end
+    pkg.environment 'CFLAGS', settings[:cflags]
+    pkg.environment 'CPPFLAGS', settings[:cppflags]
+    pkg.environment "LDFLAGS", settings[:ldflags]
+    if platform.is_cross_compiled?
+      pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
+      pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
     end
   end
 
@@ -116,6 +113,9 @@ component 'augeas' do |pkg, settings, platform|
     pkg.environment 'CPPFLAGS', settings[:cppflags]
     pkg.environment "LDFLAGS", settings[:ldflags]
   end
+
+  # fix libtool linking on big sur
+  pkg.configure { ["/usr/local/bin/autoreconf --force --install"] } if platform.is_macos?
 
   pkg.configure do
     ["./configure #{extra_config_flags} --prefix=#{settings[:prefix]} #{settings[:host]}"]
