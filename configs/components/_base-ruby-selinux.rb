@@ -8,7 +8,7 @@ ruby_version ||= settings[:ruby_version]
 host_ruby ||= settings[:host_ruby]
 ruby_bindir ||= settings[:ruby_bindir]
 
-if platform.name =~ /el-(6|7)|debian-9|ubuntu-(16|18.04-amd64)/
+if platform.name =~ /el-(6|7)|ubuntu-(16|18.04-amd64)/
   pkg.version "2.0.94"
   pkg.md5sum "544f75aab11c2af352facc51af12029f"
   pkg.url "https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20100525/devel/libselinux-#{pkg.get_version}.tar.gz"
@@ -36,7 +36,7 @@ end
 cflags = ""
 
 # The platforms below use pl-build-tools
-unless platform.name =~ /el-(6|7)|debian-9|ubuntu-(16|18.04-amd64)/
+unless platform.name =~ /el-(6|7)|ubuntu-(16|18.04-amd64)/
   cc = '/usr/bin/gcc'
   cflags += "#{settings[:cppflags]} #{settings[:cflags]}"
 end
