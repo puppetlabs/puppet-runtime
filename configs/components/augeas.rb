@@ -72,11 +72,7 @@ component 'augeas' do |pkg, settings, platform|
       pkg.environment "LDFLAGS", settings[:ldflags]
     end
   elsif platform.is_deb?
-    if platform.name =~ /debian-9/
-      pkg.requires 'libreadline7'
-    else
-      pkg.requires 'libreadline6'
-    end
+    pkg.requires 'libreadline6'
 
     if platform.is_cross_compiled_linux?
       pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
