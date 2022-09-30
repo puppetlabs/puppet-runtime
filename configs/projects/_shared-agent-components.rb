@@ -32,7 +32,7 @@ proj.component 'ruby-augeas' unless platform.is_windows?
 proj.component 'ruby-shadow' unless platform.is_aix? || platform.is_windows?
 # We only build ruby-selinux for EL, Fedora, Debian and Ubuntu (amd64/i386)
 if platform.is_el? || platform.is_fedora? || platform.name =~ /debian|ubuntu/
-  if platform.name !~ /ubuntu-.*-ppc64el|ubuntu-14.04/
+  if platform.name !~ /ubuntu-.*-ppc64el/
     proj.component 'ruby-selinux'
   end
 end

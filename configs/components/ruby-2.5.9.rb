@@ -116,8 +116,6 @@ component 'ruby-2.5.9' do |pkg, settings, platform|
     'sles-12-ppc64le',
     'solaris-10-sparc',
     'solaris-11-sparc',
-    'ubuntu-14.04-amd64',
-    'ubuntu-14.04-i386',
     'windows-2012r2-x64',
     'windows-2012r2-x86',
     'windows-2019-x64',
