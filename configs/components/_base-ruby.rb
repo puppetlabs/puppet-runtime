@@ -6,6 +6,8 @@
 ruby_version_condensed = pkg.get_version.tr('.', '')
 # Y version, e.g. '2.4.3' -> '2.4'
 ruby_version_y = pkg.get_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2')
+# Strip the -preview from 3.2-preview, can be removed once ruby 3.2 is released
+ruby_version_y = ruby_version_y.gsub(/(\d+)\.(\d+)-preview(\d+)/, '\1.\2') if ruby_version_y =~ /-preview/
 
 pkg.mirror "#{settings[:buildsources_url]}/ruby-#{pkg.get_version}.tar.gz"
 pkg.url "https://cache.ruby-lang.org/pub/ruby/#{ruby_version_y}/ruby-#{pkg.get_version}.tar.gz"
