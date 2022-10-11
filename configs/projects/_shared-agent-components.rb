@@ -13,6 +13,14 @@ end
 # Common components required by all agent branches
 proj.component 'runtime-agent'
 
+matchdata = platform.settings[:ruby_version].match /(\d+)\.\d+\.\d+/
+ruby_major_version = matchdata[1].to_i
+# Ruby 3.2 does not package these two libraries so we need to add them as a component
+if ruby_major_version >= 3
+  proj.component 'libffi'
+  proj.component 'libyaml'
+end
+
 if platform.name =~ /^redhatfips-.*/
   proj.component "openssl-1.1.1-fips"
 else

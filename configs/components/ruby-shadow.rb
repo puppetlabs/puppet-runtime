@@ -41,6 +41,15 @@ component "ruby-shadow" do |pkg, settings, platform|
     end
   end
 
+  matchdata = platform.settings[:ruby_version].match /(\d+)\.(\d+)\.\d+/
+  ruby_major_version = matchdata[1].to_i
+  if ruby_major_version >= 3
+    base = "resources/patches/ruby_32"
+    # https://github.com/apalmblad/ruby-shadow/issues/26
+    # if ruby-shadow gets a 3 release this should be removed
+    pkg.apply_patch "#{base}/ruby-shadow-2.5.0-cflags.patch", strip: "0"
+  end
+
   pkg.build do
     ["#{ruby} extconf.rb",
      "#{platform[:make]} -e -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"]
