@@ -56,8 +56,8 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
 
   if platform.is_aix?
     # TODO: Remove this patch once PA-1607 is resolved.
- #   pkg.apply_patch "#{base}/aix_configure.patch"
- #   pkg.apply_patch "#{base}/aix-fix-libpath-in-configure.patch"
+    pkg.apply_patch "#{base}/aix_ruby_32_configure.patch"
+    pkg.apply_patch "#{base}/aix-fix-libpath-in-configure.patch"
  #   pkg.apply_patch "#{base}/aix-do-not-use-realpath.patch"
  #   pkg.apply_patch "#{base}/aix_ruby_2.1_fix_make_test_failure_r2.5.patch"
  #   pkg.apply_patch "#{base}/Remove-O_CLOEXEC-check-for-AIX-builds_r2.5.patch"

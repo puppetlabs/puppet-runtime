@@ -29,7 +29,7 @@ component 'libffi' do |pkg, settings, platform|
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
 
   pkg.configure do
-    ["./configure --prefix=#{settings[:prefix]} --sbindir=#{settings[:prefix]}/bin --libexecdir=#{settings[:prefix]}/lib/libffi --disable-multi-os-directory #{settings[:host]}"]
+    ["MAKE=\"gmake\" ./configure --prefix=#{settings[:prefix]} --sbindir=#{settings[:prefix]}/bin --libexecdir=#{settings[:prefix]}/lib/libffi --disable-multi-os-directory #{settings[:host]}"]
   end
 
   pkg.build do
