@@ -28,12 +28,25 @@ component 'libffi' do |pkg, settings, platform|
 
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
 
+  if platform.is_windows?
+    # In Windows, libffi is unable to find the C programs (like mingw) to configure and build so the path must be set first
+    c_tools_path = 'export PATH="/cygdrive/c/tools/mingw64/bin:$(PATH)"'
+  else
+    c_tools_path = ""
+  end
+
   pkg.configure do
-    ["./configure --prefix=#{settings[:prefix]} --sbindir=#{settings[:prefix]}/bin --libexecdir=#{settings[:prefix]}/lib/libffi --disable-multi-os-directory #{settings[:host]}"]
+    [
+      "#{c_tools_path}",
+      "./configure --prefix=#{settings[:prefix]} --sbindir=#{settings[:prefix]}/bin --libexecdir=#{settings[:prefix]}/lib/libffi --disable-multi-os-directory #{settings[:host]}"
+    ]
   end
 
   pkg.build do
-    ["#{platform[:make]} VERBOSE=1 -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"]
+    [
+      "#{c_tools_path}",
+      "#{platform[:make]} VERBOSE=1 -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"
+    ]
   end
 
   pkg.install do

@@ -1,0 +1,28 @@
+From 1670e96c0ddf9e17e94e25517fb424f3a8e20e33 Mon Sep 17 00:00:00 2001
+From: Josh Cooper <joshcooper@users.noreply.github.com>
+Date: Tue, 25 Oct 2022 16:22:57 -0700
+Subject: [PATCH] [win32] Only include base windows types
+
+esent.h is the header for MS essential storage engine (JET) which is not
+needed in ruby. basetsd.h has existed since _MSC_VER >= 1200 (VS 6.0)
+and is the preferred header to use for WCHAR.
+---
+ win32/dir.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/win32/dir.h b/win32/dir.h
+index de12f79158..0292c27c9c 100644
+--- a/win32/dir.h
++++ b/win32/dir.h
+@@ -1,7 +1,7 @@
+ #ifndef RUBY_WIN32_DIR_H
+ #define RUBY_WIN32_DIR_H
+ #include <stdint.h>             /* for uint8_t */
+-#include <esent.h>              /* for WCHAR */
++#include <basetsd.h>            /* for WCHAR */
+ #include "ruby/encoding.h"      /* for rb_encoding */
+ 
+ #define DT_UNKNOWN 0
+-- 
+2.38.0
+

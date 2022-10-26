@@ -69,6 +69,10 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
  #   pkg.apply_patch "#{base}/win32_long_paths_support.patch"
  #   pkg.apply_patch "#{base}/ruby-faster-load_27.patch"
  #   pkg.apply_patch "#{base}/windows_configure.patch"
+    # In Ruby 3.0, they added the esent.h for WCHAR to be included which is provided by 
+    # mingw-w64, but puppet-runtime uses an old version of mingw that's missing esent.h.
+    # To work around this, we will include basetsd.h. See patch for more information.
+    pkg.apply_patch "#{base}/win32-only-include-base-windows-types.patch"
   end
 
   ####################
