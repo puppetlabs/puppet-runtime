@@ -48,6 +48,7 @@ component "ruby-shadow" do |pkg, settings, platform|
     # https://github.com/apalmblad/ruby-shadow/issues/26
     # if ruby-shadow gets a 3 release this should be removed
     pkg.apply_patch "#{base}/ruby-shadow-2.5.0-cflags.patch", strip: "0"
+    pkg.apply_patch "#{base}/ruby-shadow-taint.patch", strip: "0"
   end
 
   pkg.build do

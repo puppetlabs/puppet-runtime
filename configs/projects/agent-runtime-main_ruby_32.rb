@@ -67,8 +67,10 @@ project 'agent-runtime-main_ruby_32' do |proj|
     proj.component 'rubygem-sys-filesystem'
   end
 
+  # Nokogiri and dependencies to improve macOS performance (PUP-11332)
   if platform.is_macos?
     proj.component 'rubygem-nokogiri'
+    proj.component 'rubygem-mini_portile2'
   end
 
   proj.component 'boost' if ENV['NO_PXP_AGENT'].to_s.empty?

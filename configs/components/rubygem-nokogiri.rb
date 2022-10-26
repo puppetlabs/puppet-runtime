@@ -3,7 +3,6 @@ component 'rubygem-nokogiri' do |pkg, _settings, _platform|
   pkg.sha256sum 'b1512fdc0aba446e1ee30de3e0671518eb363e75fab53486e99e8891d44b8587'
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
-  pkg.build_requires 'rubygem-racc'
   pkg.build_requires 'rubygem-mini_portile2'
 
   # Overwrite the base rubygem's default GEM_HOME with the vendor gem directory
