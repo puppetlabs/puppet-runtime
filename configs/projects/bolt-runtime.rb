@@ -116,6 +116,8 @@ project 'bolt-runtime' do |proj|
   proj.component "puppet-ca-bundle"
   proj.component "ruby-#{proj.ruby_version}"
 
+  proj.component 'pl-ruby-patch' if platform.is_cross_compiled?
+
   # Building native gems on Windows has some issues right now.
   # Include for non-Windows platforms only.
   unless platform.is_windows?
