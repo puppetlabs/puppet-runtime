@@ -2,6 +2,7 @@ project 'bolt-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'bolt')
   proj.setting(:ruby_version, '2.7.6')
+  ruby_version_y = '2.7'
   proj.setting(:openssl_version, '1.1.1')
   proj.setting(:rubygem_net_ssh_version, '6.1.0')
   proj.setting(:augeas_version, '1.11.0')
@@ -52,6 +53,12 @@ project 'bolt-runtime' do |proj|
     # For windows, we need to ensure we are building for mingw not cygwin
     platform_triple = platform.platform_triple
     host = "--host #{platform_triple}"
+  elsif platform.is_cross_compiled? && platform.is_macos?
+    proj.setting(:host_ruby, "/usr/local/opt/ruby@#{ruby_version_y}/bin/ruby")
+    proj.setting(:host_gem, "/usr/local/opt/ruby@#{ruby_version_y}/bin/gem")
+    #proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
+    host = "--host aarch64-apple-darwin --build x86_64-apple-darwin --target aarch64-apple-darwin"
+    platform_triple = "aarch64-apple-darwin" if platform.is_cross_compiled? && platform.is_macos?
   else
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby"))
     proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
@@ -93,8 +100,14 @@ project 'bolt-runtime' do |proj|
     # define it or try to force it in the linker, because this might
     # break gcc or clang if they try to use the RPATH values we forced.
     proj.setting(:cppflags, "-I#{proj.includedir}")
-    proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
     proj.setting(:ldflags, "-L#{proj.libdir} ")
+    if platform.is_cross_compiled?
+      # The core2 architecture is not available on M1 Macs
+      proj.setting(:cflags, "#{proj.cppflags}")
+      proj.setting(:host, "--host aarch64-apple-darwin --build x86_64-apple-darwin --target aarch64-apple-darwin")
+    else
+      proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
+    end
   end
 
   # These flags are applied in addition to the defaults in configs/component/openssl.rb.
