@@ -56,7 +56,6 @@ project 'bolt-runtime' do |proj|
   elsif platform.is_cross_compiled? && platform.is_macos?
     proj.setting(:host_ruby, "/usr/local/opt/ruby@#{ruby_version_y}/bin/ruby")
     proj.setting(:host_gem, "/usr/local/opt/ruby@#{ruby_version_y}/bin/gem")
-    #proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem"))
     host = "--host aarch64-apple-darwin --build x86_64-apple-darwin --target aarch64-apple-darwin"
     platform_triple = "aarch64-apple-darwin" if platform.is_cross_compiled? && platform.is_macos?
   else
@@ -104,7 +103,6 @@ project 'bolt-runtime' do |proj|
     if platform.is_cross_compiled?
       # The core2 architecture is not available on M1 Macs
       proj.setting(:cflags, "#{proj.cppflags}")
-      proj.setting(:host, "--host aarch64-apple-darwin --build x86_64-apple-darwin --target aarch64-apple-darwin")
     else
       proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
     end
