@@ -45,6 +45,8 @@ project 'bolt-runtime' do |proj|
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:datadir, File.join(proj.prefix, "share"))
   proj.setting(:mandir, File.join(proj.datadir, "man"))
+  proj.setting(:ruby_vendordir, File.join(proj.libdir, "ruby", "vendor_ruby"))
+  proj.setting(:puppet_gem_vendor_dir, File.join(proj.libdir, "ruby", "vendor_gems"))
 
   if platform.is_windows?
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
