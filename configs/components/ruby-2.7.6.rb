@@ -52,7 +52,8 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
       pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
     end
 
-    pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
+    runtime_type = settings[:runtime_project] =~ /bolt/ ? 'bolt' : 'agent'
+    pkg.apply_patch "#{base}/rbinstall_gem_path_#{runtime_type}.patch"
     pkg.apply_patch "#{base}/revert_host_value_changes.patch"
   end
 
