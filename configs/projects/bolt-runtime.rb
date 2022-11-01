@@ -33,9 +33,11 @@ project 'bolt-runtime' do |proj|
     end
     # We build for windows not in the final destination, but in the paths that correspond
     # to the directory ids expected by WIX. This will allow for a portable installation (ideally).
-    proj.setting(:prefix, File.join("C:", proj.base_dir, proj.company_id, proj.product_id))
+    proj.setting(:install_root, File.join("C:", proj.base_dir, proj.company_id, proj.product_id))
+    proj.setting(:prefix, proj.install_root)
   else
-    proj.setting(:prefix, "/opt/puppetlabs/bolt")
+    proj.setting(:install_root, "/opt/puppetlabs")
+    proj.setting(:prefix, File.join(proj.install_root, "bolt"))
   end
 
   proj.setting(:ruby_dir, proj.prefix)
@@ -47,6 +49,8 @@ project 'bolt-runtime' do |proj|
   proj.setting(:mandir, File.join(proj.datadir, "man"))
   proj.setting(:ruby_vendordir, File.join(proj.libdir, "ruby", "vendor_ruby"))
   proj.setting(:puppet_gem_vendor_dir, File.join(proj.libdir, "ruby", "vendor_gems"))
+  proj.setting(:link_bindir, File.join(proj.install_root, "bin"))
+
 
   if platform.is_windows?
     proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
