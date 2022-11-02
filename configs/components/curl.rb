@@ -42,6 +42,7 @@ component 'curl' do |pkg, settings, platform|
   if (platform.is_solaris? && platform.os_version == "11") || platform.is_aix?
     # Makefile generation with automatic dependency tracking fails on these platforms
     configure_options << "--disable-dependency-tracking"
+    configure_options << "--without-nghttp2"
   end
 
   pkg.configure do

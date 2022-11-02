@@ -22,7 +22,7 @@ component "libxslt" do |pkg, settings, platform|
   elsif platform.is_solaris?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
     pkg.environment "CFLAGS", settings[:cflags]
-    pkg.environment "LDFLAGS", settings[:ldflags]
+    pkg.environment "LDFLAGS", "#{settings[:ldflags]} -Wl,-z,gnu-version-script-compat"
     # Configure on Solaris incorrectly passes flags to ld
     pkg.apply_patch 'resources/patches/libxslt/disable-version-script.patch'
     pkg.apply_patch 'resources/patches/libxslt/Update-missing-script-to-return-0.patch'
