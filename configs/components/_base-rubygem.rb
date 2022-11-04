@@ -38,5 +38,6 @@ pkg.url("https://rubygems.org/downloads/#{name}-#{version}.gem")
 pkg.mirror("#{settings[:buildsources_url]}/#{name}-#{version}.gem")
 
 pkg.install do
-  "#{settings[:gem_install]} #{name}-#{version}.gem"
+  ["env",
+  "#{settings[:gem_install]} #{name}-#{version}.gem"]
 end
