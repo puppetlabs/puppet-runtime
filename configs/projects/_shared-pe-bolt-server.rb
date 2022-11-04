@@ -18,11 +18,6 @@ unless pe_version && !pe_version.empty?
   exit(1)
 end
 
-if platform.name =~ /^redhatfips-.*/
-  # Link against the system openssl instead of our vendored version:
-  proj.setting(:system_openssl, true)
-end
-
 proj.description('The PE Bolt runtime contains third-party components needed for PE Bolt server packaging')
 proj.license('See components')
 proj.vendor('Puppet, Inc.  <info@puppet.com>')
