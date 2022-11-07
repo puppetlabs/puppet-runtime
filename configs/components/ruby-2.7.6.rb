@@ -73,6 +73,10 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/windows_configure.patch"
   end
 
+  if platform.is_solaris?
+    pkg.apply_patch "#{base}/solaris-do-not-use-qsort_s.patch"
+  end
+
   ####################
   # ENVIRONMENT, FLAGS
   ####################
@@ -139,6 +143,8 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
   # TODO: Remove this once PA-1607 is resolved.
   # TODO: Can we use native autoconf? The dependencies seemed a little too extensive
   pkg.configure { ["/opt/pl-build-tools/bin/autoconf"] } if platform.is_aix?
+
+  pkg.configure { ['/usr/bin/autoconf'] } if platform.is_solaris?
 
   # Here we set --enable-bundled-libyaml to ensure that the libyaml included in
   # ruby is used, even if the build system has a copy of libyaml available
