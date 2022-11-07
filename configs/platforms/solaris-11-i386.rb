@@ -1,7 +1,9 @@
 platform "solaris-11-i386" do |plat|
   plat.inherit_from_default
+  plat.vmpooler_template 'solaris-114-x86_64'
 
   packages = %w(
+    autoconf
     pl-binutils-i386
     pl-cmake
     pl-gcc-i386
