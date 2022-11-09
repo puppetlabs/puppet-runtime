@@ -42,5 +42,8 @@ basedir=default" > /var/tmp/vanagon-noask;
   echo "mirror=https://artifactory.delivery.puppetlabs.net/artifactory/generic__remote_opencsw_mirror/testing" > /var/tmp/vanagon-pkgutil.conf;
   pkgadd -n -a /var/tmp/vanagon-noask -d http://get.opencsw.org/now all
   /opt/csw/bin/pkgutil -U && /opt/csw/bin/pkgutil -y -i gcc4g++ bison|| exit 1
+  /opt/csw/bin/pkgutil -i -y autoconf
+  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i libffi_dev || exit 1;
+  ln /opt/csw/bin/autoconf /usr/bin/autoconf
   ntpdate pool.ntp.org]
 end
