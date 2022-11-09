@@ -121,6 +121,7 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
     'osx-12-arm64',
     'redhatfips-7-x86_64',
     'sles-12-ppc64le',
+    'solaris-10-sparc',
     'solaris-11-sparc',
     'windows-2012r2-x64',
     'windows-2012r2-x86',
