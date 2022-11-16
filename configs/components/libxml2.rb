@@ -1,24 +1,15 @@
 component "libxml2" do |pkg, settings, platform|
-  pkg.version "2.9.8"
-  pkg.md5sum "b786e353e2aa1b872d70d5d1ca0c740d"
-  pkg.url "http://xmlsoft.org/sources/#{pkg.get_name}-#{pkg.get_version}.tar.gz"
-  pkg.mirror "#{settings[:buildsources_url]}/libxml2-#{pkg.get_version}.tar.gz"
-  # CVE-related patches needed until libxml 2.9.9 is released:
-  pkg.apply_patch 'resources/patches/libxml2/fix_nullptr_deref_with_XPath_logic_ops.patch'
-  pkg.apply_patch 'resources/patches/libxml2/fix_infinite_loop_in_LZMA_decompression.patch'
+  pkg.version '2.10.3'
+  pkg.sha256sum '26d2415e1c23e0aad8ca52358523fc9116a2eb6e4d4ef47577b1635c7cee3d5f'
+  pkg.url "#{settings[:buildsources_url]}/libxml2-#{pkg.get_version}.tar.gz"
+
+  # Newer versions of libxml2 either ship as tar.xz or do not ship with a configure file
+  # and require a newer version of GNU Autotools to generate. This causes problems with
+  # the older and esoteric (AIX, Solaris) platforms that we support.
+  # So we generate a configure file manually, compress as tar.gz, and host internally.
 
   if platform.is_aix?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
-
-    # https://github.com/GNOME/libxml2/commit/8813f397f8925f85ffbe9e9fb62bfaa3c1accf11
-    # shows that libxml2 relies on the C99 macros NAN, INFINITY, isnan, isinf. If these
-    # macros are not defined on the target machine (like on AIX), then libxml2 defines them.
-    # Unfortunately on AIX, gcc cannot compile libxml2 with these macro definitions because
-    # they're evaluated using non-constant expressions and then assigned to global variables.
-    # The C-standard does not let one assign the value of a non-constant expression to a global
-    # variable. Fortunately, https://mail.gnome.org/archives/xml/2018-March/msg00003.html provides
-    # a patch for this issue, which is what we use here.
-    pkg.apply_patch "resources/patches/libxml2/aix_non_constant_initializer.patch"
   elsif platform.is_cross_compiled_linux?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
     pkg.environment "CFLAGS", settings[:cflags]
@@ -35,13 +26,6 @@ component "libxml2" do |pkg, settings, platform|
       pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
     end
   else
-    if platform.is_el? && platform.name =~ /-5/
-      # RHEL 5 uses GCC 4.1.2, which does not support the -Wno-array-bounds option required
-      # by libxml2. This option was introduced in GCC 4.6. Thus for RHEL 5, we use pl-gcc
-      # instead.
-      pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
-    end
-
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
   end
