@@ -50,9 +50,8 @@ basedir=default" > /var/tmp/vanagon-noask;
   /opt/csw/bin/pkgutil -l gcc | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l ruby18 | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l readline | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
-  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i rsync gmake pkgconfig ggrep libffi_dev libreadline6;
-  /opt/csw/bin/pkgutil -i -y autoconf|| exit 1;
-  ln /opt/csw/bin/autoconf /usr/bin/autoconf
+  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i rsync gmake pkgconfig ggrep libffi_dev libreadline6 autoconf|| exit 1;
+
   # Install base build dependencies
   for pkg in #{base_pkgs.map { |pkg| "SUNW#{pkg}.pkg.gz" }.join(' ')}; do \
   tmpdir=$(mktemp -p /var/tmp -d); (cd ${tmpdir} && curl -O #{base_url}/${pkg} && gunzip -c ${pkg} | pkgadd -d /dev/stdin -a /var/tmp/vanagon-noask all); \
