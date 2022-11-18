@@ -101,6 +101,14 @@ component "rubygem-ffi" do |pkg, settings, platform|
 
       # move ld back after the gem is installed
       pkg.install { "mv /usr/bin/ld1 /usr/bin/ld" }
+    
+    elsif platform.name =~ /solaris-10-sparc/
+      sed_exp = 's|CONFIG\["LDFLAGS"\].*|CONFIG["LDFLAGS"] = "-Wl,-rpath-link,/opt/pl-build-tools/sparc-sun-solaris2.10/sysroot/lib:/opt/pl-build-tools/sparc-sun-solaris2.10/sysroot/usr/lib -L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector"|'
+      pkg.configure do
+        [
+          %(#{platform[:sed]} -i '#{sed_exp}' /opt/puppetlabs/puppet/share/doc/rbconfig-#{settings[:ruby_version]}-orig.rb)
+        ]
+      end
     end
 
     # FFI 1.13.1 forced the minimum required ruby version to ~> 2.3

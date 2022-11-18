@@ -49,9 +49,12 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
       pkg.apply_patch "#{base}/ruby2_keywords_guard.patch"
       pkg.apply_patch "#{base}/ruby_version_extra_guards.patch"
       pkg.apply_patch "#{base}/ruby_20_guards.patch"
-      pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+      if platform.name =~ /^solaris-10-sparc/
+        pkg.apply_patch "#{base}/Solaris-only-Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+      else
+        pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+      end
     end
-
     pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
     pkg.apply_patch "#{base}/revert_host_value_changes.patch"
   end
@@ -121,6 +124,7 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
     'osx-12-arm64',
     'redhatfips-7-x86_64',
     'sles-12-ppc64le',
+    'solaris-10-sparc',
     'solaris-11-sparc',
     'windows-2012r2-x64',
     'windows-2012r2-x86',
