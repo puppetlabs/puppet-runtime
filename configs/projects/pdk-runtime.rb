@@ -118,15 +118,17 @@ project 'pdk-runtime' do |proj|
   proj.setting(:cflags, "#{proj.cppflags}")
   proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
 
+
   if platform.is_windows?
     proj.setting(:gcc_root, "C:/tools/mingw64")
     proj.setting(:gcc_bindir, "#{proj.gcc_root}/bin")
     proj.setting(:tools_root, "C:/tools/pl-build-tools")
-    proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
+
 
     proj.setting(:cppflags, "-I#{proj.tools_root}/include -I#{proj.gcc_root}/include -I#{proj.includedir}")
     proj.setting(:cflags, "#{proj.cppflags}")
-    proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir}")
+    proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir} -Wl,--nxcompat -Wl,--dynamicbase")
+    proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
   elsif platform.is_macos?
     proj.setting(:cppflags, "-I#{proj.includedir}")
 
