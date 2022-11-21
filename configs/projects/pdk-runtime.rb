@@ -31,10 +31,10 @@ project 'pdk-runtime' do |proj|
   proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
 
   if platform.is_windows?
-    proj.setting(:base_dir, "ProgramFiles64Folder")
-    proj.setting(:company_id, "PuppetLabs")
-    proj.setting(:product_id, "DevelopmentKit")
-    proj.setting(:install_root, File.join("C:", proj.base_dir, proj.company_id, proj.product_id))
+    proj.setting(:base_dir, "ProgramFiles64Folder") unless proj.settings[:base_dir]
+    proj.setting(:company_id, 'PuppetLabs')
+    proj.setting(:product_id, 'DevelopmentKit')
+    proj.setting(:install_root, File.join('C:', proj.base_dir, proj.company_id, proj.product_id))
     proj.setting(:prefix, proj.install_root)
     proj.setting(:windows_tools, File.join(proj.install_root, "private/tools/bin"))
   else
