@@ -208,6 +208,10 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
       rbconfig_changes["CC"] = 'clang -target arm64-apple-macos12'
     else
       rbconfig_changes["CC"] = "gcc"
+      if platform.is_solaris?
+        # this should probably be done for aix and cross compiled targets too
+        rbconfig_changes["CPP"] = "gcc -E"
+      end
       rbconfig_changes["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
     end
     if platform.name =~ /el-7-ppc64/
