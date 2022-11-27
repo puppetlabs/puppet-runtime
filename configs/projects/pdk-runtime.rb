@@ -17,11 +17,12 @@ project 'pdk-runtime' do |proj|
 
   # These flags are applied in addition to the defaults in configs/component/openssl.rb.
   proj.setting(:openssl_extra_configure_flags, [
-    'enable-cms',
-    'enable-seed',
-    'no-gost',
-    'no-rc5',
-    'no-srp',
+    'no-dtls',
+    'no-dtls1',
+    'no-idea',
+    'no-seed',
+    'no-weak-ssl-ciphers',
+    '-DOPENSSL_NO_HEARTBEATS',
   ])
 
   proj.setting(:artifactory_url, 'https://artifactory.delivery.puppetlabs.net/artifactory')
