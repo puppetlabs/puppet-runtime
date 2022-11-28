@@ -1,0 +1,19 @@
+diff --git a/tool/transform_mjit_header.rb b/tool/transform_mjit_header.rb
+index 5f89446c81..74bf2b759b 100644
+--- a/tool/transform_mjit_header.rb
++++ b/tool/transform_mjit_header.rb
+@@ -174,13 +174,7 @@ def self.supported_header?(code)
+   #    "error: redefinition of parameter 'restrict'"
+   # If it's true, this script regards platform as AIX or Solaris and adds -std=c99 as workaround.
+   def self.conflicting_types?(code, cc, cflags)
+-    with_code(code) do |path|
+-      cmd = "#{cc} #{cflags} #{path}"
+-      out = IO.popen(cmd, err: [:child, :out], &:read)
+-      !$?.success? &&
+-        (out.match?(/error: conflicting types for '[^']+'/) ||
+-         out.match?(/error: redefinition of parameter '[^']+'/))
+-    end
++    true
+   end
+ 
+   def self.with_code(code)

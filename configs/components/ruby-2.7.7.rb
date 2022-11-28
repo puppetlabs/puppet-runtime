@@ -1,6 +1,6 @@
-component 'ruby-2.7.6' do |pkg, settings, platform|
-  pkg.version '2.7.6'
-  pkg.sha256sum 'e7203b0cc09442ed2c08936d483f8ac140ec1c72e37bb5c401646b7866cb5d10'
+component 'ruby-2.7.7' do |pkg, settings, platform|
+  pkg.version '2.7.7'
+  pkg.sha256sum 'e10127db691d7ff36402cfe88f418c8d025a3f1eea92044b162dd72f0b8c7b90'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
@@ -53,6 +53,9 @@ component 'ruby-2.7.6' do |pkg, settings, platform|
         pkg.apply_patch "#{base}/Solaris-only-Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
       else
         pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
+      end
+      if platform.name =~ /sparc/
+        pkg.apply_patch "#{base}/transform_mjit_header.patch"
       end
     end
     pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
