@@ -76,10 +76,10 @@ project 'pdk-runtime' do |proj|
 
   # TODO: build this with a helper method?
   additional_rubies = {
-    "2.7.6" => {
-      ruby_version: "2.7.6",
+    "2.7.7" => {
+      ruby_version: "2.7.7",
       ruby_api: "2.7.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.7.6"),
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.7.7"),
     },
   }
 
