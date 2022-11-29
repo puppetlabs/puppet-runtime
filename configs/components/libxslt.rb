@@ -1,12 +1,14 @@
 component "libxslt" do |pkg, settings, platform|
-  pkg.version "1.1.33"
-  pkg.md5sum "b3bd254a03e46d58f8ad1e4559cd2c2f"
-  pkg.url "http://xmlsoft.org/sources/#{pkg.get_name}-#{pkg.get_version}.tar.gz"
-  pkg.mirror "#{settings[:buildsources_url]}/libxslt-#{pkg.get_version}.tar.gz"
+  pkg.version '1.1.37'
+  pkg.sha256sum 'a4ecab265f44e888ed3b39e11c7e925103ef6e26e09d62e9381f26977df96343'
+  pkg.url "#{settings[:buildsources_url]}/libxslt-v#{pkg.get_version}.tar.gz"
+
+  # Newer versions of libxslt either ship as tar.xz or do not ship with a configure file
+  # and require a newer version of GNU Autotools to generate. This causes problems with
+  # the older and esoteric (AIX, Solaris) platforms that we support.
+  # So we generate a configure file manually, compress as tar.gz, and host internally.
 
   pkg.build_requires "libxml2"
-
-  pkg.apply_patch 'resources/patches/libxslt/CVE-2019-11068.patch'
 
   if platform.is_aix?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
@@ -23,9 +25,6 @@ component "libxslt" do |pkg, settings, platform|
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
     pkg.environment "CFLAGS", settings[:cflags]
     pkg.environment "LDFLAGS", settings[:ldflags]
-    # Configure on Solaris incorrectly passes flags to ld
-    pkg.apply_patch 'resources/patches/libxslt/disable-version-script.patch'
-    pkg.apply_patch 'resources/patches/libxslt/Update-missing-script-to-return-0.patch'
   elsif platform.is_macos?
     if platform.is_cross_compiled?
       pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
@@ -39,7 +38,7 @@ component "libxslt" do |pkg, settings, platform|
   end
 
   pkg.configure do
-    ["./configure --prefix=#{settings[:prefix]} --docdir=/tmp --with-libxml-prefix=#{settings[:prefix]} #{settings[:host]} #{disable_crypto} #{build}"]
+    ["./configure --without-python --prefix=#{settings[:prefix]} --docdir=/tmp --with-libxml-prefix=#{settings[:prefix]} #{settings[:host]} #{disable_crypto} #{build}"]
   end
 
   pkg.build do
