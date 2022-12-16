@@ -35,7 +35,6 @@ proj.setting(:runtime_project, 'pe-bolt-server')
 
 # Set desired versions for gem components that offer multiple versions:
 # TODO: Can runtime projects use these updated versions?
-proj.setting(:rubygem_gettext_version, '3.2.9')
 proj.setting(:rubygem_deep_merge_version, '1.2.2')
 proj.setting(:rubygem_net_ssh_version, '6.1.0')
 
@@ -81,6 +80,7 @@ proj.component 'rubygem-deep_merge'
 proj.component 'rubygem-text'
 proj.component 'rubygem-locale'
 proj.component 'rubygem-gettext'
+proj.component 'rubygem-prime'
 proj.component 'rubygem-fast_gettext'
 proj.component 'rubygem-semantic_puppet'
 

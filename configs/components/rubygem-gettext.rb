@@ -1,13 +1,12 @@
 component "rubygem-gettext" do |pkg, settings, platform|
-  # Projects may define a :rubygem_gettext_version setting, or we use 3.2.2 by default:
-  version = settings[:rubygem_gettext_version] || '3.2.2'
+  version = settings[:rubygem_gettext_version] || '3.4.3'
   pkg.version version
 
   case version
-  when "3.2.2"
-    pkg.md5sum "4cbb125f8d8206e9a8f3a90f6488e4da"
-  when "3.2.9"
-    pkg.md5sum "09a755cd03ab617835e20a2e910581f4"
+  when '3.4.3'
+    pkg.sha256sum '1b98e1272d0f55a56f519ee86d24e0fcd114b94c9d10b26e72512d65f9174251'    
+  when '3.2.2'
+    pkg.sha256sum '9d250bb79273efb4a268977f219d2daca05cdc7473eff40288b8ab8ddd0f51b4'
   else
     raise "rubygem-gettext version #{version} has not been configured; Cannot continue."
   end
