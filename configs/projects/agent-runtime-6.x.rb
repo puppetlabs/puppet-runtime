@@ -2,6 +2,9 @@ project 'agent-runtime-6.x' do |proj|
   # Set preferred component versions if they differ from defaults:
   proj.setting :ruby_version, '2.5.9'
   proj.setting :augeas_version, '1.12.0'
+  proj.setting :rubygem_fast_gettext_version, '1.1.2'
+  proj.setting :rubygem_gettext_version, '3.2.2'
+  proj.setting :rubygem_gettext_setup_version, '0.34'
 
   ########
   # Load shared agent settings
