@@ -41,7 +41,7 @@ uncompress openssl-1.0.2.1800.tar.Z;
 tar xvf openssl-1.0.2.1800.tar;
 cd openssl-1.0.2.1800 && /usr/sbin/installp -acgwXY -d $PWD openssl.base;
 curl -O http://ftp.software.ibm.com/aix/freeSoftware/aixtoolbox/ezinstall/ppc/yum.sh && sh yum.sh;
-yum install -y gcc-c++;
+yum install -y gcc8-c++;
 ln -sf /opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/8/libgcc_s.a /opt/freeware/lib/libgcc_s.a]
 
   # We use --force with rpm because the pl-gettext and pl-autoconf
