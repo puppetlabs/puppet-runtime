@@ -113,7 +113,7 @@ component "boost" do |pkg, settings, platform|
     install_only_flags = "boost.locale.iconv=off"
   elsif platform.is_aix?
     pkg.environment "NO_CXX11_CHECK", "1"
-    pkg.environment "CXX", "/opt/freeware/bin/g++"
+    pkg.environment "CXX", "/opt/freeware/bin/g++-8"
     pkg.environment "CXXFLAGS", "-pthread"
     pkg.environment "PATH", "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
