@@ -80,7 +80,6 @@ proj.component 'rubygem-deep_merge'
 proj.component 'rubygem-text'
 proj.component 'rubygem-locale'
 proj.component 'rubygem-gettext'
-proj.component 'rubygem-prime'
 proj.component 'rubygem-fast_gettext'
 proj.component 'rubygem-semantic_puppet'
 
