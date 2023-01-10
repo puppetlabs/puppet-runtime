@@ -1,14 +1,8 @@
 project 'agent-runtime-main' do |proj|
 
   # Set preferred component versions if they differ from defaults:
-  proj.setting :ruby_version, '2.7.7'
+  proj.setting :ruby_version, '3.2.0'
   proj.setting :rubygem_deep_merge_version, '1.2.2'
-
-  # Temporarily pinning back gettext-related component versions until Ruby 3.2 is part
-  # of the runtime.
-  proj.setting :rubygem_fast_gettext_version, '1.1.2'
-  proj.setting :rubygem_gettext_version, '3.2.2'
-  proj.setting :rubygem_gettext_setup_version, '0.34'
 
   # Solaris and AIX depend on libedit which breaks augeas compliation starting with 1.13.0
   if platform.is_solaris? || platform.is_aix?
@@ -79,6 +73,10 @@ project 'agent-runtime-main' do |proj|
     proj.component 'rubygem-nokogiri'
     proj.component 'rubygem-mini_portile2'
   end
+
+  # Dependencies for gettext for Ruby >= 3.2 (PA-4815)
+  proj.component 'rubygem-erubi'
+  proj.component 'rubygem-prime'
 
   proj.component 'boost' if ENV['NO_PXP_AGENT'].to_s.empty?
   proj.component 'yaml-cpp' if ENV['NO_PXP_AGENT'].to_s.empty?
