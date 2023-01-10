@@ -5,6 +5,12 @@ project 'pe-bolt-server-runtime-2019.8.x' do |proj|
   # for gem installs instead of --no-document. This setting allows us to use this while we support both ruby 2.5 and 2.7
   # Once we are no longer using ruby 2.5 we can update.
   proj.setting(:no_doc, false)
+
+  # Pin to older gettext gems for 2019.8.x
+  proj.setting :rubygem_fast_gettext_version, '1.1.2'
+  proj.setting :rubygem_gettext_version, '3.2.2'
+  proj.setting :rubygem_gettext_setup_version, '0.34'
+
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-bolt-server.rb'))
 
   # Ruby 2.5 does not include rexml as a vendored gem, so include it in 2019.8.x only.
