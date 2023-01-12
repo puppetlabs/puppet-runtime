@@ -1,0 +1,27 @@
+commit 737aefc9e2115d7f38faf44134cf5bb105cfbe33
+Author: Josh Cooper <joshcooper@users.noreply.github.com>
+Date:   Tue Jan 10 15:03:41 2023 -0800
+
+    (maint) Update ruby-shadow for 3.2.0
+    
+    See https://github.com/apalmblad/ruby-shadow/pull/27
+    
+    See https://github.com/apalmblad/ruby-shadow/issues/30
+
+diff --git a/extconf.rb b/extconf.rb
+index ac54233..55dcff5 100644
+--- a/extconf.rb
++++ b/extconf.rb
+@@ -10,10 +10,11 @@ require 'rbconfig'
+ $CFLAGS = case RUBY_VERSION
+           when /^1\.9/; '-DRUBY19'
+           when /^2\./; '-DRUBY19'
++          when /^3\./; '-DRUBY19'
+           else; ''
+           end
+ 
+-implementation = case CONFIG['host_os']
++implementation = case RbConfig::CONFIG['host_os']
+                  when /linux/i; 'shadow'
+                  when /sunos|solaris/i; 'shadow'
+                  when /freebsd|mirbsd|netbsd|openbsd/i; 'pwd'
