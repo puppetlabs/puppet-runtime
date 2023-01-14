@@ -10,7 +10,8 @@ platform "el-7-x86_64" do |plat|
     pl-cmake
     pl-gcc
     readline-devel
-    rpm-build swig
+    rpm-build
+    swig
     zlib-devel
     systemtap-sdt-devel
   )
