@@ -77,6 +77,7 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
 
   if platform.is_macos?
     pkg.environment 'optflags', settings[:cflags]
+    pkg.environment 'PATH', '$(PATH):/usr/local/bin'
   elsif platform.is_windows?
     pkg.environment 'optflags', settings[:cflags] + ' -O3'
     pkg.environment 'MAKE', 'make'
@@ -172,7 +173,7 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
 
   target_doubles = {
     'powerpc-ibm-aix7.1.0.0' => 'powerpc-aix7.1.0.0',
-    'aarch64-apple-darwin' => 'aarch64-darwin',
+    'aarch64-apple-darwin' => 'arm64-darwin',
     'aarch64-redhat-linux' => 'aarch64-linux',
     'ppc64-redhat-linux' => 'powerpc64-linux',
     'ppc64le-redhat-linux' => 'powerpc64le-linux',

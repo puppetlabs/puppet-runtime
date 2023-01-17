@@ -16,7 +16,7 @@ index ac54233..55dcff5 100644
  $CFLAGS = case RUBY_VERSION
            when /^1\.9/; '-DRUBY19'
            when /^2\./; '-DRUBY19'
-+          when /^3\./; '-DRUBY19'
++          when /^3\./; '-DRUBY19 -fms-extensions'
            else; ''
            end
  
