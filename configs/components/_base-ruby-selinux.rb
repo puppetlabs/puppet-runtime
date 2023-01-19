@@ -3,6 +3,8 @@
 # load it with instance_eval. See ruby-x.y-selinux.rb configs.
 #
 
+pkg.add_source("file://resources/patches/ruby-selinux/selinuxswig_ruby_wrap.patch")
+
 # These can be overridden by the including component.
 ruby_version ||= settings[:ruby_version]
 host_ruby ||= settings[:host_ruby]
@@ -42,16 +44,23 @@ unless platform.name =~ /el-(6|7)|ubuntu-(16|18.04-amd64)/
 end
 
 pkg.build do
-  [
+  steps = [
     "export RUBYHDRDIR=$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"rubyhdrdir\"]')",
     "export VENDORARCHDIR=$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"vendorarchdir\"]')",
     "export ARCHDIR=$${RUBYHDRDIR}/$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"arch\"]')",
     "export INCLUDESTR=\"-I#{settings[:includedir]} -I$${RUBYHDRDIR} -I$${ARCHDIR}\"",
     "cp -pr src/{selinuxswig_ruby.i,selinuxswig.i} .",
-    "swig -Wall -ruby #{system_include} -o selinuxswig_ruby_wrap.c -outdir ./ selinuxswig_ruby.i",
+    "swig -Wall -ruby #{system_include} -o selinuxswig_ruby_wrap.c -outdir ./ selinuxswig_ruby.i"
+  ]
+
+  if ruby_version =~ /^3/
+    steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_wrap.patch"
+  end
+
+  steps.concat([
     "#{cc} $${INCLUDESTR} #{system_include} #{cflags} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -fPIC -DSHARED -c -o selinuxswig_ruby_wrap.lo selinuxswig_ruby_wrap.c",
     "#{cc} $${INCLUDESTR} #{system_include} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -shared -o _rubyselinux.so selinuxswig_ruby_wrap.lo -lselinux -Wl,-z,relro,-z,now,-soname,_rubyselinux.so",
-  ]
+  ])
 end
 
 pkg.install do
