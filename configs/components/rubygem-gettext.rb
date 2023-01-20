@@ -13,5 +13,13 @@ component "rubygem-gettext" do |pkg, settings, platform|
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
-  pkg.environment "GEM_HOME", (settings[:puppet_gem_vendor_dir] || settings[:gem_home])
+  gem_home = settings[:puppet_gem_vendor_dir] || settings[:gem_home]
+  pkg.environment "GEM_HOME", gem_home
+
+  case version
+  when '3.4.3'
+    install do
+      "rm -f #{gem_home}/gems/gettext-3.4.3/test/fixtures/gtk_builder_ui_definitions.ui~"
+    end
+  end
 end
