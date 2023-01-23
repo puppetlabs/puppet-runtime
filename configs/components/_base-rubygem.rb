@@ -18,8 +18,7 @@ pkg.build_requires "runtime-#{settings[:runtime_project]}"
 pkg.build_requires "pl-ruby-patch" if platform.is_cross_compiled?
 
 if platform.is_windows?
-  # This part applies to all gems except gettext and gettext-setup
-  pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:ruby_bindir]}):$(shell cygpath -u #{settings[:bindir]}):/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0"
+  pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:ruby_bindir]}):$(shell cygpath -u #{settings[:bindir]}):/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0:$(PATH)"
 end
 
 # When cross-compiling, we can't use the rubygems we just built.
