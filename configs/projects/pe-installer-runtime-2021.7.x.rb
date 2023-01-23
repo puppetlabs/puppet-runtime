@@ -97,6 +97,8 @@ project 'pe-installer-runtime-2021.7.x' do |proj|
   proj.component 'rubygem-httpclient'
   proj.component 'rubygem-thor'
   proj.component 'rubygem-sys-filesystem'
+  proj.component 'rubygem-prime'
+  proj.component 'rubygem-erubi'
 
   # What to include in package?
   proj.directory proj.prefix

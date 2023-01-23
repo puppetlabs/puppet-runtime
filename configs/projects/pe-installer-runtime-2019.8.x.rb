@@ -70,6 +70,11 @@ project 'pe-installer-runtime-2019.8.x' do |proj|
   # puppet to have the same gems as the default puppet agent install.
   ########
 
+  # Pin back the gettext gems only in the 2019.8.x series to remain compatable with old ruby version
+  proj.setting :rubygem_fast_gettext_version, '1.1.2'
+  proj.setting :rubygem_gettext_version, '3.2.2'
+  proj.setting :rubygem_gettext_setup_version, '0.34'
+
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-agent-components.rb'))
 
   # pl-build-tools
