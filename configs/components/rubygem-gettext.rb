@@ -16,10 +16,12 @@ component "rubygem-gettext" do |pkg, settings, platform|
   gem_home = settings[:puppet_gem_vendor_dir] || settings[:gem_home]
   pkg.environment "GEM_HOME", gem_home
 
+  remove_file_command = platform.is_windows? ? '/usr/bin/rm' : 'rm'
+
   case version
   when '3.4.3'
     install do
-      "rm -f #{gem_home}/gems/gettext-3.4.3/test/fixtures/gtk_builder_ui_definitions.ui~"
+      "#{remove_file_command} -f #{gem_home}/gems/gettext-3.4.3/test/fixtures/gtk_builder_ui_definitions.ui~"
     end
   end
 end
