@@ -18,8 +18,15 @@ project 'agent-runtime-main' do |proj|
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-agent-settings.rb'))
 
   ########
-  # Settings specific to the next branch
+  # Settings specific to this branch
   ########
+
+  case platform.name
+  when /^el-/, /^redhat-/, /^fedora-/, /^debian-/, /^ubuntu-/, /^sles-/
+    proj.setting(:openssl_version, '3.0')
+  else
+    # inherit default
+  end
 
   # Directory for gems shared by puppet and puppetserver
   proj.setting(:puppet_gem_vendor_dir, File.join(proj.libdir, "ruby", "vendor_gems"))
