@@ -22,6 +22,8 @@ project 'agent-runtime-main' do |proj|
   ########
 
   case platform.name
+  when /^el-7-x86_64/, /^sles-12-x86_64/, /^ubuntu-18\.04-amd64/
+    # need cmake 3.24.0 or greater in order to detect openssl3, revisit in PA-4870
   when /^el-/, /^redhat-/, /^fedora-/, /^debian-/, /^ubuntu-/, /^sles-/
     proj.setting(:openssl_version, '3.0')
   else
