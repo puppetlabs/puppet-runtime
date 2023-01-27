@@ -5,6 +5,7 @@ platform 'osx-12-arm64' do |plat|
 
     plat.provision_with 'export HOMEBREW_NO_EMOJI=true'
     plat.provision_with 'export HOMEBREW_VERBOSE=true'
+    plat.provision_with 'export HOMEBREW_NO_ANALYTICS=1'
 
     plat.provision_with 'sudo dscl . -create /Users/test'
     plat.provision_with 'sudo dscl . -create /Users/test UserShell /bin/bash'
@@ -19,7 +20,7 @@ platform 'osx-12-arm64' do |plat|
     plat.provision_with 'su test -c \'echo | /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"\''
     plat.provision_with 'sudo chown -R test:admin /Users/test/Library/'
 
-    packages = %w[cmake pkg-config yaml-cpp]
+    packages = %w[automake cmake pkg-config yaml-cpp]
 
     plat.provision_with "su test -c '/usr/local/bin/brew install #{packages.join(' ')}'"
 
