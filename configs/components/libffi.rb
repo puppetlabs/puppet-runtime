@@ -21,6 +21,10 @@ component 'libffi' do |pkg, settings, platform|
       pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
       pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
     end
+  elsif platform.is_windows?
+    pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
+    pkg.environment "LDFLAGS", settings[:ldflags]
+    pkg.environment "CFLAGS", settings[:cflags]
   else
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
