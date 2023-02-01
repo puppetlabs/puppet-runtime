@@ -64,7 +64,6 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
   end
 
   if platform.is_windows?
- #   pkg.apply_patch "#{base}/windows_ruby_2.5_fixup_generated_batch_files.patch"
  #   pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
  #   pkg.apply_patch "#{base}/win32_long_paths_support.patch"
  #   pkg.apply_patch "#{base}/ruby-faster-load_27.patch"
@@ -159,13 +158,13 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
   #########
 
   if platform.is_windows?
-    # With ruby 2.5, ruby will generate cmd files instead of bat files; These
-    # cmd wrappers work fine in our environment if they're just renamed as batch
-    # files. Rake is omitted here on purpose - it retains the old batch wrapper.
+    # Ruby 3.2 copies bin/gem to $ruby_bindir/gem.cmd, but generates bat files for
+    # other gems like bundle.bat, irb.bat, etc. Just rename the cmd.cmd to cmd.bat
+    # as we used to in ruby 2.7 and earlier.
     #
     # Note that this step must happen after the install step above.
     pkg.install do
-      %w{erb gem irb rdoc ri}.map do |name|
+      %w{gem}.map do |name|
         "mv #{ruby_bindir}/#{name}.cmd #{ruby_bindir}/#{name}.bat"
       end
     end
