@@ -20,8 +20,8 @@ component "rubygem-ffi" do |pkg, settings, platform|
   rb_major_minor_version = settings[:ruby_version].to_f
 
   # Windows versions of the FFI gem have custom filenames, so we overwite the
-  # defaults that _base-rubygem provides here, just for Windows.
-  if platform.is_windows?
+  # defaults that _base-rubygem provides here, just for Windows for Ruby < 3.2
+  if platform.is_windows? && rb_major_minor_version < 3.2
     # Pin this if lower than Ruby 2.7
     pkg.version '1.9.25' if rb_major_minor_version < 2.7
 
