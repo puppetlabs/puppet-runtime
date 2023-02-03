@@ -1,0 +1,13 @@
+diff --git a/lib/mkmf.rb b/lib/mkmf.rb
+index 245b0a44ce..1481ec89d7 100644
+--- a/lib/mkmf.rb
++++ b/lib/mkmf.rb
+@@ -1948,7 +1948,7 @@ def mkintpath(path)
+         path.tr!('\\', '/')
+         path.sub!(/\A([A-Za-z]):(?=\/)/, '/\1')
+         path
+-      end
++      end if CONFIG['build_vendor'] == "w32"
+     when 'cygwin', 'msys'
+       if CONFIG['target_os'] != 'cygwin'
+         def mkintpath(path)

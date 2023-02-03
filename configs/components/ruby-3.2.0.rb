@@ -64,6 +64,7 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
   end
 
   if platform.is_windows?
+    pkg.apply_patch "#{base}/windows_mingw32_mkmf.patch"
  #   pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
  #   pkg.apply_patch "#{base}/win32_long_paths_support.patch"
  #   pkg.apply_patch "#{base}/ruby-faster-load_27.patch"
@@ -108,7 +109,11 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
   elsif platform.name =~ /el-6/
     special_flags += " --with-baseruby=no "
   elsif platform.is_windows?
-    special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
+    # ruby's configure script guesses the build host is `cygwin`, because we're using
+    # cygwin opensshd & bash. So mkmf will convert compiler paths, e.g. -IC:/... to
+    # cygwin paths, -I/cygdrive/c/..., which confuses mingw-w64. So specify the build
+    # target explicitly.
+    special_flags += " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --build x86_64-w64-mingw32 "
   end
 
   without_dtrace = [
