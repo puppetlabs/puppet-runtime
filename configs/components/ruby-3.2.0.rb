@@ -67,7 +67,6 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/windows_mingw32_mkmf.patch"
     pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
  #   pkg.apply_patch "#{base}/ruby-faster-load_27.patch"
- #   pkg.apply_patch "#{base}/windows_configure.patch"
   end
 
   ####################
