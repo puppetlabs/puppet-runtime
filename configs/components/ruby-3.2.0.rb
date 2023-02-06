@@ -171,6 +171,9 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
         "mv #{ruby_bindir}/#{name}.cmd #{ruby_bindir}/#{name}.bat"
       end
     end
+
+    # Required when using `stack-protection-strong` and older versions of mingw-w64-gcc
+    pkg.install_file File.join(settings[:gcc_bindir], "libssp-0.dll"), File.join(settings[:bindir], "libssp-0.dll")
   end
 
   target_doubles = {
