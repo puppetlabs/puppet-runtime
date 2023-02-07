@@ -196,6 +196,8 @@ component 'openssl' do |pkg, settings, platform|
   #   install_commands << "rm -f #{settings[:prefix]}/bin/{openssl,c_rehash}"
   # end
 
+  install_commands << "rm -f #{settings[:prefix]}/bin/c_rehash"
+
   pkg.install do
     install_commands
   end
