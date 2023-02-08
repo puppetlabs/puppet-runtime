@@ -111,7 +111,13 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
     # cygwin opensshd & bash. So mkmf will convert compiler paths, e.g. -IC:/... to
     # cygwin paths, -I/cygdrive/c/..., which confuses mingw-w64. So specify the build
     # target explicitly.
-    special_flags += " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --build x86_64-w64-mingw32 "
+    special_flags += " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g "
+
+    if platform.architecture == "x64"
+      special_flags += " --build x86_64-w64-mingw32 "
+    else
+      special_flags += " --build i686-w64-mingw32 "
+    end
   end
 
   without_dtrace = [
@@ -221,7 +227,11 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
       rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector -rdynamic -Wl,-export-dynamic -L/opt/puppetlabs/puppet/lib"
     end
   elsif platform.is_windows?
-    rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
+    if platform.architecture == "x64"
+      rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
+    else
+      rbconfig_changes["CC"] = "i686-w64-mingw32-gcc"
+    end
   end
 
   pkg.add_source("file://resources/files/ruby_vendor_gems/operating_system.rb")
