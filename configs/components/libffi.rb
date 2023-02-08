@@ -25,6 +25,10 @@ component 'libffi' do |pkg, settings, platform|
     pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
+
+    if platform.architecture == "x86"
+      pkg.apply_patch "resources/patches/libffi/revert_clang_32bit.patch"
+    end
   else
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
