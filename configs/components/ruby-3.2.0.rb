@@ -64,11 +64,9 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
   end
 
   if platform.is_windows?
- #   pkg.apply_patch "#{base}/windows_ruby_2.5_fixup_generated_batch_files.patch"
- #   pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
- #   pkg.apply_patch "#{base}/win32_long_paths_support.patch"
+    pkg.apply_patch "#{base}/windows_mingw32_mkmf.patch"
+    pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
  #   pkg.apply_patch "#{base}/ruby-faster-load_27.patch"
- #   pkg.apply_patch "#{base}/windows_configure.patch"
   end
 
   ####################
@@ -109,7 +107,17 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
   elsif platform.name =~ /el-6/
     special_flags += " --with-baseruby=no "
   elsif platform.is_windows?
-    special_flags = " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
+    # ruby's configure script guesses the build host is `cygwin`, because we're using
+    # cygwin opensshd & bash. So mkmf will convert compiler paths, e.g. -IC:/... to
+    # cygwin paths, -I/cygdrive/c/..., which confuses mingw-w64. So specify the build
+    # target explicitly.
+    special_flags += " CPPFLAGS='-DFD_SETSIZE=2048' debugflags=-g "
+
+    if platform.architecture == "x64"
+      special_flags += " --build x86_64-w64-mingw32 "
+    else
+      special_flags += " --build i686-w64-mingw32 "
+    end
   end
 
   without_dtrace = [
@@ -159,16 +167,19 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
   #########
 
   if platform.is_windows?
-    # With ruby 2.5, ruby will generate cmd files instead of bat files; These
-    # cmd wrappers work fine in our environment if they're just renamed as batch
-    # files. Rake is omitted here on purpose - it retains the old batch wrapper.
+    # Ruby 3.2 copies bin/gem to $ruby_bindir/gem.cmd, but generates bat files for
+    # other gems like bundle.bat, irb.bat, etc. Just rename the cmd.cmd to cmd.bat
+    # as we used to in ruby 2.7 and earlier.
     #
     # Note that this step must happen after the install step above.
     pkg.install do
-      %w{erb gem irb rdoc ri}.map do |name|
+      %w{gem}.map do |name|
         "mv #{ruby_bindir}/#{name}.cmd #{ruby_bindir}/#{name}.bat"
       end
     end
+
+    # Required when using `stack-protection-strong` and older versions of mingw-w64-gcc
+    pkg.install_file File.join(settings[:gcc_bindir], "libssp-0.dll"), File.join(settings[:bindir], "libssp-0.dll")
   end
 
   target_doubles = {
@@ -216,7 +227,11 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
       rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector -rdynamic -Wl,-export-dynamic -L/opt/puppetlabs/puppet/lib"
     end
   elsif platform.is_windows?
-    rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
+    if platform.architecture == "x64"
+      rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
+    else
+      rbconfig_changes["CC"] = "i686-w64-mingw32-gcc"
+    end
   end
 
   pkg.add_source("file://resources/files/ruby_vendor_gems/operating_system.rb")

@@ -17,12 +17,14 @@ component "rubygem-ffi" do |pkg, settings, platform|
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
+  rb_major_minor_version = settings[:ruby_version].to_f
+
   # Windows versions of the FFI gem have custom filenames, so we overwite the
-  # defaults that _base-rubygem provides here, just for Windows.
-  if platform.is_windows?
+  # defaults that _base-rubygem provides here, just for Windows for Ruby < 3.2
+  if platform.is_windows? && rb_major_minor_version < 3.2
     # Pin this if lower than Ruby 2.7
-    rb_minor_version = settings[:ruby_version].split('.')[1].to_i
-    pkg.version '1.9.25' if rb_minor_version < 7
+    pkg.version '1.9.25' if rb_major_minor_version < 2.7
+
     # Vanagon's `pkg.mirror` is additive, and the _base_rubygem sets the
     # non-Windows gem as the first mirror, which is incorrect. We need to unset
     # the list of mirrors before adding the Windows-appropriate ones here:
