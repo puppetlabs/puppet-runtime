@@ -52,12 +52,12 @@ project 'pdk-runtime' do |proj|
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:bindir, File.join(proj.prefix, "bin"))
 
-  proj.setting(:ruby_version, "2.5.9")
-  proj.setting(:ruby_api, "2.5.0")
+  proj.setting(:ruby_version, "2.7.7")
+  proj.setting(:ruby_api, "2.7.0")
 
   # this is the latest puppet that will be installed into the default ruby version above
   # newer versions of puppet will be installed into the Ruby 2.7 runtime
-  proj.setting(:latest_puppet, "~> 6")
+  proj.setting(:latest_puppet, "~> 7")
 
   proj.setting(:privatedir, File.join(proj.prefix, "private"))
   proj.setting(:ruby_dir, File.join(proj.privatedir, "ruby", proj.ruby_version))
@@ -80,10 +80,10 @@ project 'pdk-runtime' do |proj|
 
   # TODO: build this with a helper method?
   additional_rubies = {
-    "2.7.7" => {
-      ruby_version: "2.7.7",
-      ruby_api: "2.7.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.7.7"),
+    "2.5.9" => {
+      ruby_version: "2.5.9",
+      ruby_api: "2.5.0",
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.9"),
     },
   }
 
