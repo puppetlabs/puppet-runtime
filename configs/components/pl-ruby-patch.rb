@@ -25,6 +25,9 @@ component "pl-ruby-patch" do |pkg, settings, platform|
                   "/opt/pl-build-tools/lib/ruby/2.1.0"
                 end
 
+    # The `target_triple` determines which directory native extensions are stored in the
+    # compiled ruby and must match ruby's naming convention.
+    #
     # solaris 10 uses ruby 2.0 which doesn't install native extensions based on architecture
     unless platform.name =~ /solaris-10/
       # weird architecture naming conventions...
@@ -33,7 +36,11 @@ component "pl-ruby-patch" do |pkg, settings, platform|
                       elsif platform.name == 'solaris-11-sparc'
                         "sparc-solaris-2.11"
                       elsif platform.is_macos?
-                        "aarch64-darwin"
+                        if ruby_version_y.start_with?('2')
+                          "aarch64-darwin"
+                        else
+                          "arm64-darwin"
+                        end
                       else
                         "#{platform.architecture}-linux"
                       end
