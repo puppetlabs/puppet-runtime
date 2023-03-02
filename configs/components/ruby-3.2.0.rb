@@ -42,7 +42,7 @@ component 'ruby-3.2.0' do |pkg, settings, platform|
 #      pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
     end
 
- #   pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
+    pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
  #   pkg.apply_patch "#{base}/revert_host_value_changes.patch"
   end
 
