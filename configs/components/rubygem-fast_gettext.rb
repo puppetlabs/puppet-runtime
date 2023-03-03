@@ -1,10 +1,10 @@
 component "rubygem-fast_gettext" do |pkg, settings, platform|
-  version = settings[:rubygem_fast_gettext_version] || '2.2.0'
+  version = settings[:rubygem_fast_gettext_version] || '2.3.0'
   pkg.version version
 
   case version
-  when '2.2.0'
-    pkg.sha256sum '01804331afce7b7c918e7ebe1951a3507b24b3a0c0617429725dbd4a2f234ad8'
+  when '2.3.0'
+    pkg.sha256sum '0253e26423ccab68061c42387827e3b99243a1b15ad614df1c800ba870d64f84'
   when '1.1.2'
     pkg.sha256sum 'e868f02c24af746a137f3aaf898ca3660e6611aa7f1f96ce60e9a425130f2732'
   else

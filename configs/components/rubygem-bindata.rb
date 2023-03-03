@@ -1,6 +1,6 @@
 component 'rubygem-bindata' do |pkg, settings, platform|
-  pkg.version '2.4.10'
-  pkg.md5sum 'cf67b5b16c307139691d6cbec0c8c2ef'
+  pkg.version '2.4.15'
+  pkg.md5sum '55ccdea22d70273b136e573dba9b97cf'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end

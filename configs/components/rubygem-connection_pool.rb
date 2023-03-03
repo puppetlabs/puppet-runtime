@@ -1,6 +1,6 @@
 component 'rubygem-connection_pool' do |pkg, settings, platform|
-  pkg.version '2.2.5'
-  pkg.md5sum '498bdfe245ece1c2025fd3727a3dc7e3'
+  pkg.version '2.3.0'
+  pkg.md5sum 'bbbbc0e38de79db9f0cb2907c81204a4'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
