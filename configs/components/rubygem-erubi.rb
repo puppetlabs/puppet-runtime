@@ -1,6 +1,6 @@
 component 'rubygem-erubi' do |pkg, settings, platform|
-  pkg.version '1.11.0'
-  pkg.md5sum '42f1f27ca9b70754f1eee09b761d5672'
+  pkg.version '1.12.0'
+  pkg.md5sum '92fa9ac9f48cce608153108e327d020d'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
