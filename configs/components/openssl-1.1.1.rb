@@ -179,12 +179,8 @@ component 'openssl' do |pkg, settings, platform|
     install_commands << "slibclean"
   end
 
-  # Don't build all the docs for armhf
-  if  platform.architecture == 'armhf'
-    install_commands << "#{platform[:make]} #{install_prefix} install_sw install_ssldirs"
-  else
-    install_commands << "#{platform[:make]} #{install_prefix} install"
-  end
+  # Skip man and html docs
+  install_commands << "#{platform[:make]} #{install_prefix} install_sw install_ssldirs"
 
   if settings[:runtime_project] == 'pdk'
     install_commands << "rm -f #{settings[:prefix]}/bin/{openssl,c_rehash}"
