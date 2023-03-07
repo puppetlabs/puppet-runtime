@@ -8,4 +8,5 @@ project 'pe-bolt-server-runtime-main' do |proj|
 
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-bolt-server.rb'))
   proj.component 'rubygem-prime'
+  proj.component('rubygem-rexml')
 end

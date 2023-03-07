@@ -1,6 +1,13 @@
 component 'rubygem-facter' do |pkg, settings, platform|
-  pkg.version '4.3.0'
-  pkg.md5sum 'aef369eddbda0a53790b07ceea30449e'
+  pkg.environment "GEM_HOME", settings[:gem_home]
+  pkg.environment "GEM_PATH", settings[:gem_home]
+  pkg.url("https://nightlies.puppet.com/downloads/gems/facter-nightly/facter-latest.gem")
+  pkg.md5sum("1e2c5b08cfc7a6d453af283ca8f53e37")
 
-  instance_eval File.read('configs/components/_base-rubygem.rb')
+  pkg.install do
+    [
+    "#{settings[:gem_install]} facter-*.gem",
+    ]
+  end
 end
+

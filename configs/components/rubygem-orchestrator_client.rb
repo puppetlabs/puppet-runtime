@@ -1,6 +1,16 @@
 component 'rubygem-orchestrator_client' do |pkg, settings, platform|
-  pkg.version '0.6.1'
-  pkg.md5sum 'a556e34451e9985a518230d6d79e90a3'
+  pkg.environment "GEM_HOME", settings[:gem_home]
+  pkg.environment "GEM_PATH", settings[:gem_home]
+  pkg.url("https://github.com/donoghuc/orchestrator_client-ruby.git")
+  pkg.ref("ruby-3.2")
 
-  instance_eval File.read('configs/components/_base-rubygem.rb')
+  pkg.build do
+    ["#{settings[:gem_build]} orchestrator_client.gemspec"]
+  end
+
+  pkg.install do
+    [
+    "#{settings[:gem_install]} orchestrator_client-*.gem",
+    ]
+  end
 end

@@ -11,7 +11,7 @@ component "runtime-pe-bolt-server" do |pkg, settings, platform|
   artifactory_url = 'https://artifactory.delivery.puppetlabs.net/artifactory'
 
   if platform.is_rpm?
-    platform.add_build_repository "https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-agent/0ca106596dfb1bb1509e0a7b1c09e6e6907bd6fe/puppet-agent-8.0.0.203.g0ca106596-1.el7.x86_64.rpm"
+    platform.add_build_repository "https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet-agent/0ca106596dfb1bb1509e0a7b1c09e6e6907bd6fe/el-7-x86_64/puppet-agent-7.23.0.203.g0ca106596-1.el7.x86_64.rpm"
   end
 
   if platform.is_deb?
