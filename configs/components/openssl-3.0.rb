@@ -16,20 +16,22 @@ component 'openssl' do |pkg, settings, platform|
 
   if platform.name =~ /^(el-|redhat-|fedora-)/
     pkg.build_requires 'perl-core'
+  elsif platform.is_windows?
+    pkg.build_requires 'strawberryperl'
   else
     pkg.build_requires 'perl'
   end
 
   target = cflags = ldflags = sslflags = ''
 
-  # if platform.is_windows?
-  #   pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
+ if platform.is_windows?
+    pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
   #   pkg.environment 'CYGWIN', settings[:cygwin]
   #   pkg.environment 'CC', settings[:cc]
   #   pkg.environment 'CXX', settings[:cxx]
   #   pkg.environment 'MAKE', platform[:make]
 
-  #   target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
+    target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
   #   cflags = settings[:cflags]
   #   ldflags = settings[:ldflags]
   # elsif platform.is_cross_compiled_linux?
@@ -41,7 +43,7 @@ component 'openssl' do |pkg, settings, platform|
   #     # OpenSSL fails to work on aarch unless we turn down the compiler optimization.
   #     # See PA-2135 for details
   #     cflags += " -O2"
-  #   end
+   end
 
   #   ldflags = "-Wl,-rpath=/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
   #   target = if platform.architecture == 'aarch64'
