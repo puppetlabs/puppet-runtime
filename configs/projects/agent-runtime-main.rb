@@ -23,14 +23,8 @@ project 'agent-runtime-main' do |proj|
 
   # Override OpenSSL version for select platforms. Eventually all platforms will support
   # it and we can remove the conditional
-  if (platform.is_el? || platform.is_fedora? || platform.is_sles? || platform.is_deb? || platform.is_macos? ||
-     platform.is_windows?) && !platform.is_fips?
-    case platform.name
-    when /^el-7-x86_64/, /^sles-12-x86_64/, /^ubuntu-18\.04-amd64/
-      # need cmake 3.24.0 or greater in order to detect openssl3, revisit in PA-4870
-    else
-      proj.setting(:openssl_version, '3.0')
-    end
+  if (platform.is_el? || platform.is_fedora? || platform.is_sles? || platform.is_deb? || platform.is_macos? || platform.is_windows?) && !platform.is_fips?
+    proj.setting(:openssl_version, '3.0')
   end
 
   # Directory for gems shared by puppet and puppetserver
