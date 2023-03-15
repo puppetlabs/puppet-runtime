@@ -7,5 +7,14 @@ component 'rubygem-nokogiri' do |pkg, _settings, _platform|
 
   # Overwrite the base rubygem's default GEM_HOME with the vendor gem directory
   # shared by puppet and puppetserver. Fall-back to gem_home for other projects.
-  pkg.environment 'GEM_HOME', (settings[:puppet_gem_vendor_dir] || settings[:gem_home])
+  gem_home = settings[:puppet_gem_vendor_dir] || settings[:gem_home]
+  pkg.environment "GEM_HOME", gem_home
+
+  # When building nokogiri native extensions on macOS 12 ARM, there is a 94M tmp
+  # directory that's not needed
+  if platform.name == 'osx-12-arm64'
+    install do
+      "rm -r #{gem_home}/gems/nokogiri-#{pkg.get_version}/ext/nokogiri/tmp"
+    end
+  end
 end
