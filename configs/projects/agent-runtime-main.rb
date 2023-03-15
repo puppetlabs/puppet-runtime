@@ -1,7 +1,7 @@
 project 'agent-runtime-main' do |proj|
 
   # Set preferred component versions if they differ from defaults:
-  proj.setting :ruby_version, '3.2.0'
+  proj.setting :ruby_version, '3.2.1'
   proj.setting :rubygem_deep_merge_version, '1.2.2'
 
   # Solaris and AIX depend on libedit which breaks augeas compliation starting with 1.13.0
