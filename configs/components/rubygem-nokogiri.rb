@@ -8,9 +8,9 @@ component 'rubygem-nokogiri' do |pkg, _settings, _platform|
   gem_home = settings[:gem_home]
   pkg.environment "GEM_HOME", gem_home
 
-  # When building nokogiri native extensions on macOS 12 ARM, there is a 94M tmp
+  # When cross compiling nokogiri native extensions on macOS 11/12 ARM, there is a 94M tmp
   # directory that's not needed
-  if platform.name == 'osx-12-arm64'
+  if platform.is_macos? && platform.architecture == 'arm64'
     install do
       "rm -r #{gem_home}/gems/nokogiri-#{pkg.get_version}/ext/nokogiri/tmp"
     end
