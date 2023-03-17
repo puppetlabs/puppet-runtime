@@ -5,9 +5,7 @@ component 'rubygem-nokogiri' do |pkg, _settings, _platform|
 
   pkg.build_requires 'rubygem-mini_portile2'
 
-  # Overwrite the base rubygem's default GEM_HOME with the vendor gem directory
-  # shared by puppet and puppetserver. Fall-back to gem_home for other projects.
-  gem_home = settings[:puppet_gem_vendor_dir] || settings[:gem_home]
+  gem_home = settings[:gem_home]
   pkg.environment "GEM_HOME", gem_home
 
   # When building nokogiri native extensions on macOS 12 ARM, there is a 94M tmp
