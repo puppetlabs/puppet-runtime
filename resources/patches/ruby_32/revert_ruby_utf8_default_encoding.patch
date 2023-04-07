@@ -1,0 +1,82 @@
+From 6f21c171d61a4e1b9dca020d6d3eae89bb0d2d90 Mon Sep 17 00:00:00 2001
+From: Tony Vu <vu.tony@gmail.com>
+Date: Thu, 6 Apr 2023 14:30:27 -0700
+Subject: [PATCH] Revert "Set default for Encoding.default_external to UTF-8 on
+ Windows (#2877)"
+
+This reverts commit 94b6933d1c6f4c8698319fbcac9dcecc9033b4b9.
+---
+ encoding.c                                  | 4 +---
+ ruby.c                                      | 4 ++--
+ spec/ruby/command_line/dash_upper_k_spec.rb | 4 ++--
+ spec/ruby/library/stringio/binmode_spec.rb  | 2 +-
+ 4 files changed, 6 insertions(+), 8 deletions(-)
+
+diff --git a/encoding.c b/encoding.c
+index 8bfab73177..29d3f5fdbb 100644
+--- a/encoding.c
++++ b/encoding.c
+@@ -1587,9 +1587,7 @@ rb_enc_default_external(void)
+  * File data written to disk will be transcoded to the default external
+  * encoding when written, if default_internal is not nil.
+  *
+- * The default external encoding is initialized by the -E option.
+- * If -E isn't set, it is initialized to UTF-8 on Windows and the locale on
+- * other operating systems.
++ * The default external encoding is initialized by the locale or -E option.
+  */
+ static VALUE
+ get_default_external(VALUE klass)
+diff --git a/ruby.c b/ruby.c
+index f549e72fd0..1a1007dcce 100644
+--- a/ruby.c
++++ b/ruby.c
+@@ -2026,7 +2026,7 @@ process_options(int argc, char **argv, ruby_cmdline_options_t *opt)
+         enc = rb_enc_from_index(opt->ext.enc.index);
+     }
+     else {
+-        enc = IF_UTF8_PATH(uenc, lenc);
++	enc = lenc;
+     }
+     rb_enc_set_default_external(rb_enc_from_encoding(enc));
+     if (opt->intern.enc.index >= 0) {
+@@ -2146,7 +2146,7 @@ process_options(int argc, char **argv, ruby_cmdline_options_t *opt)
+         enc = rb_enc_from_index(opt->ext.enc.index);
+     }
+     else {
+-        enc = IF_UTF8_PATH(uenc, lenc);
++	enc = lenc;
+     }
+     rb_enc_set_default_external(rb_enc_from_encoding(enc));
+     if (opt->intern.enc.index >= 0) {
+diff --git a/spec/ruby/command_line/dash_upper_k_spec.rb b/spec/ruby/command_line/dash_upper_k_spec.rb
+index 7e71532295..a060eab793 100644
+--- a/spec/ruby/command_line/dash_upper_k_spec.rb
++++ b/spec/ruby/command_line/dash_upper_k_spec.rb
+@@ -58,8 +58,8 @@
+   end
+ 
+   it "ignores unknown codes" do
+-    external = Encoding.find('external')
++    locale = Encoding.find('locale')
+     ruby_exe(@test_string, options: '-KZ').should ==
+-      [Encoding::UTF_8.name, external.name, nil].inspect
++      [Encoding::UTF_8.name, locale.name, nil].inspect
+   end
+ end
+diff --git a/spec/ruby/library/stringio/binmode_spec.rb b/spec/ruby/library/stringio/binmode_spec.rb
+index 853d9c9bd6..83178787f3 100644
+--- a/spec/ruby/library/stringio/binmode_spec.rb
++++ b/spec/ruby/library/stringio/binmode_spec.rb
+@@ -9,7 +9,7 @@
+ 
+   it "changes external encoding to BINARY" do
+     io = StringIO.new
+-    io.external_encoding.should == Encoding.find('external')
++    io.external_encoding.should == Encoding.find('locale')
+     io.binmode
+     io.external_encoding.should == Encoding::BINARY
+   end
+-- 
+2.37.1 (Apple Git-137.1)
+
