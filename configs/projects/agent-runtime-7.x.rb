@@ -1,7 +1,7 @@
 project 'agent-runtime-7.x' do |proj|
 
   # Set preferred component versions if they differ from defaults:
-  proj.setting :ruby_version, '2.7.7'
+  proj.setting :ruby_version, '2.7.8'
   proj.setting :rubygem_deep_merge_version, '1.2.2'
   proj.setting :rubygem_fast_gettext_version, '1.1.2'
   proj.setting :rubygem_gettext_version, '3.2.2'
