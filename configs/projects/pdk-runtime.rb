@@ -52,7 +52,7 @@ project 'pdk-runtime' do |proj|
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:bindir, File.join(proj.prefix, "bin"))
 
-  proj.setting(:ruby_version, "2.7.7")
+  proj.setting(:ruby_version, "2.7.8")
   proj.setting(:ruby_api, "2.7.0")
 
   # this is the latest puppet that will be installed into the default ruby version above
