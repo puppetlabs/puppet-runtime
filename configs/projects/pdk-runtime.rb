@@ -52,12 +52,12 @@ project 'pdk-runtime' do |proj|
   proj.setting(:includedir, File.join(proj.prefix, "include"))
   proj.setting(:bindir, File.join(proj.prefix, "bin"))
 
-  proj.setting(:ruby_version, "2.7.8")
-  proj.setting(:ruby_api, "2.7.0")
-
+  proj.setting(:ruby_version, "3.2.2")
+  proj.setting(:ruby_api, "3.2.0")
+ 
   # this is the latest puppet that will be installed into the default ruby version above
   # newer versions of puppet will be installed into the Ruby 2.7 runtime
-  proj.setting(:latest_puppet, "~> 7")
+  proj.setting(:latest_puppet, "~> 8")
 
   proj.setting(:privatedir, File.join(proj.prefix, "private"))
   proj.setting(:ruby_dir, File.join(proj.privatedir, "ruby", proj.ruby_version))
@@ -80,10 +80,10 @@ project 'pdk-runtime' do |proj|
 
   # TODO: build this with a helper method?
   additional_rubies = {
-    "2.5.9" => {
-      ruby_version: "2.5.9",
-      ruby_api: "2.5.0",
-      ruby_dir: File.join(proj.privatedir, "ruby", "2.5.9"),
+    "2.7.8" => {
+      ruby_version: "2.7.8",
+      ruby_api: "2.7.0",
+      ruby_dir: File.join(proj.privatedir, "ruby", "2.7.8"),
     },
   }
 
@@ -151,8 +151,25 @@ project 'pdk-runtime' do |proj|
   # What to build?
   # --------------
 
-  # Common deps
+  matchdata = platform.settings[:ruby_version].match /(\d+)\.\d+\.\d+/
+  ruby_major_version = matchdata[1].to_i
+
+  if ruby_major_version >= 3
+    openssl_version = proj.openssl_version
+    if (platform.is_el? || platform.is_fedora? || platform.is_sles? || platform.is_deb? || platform.is_macos? || platform.is_windows?)
+      openssl_version = '3.0'
+    end
+
+    # Ruby 3.2 does not package these two libraries so we need to add them as a component
+    proj.component 'libffi'
+    proj.component 'libyaml'
+    proj.component "openssl-#{openssl_version}"
+  end
+
+  # Always build the default openssl version
   proj.component "openssl-#{proj.openssl_version}"
+
+  # Common deps
   proj.component "curl"
 
   # Git and deps
