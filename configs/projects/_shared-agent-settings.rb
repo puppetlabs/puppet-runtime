@@ -77,6 +77,7 @@ proj.setting(:ruby_bindir, proj.bindir)
 raise "Couldn't find a :ruby_version setting in the project file" unless proj.ruby_version
 ruby_base_version = proj.ruby_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2.0')
 ruby_version_y = proj.ruby_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2')
+ruby_version_x = proj.ruby_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1')
 
 proj.setting(:gem_home, File.join(proj.libdir, 'ruby', 'gems', ruby_base_version))
 proj.setting(:ruby_vendordir, File.join(proj.libdir, "ruby", "vendor_ruby"))
@@ -156,7 +157,9 @@ if platform.name =~ /sles-15|el-8|debian-10/ || platform.is_fedora?
   proj.setting(:ldflags, "-L#{proj.libdir} -Wl,-rpath=#{proj.libdir},-z,relro,-z,now")
 end
 
-if platform.name =~ /^redhatfips-/
+if ruby_version_x == "3" && !platform.is_aix? && !platform.is_solaris? && !(platform.is_windows? && platform.is_fips?)
+  proj.setting(:openssl_version, '3.0')
+elsif platform.name =~ /^redhatfips-/
   proj.setting(:openssl_version, '1.1.1-fips')
 elsif platform.name =~ /^windowsfips-2012r2/
   proj.setting(:openssl_version, '1.0.2')

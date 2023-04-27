@@ -8,7 +8,7 @@ component 'openssl' do |pkg, settings, platform|
   # ENVIRONMENT, FLAGS, TARGETS
   #############################
 
-  if platform.name =~ /^(el-|redhat-|fedora-)/
+  if platform.name =~ /^(el-|redhat-|redhatfips-|fedora-)/
     pkg.build_requires 'perl-core'
   elsif platform.is_windows?
     pkg.build_requires 'strawberryperl'
