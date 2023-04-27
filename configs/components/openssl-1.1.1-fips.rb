@@ -16,12 +16,6 @@ component 'openssl-1.1.1-fips' do |pkg, settings, platform|
   # ENVIRONMENT, FLAGS, TARGETS
   #############################
 
-  # make sure openssl-lib compiles first, as it only installs versioned libs and hopefully will not cause problems
-  # the other way around caused: # error "Inconsistency between crypto.h and cryptlib.c"
-  if settings[:provide_ssllib] && platform.is_linux?
-    pkg.build_requires 'openssl-lib'
-  end
-
   # FIXME: pkg.apply_patch is not useful here as vanagon component does
   # not know how to extract rpm and patch happend before configure step
   # proper fix would be extension in vanagon for source rpm handling

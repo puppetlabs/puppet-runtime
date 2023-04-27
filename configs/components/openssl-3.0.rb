@@ -8,12 +8,6 @@ component 'openssl' do |pkg, settings, platform|
   # ENVIRONMENT, FLAGS, TARGETS
   #############################
 
-  # make sure openssl-lib compiles first, as we it only installs versioned libs and hopefully will not cause problems
-  # the other way around caused: # error "Inconsistency between crypto.h and cryptlib.c"
-  if settings[:provide_ssllib] && platform.is_linux?
-    pkg.build_requires 'openssl-lib'
-  end
-
   if platform.name =~ /^(el-|redhat-|fedora-)/
     pkg.build_requires 'perl-core'
   elsif platform.is_windows?
