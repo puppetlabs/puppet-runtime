@@ -170,46 +170,87 @@ project 'pdk-runtime' do |proj|
   proj.component "openssl-#{proj.openssl_version}"
 
   # Common deps
-  proj.component "curl"
+  proj.component 'curl'
 
   # Git and deps
-  proj.component "git"
+  proj.component 'git'
 
   # Ruby and deps
-  proj.component "runtime-pdk"
-  proj.component "puppet-ca-bundle"
+  proj.component 'puppet-ca-bundle'
 
-  proj.component "readline" if platform.is_macos?
-  proj.component "augeas" unless platform.is_windows?
-  proj.component "libxml2" unless platform.is_windows?
-  proj.component "libxslt" unless platform.is_windows?
+  proj.component 'readline' if platform.is_macos?
+  proj.component 'augeas' unless platform.is_windows?
+  proj.component 'libxml2' unless platform.is_windows?
+  proj.component 'libxslt' unless platform.is_windows?
 
   proj.component "ruby-#{proj.ruby_version}"
 
-  proj.component "ruby-augeas" unless platform.is_windows?
+  proj.component 'ruby-augeas' unless platform.is_windows?
 
   # We only build ruby-selinux for EL 5-7
-  if platform.is_el? || platform.is_fedora?
-    proj.component "ruby-selinux"
-  end
+  proj.component 'ruby-selinux' if platform.is_el? || platform.is_fedora?
 
-  proj.component "ruby-stomp"
+  proj.component 'ruby-stomp'
 
   # PDK Rubygems
-  proj.component "rubygem-ffi"
-  proj.component "rubygem-locale"
-  proj.component "rubygem-text"
-  proj.component "rubygem-gettext"
-  proj.component "rubygem-fast_gettext"
-  proj.component "rubygem-gettext-setup"
-  proj.component "rubygem-minitar"
+  proj.component 'rubygem-ffi'
+  proj.component 'rubygem-locale'
+  proj.component 'rubygem-text'
+  proj.component 'rubygem-gettext'
+  proj.component 'rubygem-fast_gettext'
+  proj.component 'rubygem-gettext-setup'
+  proj.component 'rubygem-minitar'
+
+  # Bundler
+  proj.component 'rubygem-bundler'
+
+  # Cri and deps
+  proj.component 'rubygem-cri'
+
+  # Childprocess and deps
+  proj.component 'rubygem-childprocess'
+
+  proj.component 'rubygem-hitimes'
+
+  ## tty-reader and deps
+  proj.component 'rubygem-tty-screen'
+  proj.component 'rubygem-tty-cursor'
+  proj.component 'rubygem-wisper'
+  proj.component 'rubygem-tty-reader'
+
+  ## pastel and deps
+  proj.component 'rubygem-tty-color'
+  proj.component 'rubygem-pastel'
+
+  ## root tty gems
+  proj.component 'rubygem-tty-prompt'
+  proj.component 'rubygem-tty-spinner'
+  proj.component 'rubygem-tty-which'
+
+  # json-schema and deps
+  proj.component 'rubygem-public_suffix'
+  proj.component 'rubygem-addressable'
+  proj.component 'rubygem-json-schema'
+
+  # Analytics deps
+  proj.component 'rubygem-concurrent-ruby'
+  proj.component 'rubygem-thor'
+  proj.component 'rubygem-hocon'
+  proj.component 'rubygem-facter'
+  proj.component 'rubygem-httpclient'
+
+  # Other deps
+  proj.component 'rubygem-deep_merge'
+  proj.component 'rubygem-json_pure'
+  proj.component 'rubygem-diff-lcs'
+  proj.component 'rubygem-pathspec'
 
   # Additional Rubies
   if proj.respond_to?(:additional_rubies)
-    proj.additional_rubies.keys.each do |rubyver|
+    proj.additional_rubies.each_key do |rubyver|
       proj.component "ruby-#{rubyver}"
 
-      ruby_minor = rubyver.split('.')[0,2].join('.')
+      ruby_minor = rubyver.split('.')[0, 2].join('.')
 
       proj.component "ruby-#{ruby_minor}-augeas" unless platform.is_windows?
       proj.component "ruby-#{ruby_minor}-selinux" if platform.is_el? || platform.is_fedora?
@@ -218,7 +259,7 @@ project 'pdk-runtime' do |proj|
   end
 
   # Platform specific deps
-  proj.component "ansicon" if platform.is_windows?
+  proj.component 'ansicon' if platform.is_windows?
 
   # What to include in package?
   proj.directory proj.install_root
