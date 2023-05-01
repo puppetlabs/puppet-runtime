@@ -5,8 +5,8 @@ component 'rubygem-puppet' do |pkg, settings, platform|
   pkg.version version
 
   case version
-  when '7.18.0'
-    pkg.md5sum '16e019b09d29592cdf43dbea72e14e1c'
+  when '7.24.0'
+    pkg.md5sum '3e996d5ceb0af826c95484494ad8a9a4'
   when '6.28.0'
     pkg.md5sum '31520d986869f9362c88c7d6a4a5c103'
   else
