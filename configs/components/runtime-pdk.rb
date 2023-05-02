@@ -1,5 +1,8 @@
 # This component exists to link in the gcc and stdc++ runtime libraries.
 component "runtime-pdk" do |pkg, settings, platform|
+  pkg.build_requires "libffi"
+  pkg.build_requires "libyaml"
+
   if platform.is_windows?
     lib_type = platform.architecture == "x64" ? "seh" : "sjlj"
     ["libgcc_s_#{lib_type}-1.dll", 'libstdc++-6.dll', 'libwinpthread-1.dll'].each do |dll|
@@ -18,6 +21,11 @@ component "runtime-pdk" do |pkg, settings, platform|
     pkg.install_file "#{settings[:tools_root]}/bin/libiconv-2.dll", "#{settings[:ruby_bindir]}/libiconv-2.dll"
     pkg.install_file "#{settings[:tools_root]}/bin/libffi-6.dll", "#{settings[:ruby_bindir]}/libffi-6.dll"
 
+    if settings[:ruby_major_version] >= 3
+      pkg.install_file "#{settings[:bindir]}/libyaml-0-2.dll", "#{settings[:ruby_bindir]}/libyaml-0-2.dll"
+      pkg.install_file "#{settings[:bindir]}/libffi-8.dll", "#{settings[:ruby_bindir]}/libffi-8.dll"
+    end
+
     # Copy the DLLs into additional ruby install bindirs as well.
     if settings.has_key?(:additional_rubies)
       settings[:additional_rubies].each do |rubyver, local_settings|
@@ -28,6 +36,7 @@ component "runtime-pdk" do |pkg, settings, platform|
         pkg.install_file "#{settings[:tools_root]}/bin/libffi-6.dll", "#{local_settings[:ruby_bindir]}/libffi-6.dll"
       end
     end
+
   elsif platform.is_macos?
 
     # Do nothing

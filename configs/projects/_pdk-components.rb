@@ -1,9 +1,6 @@
 # This file is used to define the components that make up the PDK runtime package.
 
-matchdata = platform.settings[:ruby_version].match /(\d+)\.\d+\.\d+/
-ruby_major_version = matchdata[1].to_i
-
-if ruby_major_version >= 3
+if proj.ruby_major_version >= 3
 
   openssl3_platform = [
     platform.is_el?,
@@ -17,10 +14,11 @@ if ruby_major_version >= 3
   openssl_version = proj.openssl_version
   openssl_version = '3.0' if openssl3_platform
 
-  # Ruby 3.2 does not package these two libraries so we need to add them as a component
+  proj.component "openssl-#{openssl_version}"
+
+  # Ruby 3.2 does not package these two libraries so we need to add them
   proj.component 'libffi'
   proj.component 'libyaml'
-  proj.component "openssl-#{openssl_version}"
 end
 
 # Always build the default openssl version
@@ -40,8 +38,14 @@ proj.component 'readline' if platform.is_macos?
 proj.component 'augeas' unless platform.is_windows?
 proj.component 'libxml2' unless platform.is_windows?
 proj.component 'libxslt' unless platform.is_windows?
-
 proj.component "ruby-#{proj.ruby_version}"
+
+# After installing ruby, we need to copy libssp to the ruby bindir on windows
+if platform.is_windows?
+  ruby_component = @project.get_component "ruby-#{proj.ruby_version}"
+  ruby_component.install.push "cp '#{settings[:bindir]}/libssp-0.dll' '#{settings[:ruby_bindir]}/libssp-0.dll'"
+end
+
 proj.component 'ruby-augeas' unless platform.is_windows?
 proj.component 'ruby-selinux' if platform.is_el? || platform.is_fedora?
 proj.component 'ruby-stomp'
