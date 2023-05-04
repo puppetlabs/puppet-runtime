@@ -22,12 +22,6 @@ project 'agent-runtime-main' do |proj|
   # Settings specific to this branch
   ########
 
-  # Override OpenSSL version for select platforms. Eventually all platforms will support
-  # it and we can remove the conditional
-  if (platform.is_el? || platform.is_fedora? || platform.is_sles? || platform.is_deb? || platform.is_macos? || platform.is_windows?) && !platform.is_fips?
-    proj.setting(:openssl_version, '3.0')
-  end
-
   # Directory for gems shared by puppet and puppetserver
   proj.setting(:puppet_gem_vendor_dir, File.join(proj.libdir, "ruby", "vendor_gems"))
 

@@ -63,9 +63,7 @@ end
 # BUILD REQUIREMENTS
 ####################
 
-unless settings[:system_openssl]
-  pkg.build_requires "openssl-#{settings[:openssl_version]}"
-end
+pkg.build_requires "openssl-#{settings[:openssl_version]}"
 
 if platform.is_aix?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
