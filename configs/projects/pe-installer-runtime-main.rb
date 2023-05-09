@@ -1,16 +1,12 @@
 project 'pe-installer-runtime-main' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'pe-installer')
-  proj.setting(:ruby_version, '2.7.8')
-  proj.setting(:augeas_version, '1.11.0')
+  proj.setting(:ruby_version, '3.2.2')
+  proj.setting(:augeas_version, '1.13.0')
   # We need to explicitly define 1.1.1k here to avoid
   # build dep conflicts between openssl-1.1.1 needed by curl
   # and krb5-devel
-  if platform.name =~ /^redhatfips-8/
-    proj.setting(:openssl_version, '1.1.1k')
-  else 
-    proj.setting(:openssl_version, '1.1.1')
-  end
+  proj.setting(:openssl_version, '3.0')
   platform = proj.get_platform
 
   proj.version_from_git
@@ -64,7 +60,7 @@ project 'pe-installer-runtime-main' do |proj|
   #
 
   # rubygem-net-ssh included in shared-agent-components
-  proj.setting(:rubygem_net_ssh_version, '5.2.0')
+  proj.setting(:rubygem_net_ssh_version, '7.0.1')
 
   ########
   # Load shared agent components

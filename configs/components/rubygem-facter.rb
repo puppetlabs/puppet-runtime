@@ -4,3 +4,4 @@ component 'rubygem-facter' do |pkg, settings, platform|
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
+

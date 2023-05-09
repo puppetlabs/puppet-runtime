@@ -11,7 +11,8 @@ component "runtime-pe-bolt-server" do |pkg, settings, platform|
   artifactory_url = 'https://artifactory.delivery.puppetlabs.net/artifactory'
 
   if platform.is_rpm?
-    platform.add_build_repository "#{artifactory_url}/rpm_enterprise__local/#{settings[:pe_version]}/repos/#{platform.name}/#{platform.name}.repo"
+    #platform.add_build_repository "#{artifactory_url}/rpm_enterprise__local/#{settings[:pe_version]}/repos/#{platform.name}/#{platform.name}.repo"
+    platform.add_build_repository "https://artifactory.delivery.puppetlabs.net/artifactory/rpm__local/development/puppet8-release/63dcc4830b2f52f00ff7b219294b8fe36d9f8a00/el-7-x86_64/puppet8-release-1.0.0-1.el7.noarch.rpm"
   end
 
   if platform.is_deb?
