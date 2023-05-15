@@ -36,6 +36,7 @@ proj.setting(:runtime_project, 'pe-bolt-server')
 # Set desired versions for gem components that offer multiple versions:
 # TODO: Can runtime projects use these updated versions?
 proj.setting(:rubygem_deep_merge_version, '1.2.2')
+proj.setting(:rubygem_net_ssh_version, '7.0.1')
 
 # (pe-bolt-server does not run on Windows, so only the *nix path is here)
 proj.setting(:prefix, '/opt/puppetlabs/server/apps/bolt-server')
