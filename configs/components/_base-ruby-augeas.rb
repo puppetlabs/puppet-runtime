@@ -3,6 +3,8 @@
 # load it with instance_eval. See ruby-x.y-augeas.rb configs.
 #
 
+pkg.add_source("file://resources/patches/augeas/ruby-augeas-0.5.0-patch_c_extension.patch")
+
 # These can be overridden by the including component.
 ruby_version ||= settings[:ruby_version]
 host_ruby ||= settings[:host_ruby]
@@ -72,6 +74,9 @@ end
 
 pkg.build do
   build_commands = []
+  if ruby_version =~ /^3/
+    build_commands << "#{platform.patch} --strip=2 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../ruby-augeas-0.5.0-patch_c_extension.patch"
+  end
   build_commands << "#{ruby} ext/augeas/extconf.rb"
   build_commands << "#{platform[:make]} -e -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"
 
