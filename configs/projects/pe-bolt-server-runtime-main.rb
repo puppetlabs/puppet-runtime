@@ -8,6 +8,8 @@ project 'pe-bolt-server-runtime-main' do |proj|
   proj.setting(:no_doc, true)
 
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-bolt-server.rb'))
+  # TODO: Work around PE-36078 by using forked non-optimal solution
+  proj.component('rubygem-rubyntlm-fork')
   proj.component 'rubygem-prime'
   proj.component 'rubygem-rexml'
 end
