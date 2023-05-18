@@ -16,16 +16,16 @@ component 'openssl' do |pkg, settings, platform|
     pkg.build_requires 'perl'
   end
 
-  target = cflags = ldflags = sslflags = ''
+  target = sslflags = ''
+  cflags = settings[:cflags]
+  ldflags = settings[:ldflags]
 
- if platform.is_windows?
+  if platform.is_windows?
     pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
     pkg.environment 'CYGWIN', settings[:cygwin]
     pkg.environment 'MAKE', platform[:make]
 
     target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
-  #   cflags = settings[:cflags]
-  #   ldflags = settings[:ldflags]
   # elsif platform.is_cross_compiled_linux?
   #   pkg.environment 'PATH', "/opt/pl-build-tools/bin:$(PATH)"
   #   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
@@ -35,8 +35,7 @@ component 'openssl' do |pkg, settings, platform|
   #     # OpenSSL fails to work on aarch unless we turn down the compiler optimization.
   #     # See PA-2135 for details
   #     cflags += " -O2"
-   end
-
+  #   end
   #   ldflags = "-Wl,-rpath=/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
   #   target = if platform.architecture == 'aarch64'
   #               'linux-aarch64'
@@ -59,10 +58,9 @@ component 'openssl' do |pkg, settings, platform|
   #   cflags = "#{settings[:cflags]} -fPIC"
   #   ldflags = "-R/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
   #   target = platform.architecture =~ /86/ ? 'solaris-x86-gcc' : 'solaris-sparcv9-gcc'
-  if platform.is_macos?
+  elsif platform.is_macos?
     pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
 
-    cflags = settings[:cflags]
     target = if platform.is_cross_compiled?
                'darwin64-arm64'
              else
@@ -71,7 +69,6 @@ component 'openssl' do |pkg, settings, platform|
   elsif platform.is_linux?
     pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
 
-    cflags = settings[:cflags]
     ldflags = "#{settings[:ldflags]} -Wl,-z,relro"
     if platform.architecture =~ /86$/
       target = 'linux-elf'
