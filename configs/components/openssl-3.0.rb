@@ -99,32 +99,6 @@ component 'openssl' do |pkg, settings, platform|
   # CONFIGURE
   ###########
 
-  # if platform.is_solaris? && platform.name =~ /10/
-  #   # We need to link the rt library on Solaris 10 in order to access the clock_gettime
-  #   # function.
-  #   cflags += " -lrt"
-
-  #   # Additionally when we're building on SPARC, we need to revert
-  #   # https://github.com/openssl/openssl/commit/7a061312 because for
-  #   # some reason, the linker fails to generate the .map files (like
-  #   # e.g. libcrypto.map). Strangely, this is not an issue for Solaris
-  #   # 11 SPARC despite it using an older version of ld (2.25 vs. 2.27).
-  #   if platform.is_cross_compiled?
-  #     pkg.apply_patch 'resources/patches/openssl/openssl-1.1.1a-revert-7a061312.patch'
-  #   else
-  #     # Work around gcc not conforming to Solaris 32-bit ABI by expecting 16-byte stack alignment
-  #     # https://github.com/openssl/openssl/issues/13666
-  #     cflags += " -mincoming-stack-boundary=2"
-  #   end
-  # end
-
-  # OpenSSL 1.1.1q has a bug with a test not including a required library that caueses
-  # packing failures on macos. Probably safe to look at the 1.1.1r release to see if
-  # this can be removed.
-  # if platform.is_macos?
-  #   pkg.apply_patch 'resources/patches/openssl/openssl_1.1.1q_fix_c_include.patch'
-  # end
-
   # Defining --libdir ensures that we avoid the multilib (lib/ vs. lib64/) problem,
   # since configure uses the existence of a lib64 directory to determine
   # if it should install its own libs into a multilib dir. Yay OpenSSL!
@@ -160,8 +134,6 @@ component 'openssl' do |pkg, settings, platform|
   perl_exec = ''
   # if platform.is_aix?
   #   perl_exec = '/opt/freeware/bin/perl'
-  # elsif platform.is_solaris? && platform.os_version == '10'
-  #   perl_exec = '/opt/csw/bin/perl'
   # end
   configure_flags << project_flags
 
