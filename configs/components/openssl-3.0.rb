@@ -20,10 +20,8 @@ component 'openssl' do |pkg, settings, platform|
 
  if platform.is_windows?
     pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
-  #   pkg.environment 'CYGWIN', settings[:cygwin]
-  #   pkg.environment 'CC', settings[:cc]
-  #   pkg.environment 'CXX', settings[:cxx]
-  #   pkg.environment 'MAKE', platform[:make]
+    pkg.environment 'CYGWIN', settings[:cygwin]
+    pkg.environment 'MAKE', platform[:make]
 
     target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
   #   cflags = settings[:cflags]
