@@ -142,11 +142,24 @@ component 'openssl' do |pkg, settings, platform|
   # BUILD
   #######
 
+  build_commands = []
+
+  if platform.is_windows? && platform.architecture == "x86"
+    # mingw-w32 5.2.0 has a bug in include/winnt.h that declares GetCurrentFiber
+    # with __CRT_INLINE, which results in the function not being inlined and
+    # generates a linker error: undefined reference to `GetCurrentFiber'.
+    # This only affects 32-bit builds
+    # See https://github.com/openssl/openssl/issues/513
+    # See https://github.com/mingw-w64/mingw-w64/commit/8da1aae7a7ff5bf996878dc8fe30a0e01e210e5a
+    pkg.add_source("file://resources/patches/windows/FORCEINLINE-i686-w64-mingw32-winnt.h")
+    build_commands << "#{platform.patch} --dir #{settings[:gcc_root]}/#{settings[:platform_triple]} --strip=2 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../FORCEINLINE-i686-w64-mingw32-winnt.h"
+  end
+
+  build_commands << "#{platform[:make]} depend"
+  build_commands << "#{platform[:make]}"
+
   pkg.build do
-    [
-      "#{platform[:make]} depend",
-      "#{platform[:make]}"
-    ]
+    build_commands
   end
 
   #########
