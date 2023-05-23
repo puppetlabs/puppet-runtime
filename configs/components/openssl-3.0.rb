@@ -125,10 +125,7 @@ component 'openssl' do |pkg, settings, platform|
   #   pkg.apply_patch 'resources/patches/openssl/openssl_1.1.1q_fix_c_include.patch'
   # end
 
-  # OpenSSL Configure doesn't honor CFLAGS or LDFLAGS as environment variables.
-  # Instead, those should be passed to Configure at the end of its options, as
-  # any unrecognized options are passed straight through to ${CC}. Defining
-  # --libdir ensures that we avoid the multilib (lib/ vs. lib64/) problem,
+  # Defining --libdir ensures that we avoid the multilib (lib/ vs. lib64/) problem,
   # since configure uses the existence of a lib64 directory to determine
   # if it should install its own libs into a multilib dir. Yay OpenSSL!
   configure_flags = [
@@ -153,8 +150,10 @@ component 'openssl' do |pkg, settings, platform|
   # elsif platform.is_solaris? && platform.os_version == '10'
   #   perl_exec = '/opt/csw/bin/perl'
   # end
-  configure_flags << project_flags << cflags << ldflags
+  configure_flags << project_flags
 
+  pkg.environment 'CFLAGS', cflags
+  pkg.environment 'LDFLAGS', ldflags
   pkg.configure do
     ["#{perl_exec} ./Configure #{configure_flags.join(' ')}"]
   end
