@@ -133,13 +133,26 @@ component 'openssl' do |pkg, settings, platform|
     '--libdir=lib',
     "--openssldir=#{settings[:prefix]}/ssl",
     'shared',
-    'no-asm',
+    'no-gost',
     target,
     sslflags,
     'no-camellia',
     'no-ec2m',
     'no-md2',
-    'no-ssl3'
+    'no-ssl3',
+    'no-ssl3-method',
+    'no-dtls1-method',
+    'no-dtls1_2-method',
+    'no-aria',
+    'no-bf',
+    'no-cast',
+    'no-rc2',
+    'no-rc5',
+    'no-md4',
+    'no-mdc2',
+    'no-rmd160',
+    'no-whirlpool',
+    'no-legacy'
   ]
 
   # Individual projects may provide their own openssl configure flags:
