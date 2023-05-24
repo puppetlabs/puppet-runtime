@@ -119,7 +119,7 @@ component 'openssl' do |pkg, settings, platform|
     'no-rc5',
     'no-md4',
     'no-mdc2',
-    'no-rmd160',
+    # 'no-rmd160', this is causing failures with pxp, remove once pxp-agent does not need it
     'no-whirlpool',
     'no-legacy'
   ]
