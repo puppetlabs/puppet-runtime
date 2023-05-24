@@ -182,7 +182,9 @@ if platform.is_windows?
   proj.setting(:cflags, "#{proj.cppflags}")
 
   ldflags = "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir} -Wl,--nxcompat"
-  ldflags += ' -Wl,--dynamicbase' unless platform.name =~ /windowsfips-2012r2/
+  if platform.name !~ /windowsfips-2012r2/ || name != 'agent-runtime-7.x'
+    ldflags += ' -Wl,--dynamicbase'
+  end
   proj.setting(:ldflags, ldflags)
 
   proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
