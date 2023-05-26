@@ -117,7 +117,7 @@ component 'openssl' do |pkg, settings, platform|
     'no-cast',
     'no-rc2',
     'no-rc5',
-    'no-md4',
+    # 'no-md4', puppet infra uses the agent's runtime and runs WinRM tasks using NTLM, so it needs DES & MD4
     'no-mdc2',
     # 'no-rmd160', this is causing failures with pxp, remove once pxp-agent does not need it
     'no-whirlpool',
