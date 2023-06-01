@@ -6,14 +6,13 @@ platform "windows-2012r2-x64" do |plat|
   visual_studio_sdk_version = 'win8.1'
 
   # We need to ensure we install chocolatey prior to adding any nuget repos. Otherwise, everything will fall over
-  plat.add_build_repository "https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources/windows/chocolatey/install-chocolatey.ps1"
+  plat.add_build_repository "https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources/windows/chocolatey/install-chocolatey-1.4.0.ps1"
   plat.add_build_repository "https://artifactory.delivery.puppetlabs.net/artifactory/api/nuget/nuget"
 
   # C:\tools is likely added by mingw, however because we also want to use that
   # dir for vsdevcmd.bat we create it for safety
   plat.provision_with "mkdir -p C:/tools"
   # We don't want to install any packages from the chocolatey repo by accident
-  plat.provision_with "C:/ProgramData/chocolatey/bin/choco.exe upgrade -y chocolatey"
   plat.provision_with "C:/ProgramData/chocolatey/bin/choco.exe sources remove -name chocolatey"
 
   packages = [
