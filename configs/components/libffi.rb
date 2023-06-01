@@ -1,7 +1,7 @@
 component 'libffi' do |pkg, settings, platform|
   pkg.version '3.4.3'
   pkg.md5sum 'b57b0ac1d1072681cee9148a417bd2ec'
-  pkg.url "https://github.com/libffi/libffi/releases/download/#{pkg.get_name}/#{pkg.get_name}-#{pkg.get_version}.tar.gz"
+  pkg.url "https://github.com/libffi/libffi/releases/download/v#{pkg.get_version}/#{pkg.get_name}-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/#{pkg.get_name}-#{pkg.get_version}.tar.gz"
 
   if platform.is_aix?
