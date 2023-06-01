@@ -113,8 +113,8 @@ component 'openssl' do |pkg, settings, platform|
     'no-dtls1-method',
     'no-dtls1_2-method',
     'no-aria',
-    'no-bf',
-    'no-cast',
+    # 'no-bf', pgcrypto is requires this cipher in postgres for puppetdb
+    # 'no-cast', pgcrypto is requires this cipher in postgres for puppetdb
     'no-rc2',
     'no-rc5',
     # 'no-md4', puppet infra uses the agent's runtime and runs WinRM tasks using NTLM, so it needs DES & MD4
