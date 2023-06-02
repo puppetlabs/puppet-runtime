@@ -107,7 +107,6 @@ component 'ruby-2.5.9' do |pkg, settings, platform|
   without_dtrace = [
     'aix-7.1-ppc',
     'el-7-ppc64le',
-    'el-7-aarch64',
     'osx-11-arm64',
     'osx-12-arm64',
     'redhatfips-7-x86_64',
