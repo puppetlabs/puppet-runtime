@@ -96,6 +96,10 @@ project 'pe-installer-runtime-main' do |proj|
   proj.component 'rubygem-prime'
   proj.component 'rubygem-erubi'
 
+  #TODO: Once we solve PE-36078 stop using forked ntlm
+  proj.setting(:gem_build, "#{proj.host_gem} build")
+  proj.component('rubygem-rubyntlm-fork')
+
   # What to include in package?
   proj.directory proj.prefix
 
