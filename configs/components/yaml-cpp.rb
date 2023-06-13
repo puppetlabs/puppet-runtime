@@ -34,10 +34,13 @@ component "yaml-cpp" do |pkg, settings, platform|
     pkg.environment "CYGWIN", settings[:cygwin]
     cmake = "C:/ProgramData/chocolatey/bin/cmake.exe -G \"MinGW Makefiles\""
     cmake_toolchain_file = "-DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/pl-build-toolchain.cmake"
-  elsif platform.is_aix? || platform.name =~ /debian-9|el-[567]|redhatfips-7|sles-(?:11|12)|ubuntu-18\.04-amd64/
+  elsif platform.name =~ /aix-7\.1-ppc|debian-9|el-[567]|redhatfips-7|sles-(?:11|12)|ubuntu-18\.04-amd64/
     cmake = "#{settings[:tools_root]}/bin/cmake"
     cmake_toolchain_file = "-DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/pl-build-toolchain.cmake"
   else
+    if platform.is_aix?
+      pkg.environment "PATH", "$PATH:/opt/freeware/bin"
+    end
     pkg.environment 'CPPFLAGS', settings[:cppflags]
     pkg.environment 'CFLAGS', settings[:cflags]
     pkg.environment 'LDFLAGS', settings[:ldflags]

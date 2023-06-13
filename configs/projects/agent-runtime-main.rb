@@ -80,5 +80,5 @@ project 'agent-runtime-main' do |proj|
   proj.component 'rubygem-prime'
 
   proj.component 'boost' if ENV['NO_PXP_AGENT'].to_s.empty?
-  proj.component 'yaml-cpp' if ENV['NO_PXP_AGENT'].to_s.empty?
+  proj.component 'yaml-cpp' if ENV['NO_PXP_AGENT'].to_s.empty? && platform.name != 'aix-7.2-ppc' # PA-5617
 end
