@@ -70,7 +70,11 @@ pkg.build_requires "openssl-#{settings[:openssl_version]}"
 
 if platform.is_aix?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
-  pkg.build_requires "libedit"
+  if platform.name == 'aix-7.1-ppc'
+    pkg.build_requires "libedit"
+  else
+    pkg.build_requires "readline"
+  end
 elsif platform.is_solaris?
   pkg.build_requires "runtime-#{settings[:runtime_project]}"
   pkg.build_requires "libedit" if platform.name =~ /^solaris-10-sparc/

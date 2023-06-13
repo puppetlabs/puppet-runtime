@@ -48,7 +48,7 @@ if platform.is_el? || platform.is_fedora? || platform.name =~ /debian|ubuntu/
 end
 
 # libedit is used instead of readline on these platforms
-if platform.is_solaris? || platform.is_aix?
+if platform.is_solaris? || platform.name == 'aix-7.1-ppc'
   proj.component 'libedit'
 end
 

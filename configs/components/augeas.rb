@@ -63,9 +63,14 @@ component 'augeas' do |pkg, settings, platform|
       pkg.environment "PATH", "/opt/freeware/bin:$(PATH):#{settings[:bindir]}"
     end
     pkg.build_requires "runtime-#{settings[:runtime_project]}"
+    if platform.name == 'aix-7.1-ppc'
+      pkg.build_requires 'libedit'
+    else
+      pkg.build_requires 'readline'
+    end
+
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", "-I#{settings[:includedir]}"
-    pkg.build_requires 'libedit'
   end
 
   if platform.is_rpm? && !platform.is_aix?
