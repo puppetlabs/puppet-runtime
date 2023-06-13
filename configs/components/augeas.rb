@@ -56,8 +56,12 @@ component 'augeas' do |pkg, settings, platform|
   pkg.environment "PKG_CONFIG_PATH", "#{settings[:libdir]}/pkgconfig"
 
   if platform.is_aix?
-        # We still use pl-gcc for AIX 7.1
-    pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
+    if platform.name == 'aix-7.1-ppc'
+      pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
+    else
+      pkg.environment "CC", "/opt/freeware/bin/gcc"
+      pkg.environment "PATH", "/opt/freeware/bin:$(PATH):#{settings[:bindir]}"
+    end
     pkg.build_requires "runtime-#{settings[:runtime_project]}"
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", "-I#{settings[:includedir]}"

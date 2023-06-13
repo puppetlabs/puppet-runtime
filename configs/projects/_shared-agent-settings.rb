@@ -156,7 +156,7 @@ if platform.name =~ /sles-15|el-8|debian-10/ || platform.is_fedora?
   proj.setting(:ldflags, "-L#{proj.libdir} -Wl,-rpath=#{proj.libdir},-z,relro,-z,now")
 end
 
-if ruby_version_x == "3" && !platform.is_aix? && !platform.is_solaris?
+if ruby_version_x == "3" && !platform.is_solaris?
   proj.setting(:openssl_version, '3.0')
 elsif platform.name =~ /^redhatfips-/
   proj.setting(:openssl_version, '1.1.1-fips')
@@ -208,7 +208,11 @@ if platform.is_macos?
 end
 
 if platform.is_aix?
-  proj.setting(:ldflags, "-Wl,-brtl -L#{proj.libdir} -L/opt/pl-build-tools/lib")
+  if platform.name == 'aix-7.1-ppc'
+    proj.setting(:ldflags, "-Wl,-brtl -L#{proj.libdir} -L/opt/pl-build-tools/lib")
+  else
+    proj.setting(:ldflags, "-Wl,-brtl -L#{proj.libdir}")
+  end
 end
 
 if platform.is_solaris?

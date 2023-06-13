@@ -140,7 +140,11 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
   # TODO: Remove this once PA-1607 is resolved.
   # TODO: Can we use native autoconf? The dependencies seemed a little too extensive
   if platform.is_aix?
-    pkg.configure { ["/opt/pl-build-tools/bin/autoconf"] }
+    if platform.name == 'aix-7.1-ppc'
+      pkg.configure { ["/opt/pl-build-tools/bin/autoconf"] }
+    else
+      pkg.configure { ["/opt/freeware/bin/autoconf"] }
+    end
   else
     pkg.configure { ["bash autogen.sh"] }
   end
