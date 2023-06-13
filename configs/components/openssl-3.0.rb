@@ -46,11 +46,16 @@ component 'openssl' do |pkg, settings, platform|
   #             elsif platform.architecture =~ /ppc64/ # Big-endian
   #               'linux-ppc64'
   #             end
-  # elsif platform.is_aix?
-  #   pkg.environment 'CC', '/opt/pl-build-tools/bin/gcc'
+  elsif platform.is_aix?
+    raise "openssl-3.0 is not supported on older AIX" if platform.name == 'aix-7.1-ppc'
 
-  #   cflags = '$${CFLAGS} -static-libgcc'
-  #   target = 'aix-gcc'
+    # REMIND: why not PATH?
+    pkg.environment 'CC', '/opt/freeware/bin/gcc'
+
+    cflags = "#{settings[:cflags]} -static-libgcc"
+    # see https://github.com/openssl/openssl/issues/18007
+    ldflags = "#{settings[:ldflags]} -latomic -lm"
+    target = 'aix-gcc'
   # elsif platform.is_solaris?
   #   pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin'
   #   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
@@ -127,9 +132,9 @@ component 'openssl' do |pkg, settings, platform|
   # Individual projects may provide their own openssl configure flags:
   project_flags = settings[:openssl_extra_configure_flags] || []
   perl_exec = ''
-  # if platform.is_aix?
-  #   perl_exec = '/opt/freeware/bin/perl'
-  # end
+  if platform.is_aix?
+    perl_exec = '/opt/freeware/bin/perl'
+  end
   configure_flags << project_flags
 
   pkg.environment 'CFLAGS', cflags
@@ -169,9 +174,10 @@ component 'openssl' do |pkg, settings, platform|
   install_prefix = platform.is_windows? ? '' : 'INSTALL_PREFIX=/'
   install_commands = []
 
-  # if platform.is_aix?
-  #   install_commands << "slibclean"
-  # end
+  if platform.is_aix?
+    # "Removes any currently unused modules in kernel and library memory."
+    install_commands << "slibclean"
+  end
 
   # Skip man and html docs
   install_commands << "#{platform[:make]} #{install_prefix} install_sw install_ssldirs"
