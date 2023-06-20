@@ -76,6 +76,15 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
     pkg.environment 'MAKE', 'make'
   elsif platform.is_cross_compiled?
     pkg.environment 'CROSS_COMPILING', 'true'
+  elsif platform.is_aix?
+    # When using the default -ggdb3 I was seeing linker errors like, so use -g0 instead:
+    #
+    # ld: 0711-759 INTERNAL ERROR: Source file dwarf.c, line 528.
+    #   Depending on where this product was acquired, contact your service
+    #   representative or the approved supplier.
+    #   collect2: error: ld returned 16 exit status
+
+    pkg.environment 'optflags', "-O2 -fPIC -g0 "
   else
     pkg.environment 'optflags', '-O2'
   end
@@ -117,6 +126,7 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
 
   without_dtrace = [
     'aix-7.1-ppc',
+    'aix-7.2-ppc',
     'el-7-ppc64le',
     'osx-11-arm64',
     'osx-12-arm64',
@@ -140,7 +150,11 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
   # TODO: Remove this once PA-1607 is resolved.
   # TODO: Can we use native autoconf? The dependencies seemed a little too extensive
   if platform.is_aix?
-    pkg.configure { ["/opt/pl-build-tools/bin/autoconf"] }
+    if platform.name == 'aix-7.1-ppc'
+      pkg.configure { ["/opt/pl-build-tools/bin/autoconf"] }
+    else
+      pkg.configure { ["/opt/freeware/bin/autoconf"] }
+    end
   else
     pkg.configure { ["bash autogen.sh"] }
   end
@@ -178,6 +192,7 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
 
   target_doubles = {
     'powerpc-ibm-aix7.1.0.0' => 'powerpc-aix7.1.0.0',
+    'powerpc-ibm-aix7.2.0.0' => 'powerpc-aix7.2.0.0',
     'aarch64-apple-darwin' => 'arm64-darwin',
     'aarch64-redhat-linux' => 'aarch64-linux',
     'ppc64-redhat-linux' => 'powerpc64-linux',

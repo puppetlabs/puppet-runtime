@@ -13,7 +13,7 @@ end
 # Common components required by all agent branches
 proj.component 'runtime-agent'
 
-matchdata = platform.settings[:ruby_version].match /(\d+)\.\d+\.\d+/
+matchdata = platform.settings[:ruby_version].match(/(\d+)\.\d+\.\d+/)
 ruby_major_version = matchdata[1].to_i
 # Ruby 3.2 does not package these two libraries so we need to add them as a component
 if ruby_major_version >= 3
@@ -30,7 +30,7 @@ else
   proj.component "openssl-#{proj.openssl_version}"
 end
 
-proj.component 'curl'
+proj.component 'curl' if platform.name != 'aix-7.2-ppc' # PA-5618
 proj.component 'puppet-ca-bundle'
 proj.component "ruby-#{proj.ruby_version}"
 proj.component "readline" if platform.is_macos?
@@ -48,7 +48,7 @@ if platform.is_el? || platform.is_fedora? || platform.name =~ /debian|ubuntu/
 end
 
 # libedit is used instead of readline on these platforms
-if platform.is_solaris? || platform.is_aix?
+if platform.is_solaris? || platform.name == 'aix-7.1-ppc'
   proj.component 'libedit'
 end
 

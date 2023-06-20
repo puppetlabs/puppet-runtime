@@ -5,7 +5,11 @@ component 'libffi' do |pkg, settings, platform|
   pkg.mirror "#{settings[:buildsources_url]}/#{pkg.get_name}-#{pkg.get_version}.tar.gz"
 
   if platform.is_aix?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
+    if platform.name == 'aix-7.1-ppc'
+      pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
+    else
+      pkg.environment "PATH", "/opt/freeware/bin:$(PATH)"
+    end
   elsif platform.is_cross_compiled_linux?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
     pkg.environment "CFLAGS", settings[:cflags]

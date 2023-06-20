@@ -6,7 +6,7 @@ project 'agent-runtime-main' do |proj|
   proj.setting :rubygem_hocon_version, '1.4.0'
 
   # Solaris and AIX depend on libedit which breaks augeas compliation starting with 1.13.0
-  if platform.is_solaris? || platform.is_aix?
+  if platform.is_solaris? || platform.name == 'aix-7.1-ppc'
     proj.setting :augeas_version, '1.12.0'
   else
     proj.setting :augeas_version, '1.13.0'
@@ -80,5 +80,5 @@ project 'agent-runtime-main' do |proj|
   proj.component 'rubygem-prime'
 
   proj.component 'boost' if ENV['NO_PXP_AGENT'].to_s.empty?
-  proj.component 'yaml-cpp' if ENV['NO_PXP_AGENT'].to_s.empty?
+  proj.component 'yaml-cpp' if ENV['NO_PXP_AGENT'].to_s.empty? && platform.name != 'aix-7.2-ppc' # PA-5617
 end

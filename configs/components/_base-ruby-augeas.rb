@@ -21,8 +21,13 @@ pkg.build_requires "augeas"
 
 pkg.environment "PATH", "$(PATH):/opt/pl-build-tools/bin:/usr/local/bin:/opt/csw/bin:/usr/ccs/bin:/usr/sfw/bin"
 if platform.is_aix?
-  # We still use pl-gcc for AIX 7.1
-  pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
+  if platform.name == 'aix-7.1-ppc'
+    pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
+    # pl-build-tools was added to PATH above
+  else
+    pkg.environment "CC", "/opt/freeware/bin/gcc"
+    pkg.environment "PATH", "$(PATH):/opt/freeware/bin"
+  end
   pkg.environment "RUBY", host_ruby
   pkg.environment "LDFLAGS", " -brtl #{settings[:ldflags]}"
 end

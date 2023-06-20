@@ -113,7 +113,12 @@ component "boost" do |pkg, settings, platform|
     install_only_flags = "boost.locale.iconv=off"
   elsif platform.is_aix?
     pkg.environment "NO_CXX11_CHECK", "1"
-    pkg.environment "CXX", "/opt/freeware/bin/g++-8"
+    if platform.name == 'aix-7.1-ppc'
+      pkg.environment "CXX", "/opt/freeware/bin/g++-8"
+    else
+      pkg.environment "CXX", "/opt/freeware/bin/g++-10"
+      gpp = "/opt/freeware/bin/g++"
+    end
     pkg.environment "CXXFLAGS", "-pthread"
     pkg.environment "PATH", "/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)"
     linkflags = "-Wl,-L#{settings[:libdir]},-L/opt/pl-build-tools/lib"
@@ -130,8 +135,14 @@ component "boost" do |pkg, settings, platform|
   if platform.is_windows?
     userconfigjam = %Q{using gcc : : #{gpp} ;}
   else
-    if platform.architecture =~ /arm/ || platform.is_aix?
+    if platform.architecture =~ /arm/
       userconfigjam = %Q{using gcc : 5.2.0 : #{gpp} : <linkflags>"#{linkflags}" <cflags>"#{cflags}" <cxxflags>"#{cxxflags}" ;}
+    elsif platform.is_aix?
+      if platform.name == 'aix-7.1-ppc'
+        userconfigjam = %Q{using gcc : 5.2.0 : #{gpp} : <linkflags>"#{linkflags}" <cflags>"#{cflags}" <cxxflags>"#{cxxflags}" ;}
+      else
+        userconfigjam = %Q{using gcc : 10.3.0 : #{gpp} : <linkflags>"#{linkflags}" <cflags>"#{cflags}" <cxxflags>"#{cxxflags}" ;}
+      end
     else
       userconfigjam = %Q{using gcc : 4.8.2 : #{gpp} : <linkflags>"#{linkflags}" <cflags>"#{cflags}" <cxxflags>"#{cxxflags}" ;}
     end

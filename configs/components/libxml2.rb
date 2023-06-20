@@ -9,7 +9,11 @@ component "libxml2" do |pkg, settings, platform|
   # So we generate a configure file manually, compress as tar.gz, and host internally.
 
   if platform.is_aix?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
+    if platform.name == 'aix-7.1-ppc'
+      pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
+    else
+      pkg.environment "PATH", "/opt/freeware/bin:$(PATH)"
+    end
   elsif platform.is_cross_compiled_linux?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
     pkg.environment "CFLAGS", settings[:cflags]

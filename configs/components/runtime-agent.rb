@@ -9,8 +9,12 @@ component "runtime-agent" do |pkg, settings, platform|
     else
       libdir = File.join("/opt/pl-build-tools", settings[:platform_triple], "lib")
     end
-  elsif platform.name == "aix-7.1-ppc"
-    libdir = "/opt/pl-build-tools/lib/gcc/powerpc-ibm-aix7.1.0.0/5.2.0/"
+  elsif platform.is_aix?
+    if platform.name == "aix-7.1-ppc"
+      libdir = "/opt/pl-build-tools/lib/gcc/powerpc-ibm-aix7.1.0.0/5.2.0/"
+    else
+      libdir = "/opt/freeware/lib/gcc/powerpc-ibm-aix7.2.0.0/10/"
+    end
   elsif platform.is_solaris? || platform.architecture =~ /i\d86/
     libdir = "/opt/pl-build-tools/lib"
   elsif platform.architecture =~ /64/
@@ -23,6 +27,9 @@ component "runtime-agent" do |pkg, settings, platform|
   if platform.is_aix?
     pkg.install_file File.join(libdir, "libstdc++.a"), "/opt/puppetlabs/puppet/lib/libstdc++.a"
     pkg.install_file File.join(libdir, "libgcc_s.a"), "/opt/puppetlabs/puppet/lib/libgcc_s.a"
+    if platform.name != 'aix-7.1-ppc'
+      pkg.install_file File.join(libdir, "libatomic.a"), "/opt/puppetlabs/puppet/lib/libatomic.a"
+    end
   elsif platform.is_windows?
     lib_type = platform.architecture == "x64" ? "seh" : "sjlj"
     pkg.install_file "#{settings[:gcc_bindir]}/libgcc_s_#{lib_type}-1.dll", "#{settings[:bindir]}/libgcc_s_#{lib_type}-1.dll"

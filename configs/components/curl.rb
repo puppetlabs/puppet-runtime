@@ -21,6 +21,8 @@ component 'curl' do |pkg, settings, platform|
     pkg.build_requires "runtime-#{settings[:runtime_project]}"
     pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
     pkg.environment "CYGWIN", settings[:cygwin]
+  elsif platform.is_aix? && platform.name != 'aix-7.1-ppc'
+    pkg.environment 'PATH', "/opt/freeware/bin:$(PATH):#{settings[:bindir]}"
   else
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
   end
