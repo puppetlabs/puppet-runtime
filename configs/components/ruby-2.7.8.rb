@@ -111,6 +111,9 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
     # implementation instead of 'arm64', so specify 'amd64' explicitly
     # https://github.com/ruby/ruby/blob/c9c2245c0a25176072e02db9254f0e0c84c805cd/configure.ac#L2329-L2330
     special_flags += " --with-baseruby=#{host_ruby} --with-coroutine=arm64 "
+  elsif platform.is_macos? && platform.architecture == 'arm64' && platform.os_version.to_i >= 13
+    pkg.environment 'PATH', '/opt/homebrew/bin:$(PATH):/usr/local/bin'
+    special_flags += " --with-openssl-dir=#{settings[:prefix]} "
   elsif platform.is_solaris? && platform.architecture == "sparc"
     special_flags += " --with-baseruby=#{host_ruby} --enable-close-fds-by-recvmsg-with-peek "
   elsif platform.name =~ /el-6/
@@ -194,6 +197,7 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
     'x86_64-w64-mingw32' => 'x64-mingw32',
     'i686-w64-mingw32' => 'i386-mingw32'
   }
+
   if target_doubles.key?(settings[:platform_triple])
     rbconfig_topdir = File.join(ruby_dir, 'lib', 'ruby', '2.7.0', target_doubles[settings[:platform_triple]])
   else
@@ -225,6 +229,8 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
       # the ancient gcc version on sles-12-ppc64le does not understand -fstack-protector-strong, so remove the `strong` part
       rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector -rdynamic -Wl,-export-dynamic -L/opt/puppetlabs/puppet/lib"
     end
+  elsif platform.is_macos? && platform.architecture == 'arm64' && platform.os_version.to_i >= 13
+    rbconfig_changes["CC"] = 'clang'
   elsif platform.is_windows?
     rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
   end

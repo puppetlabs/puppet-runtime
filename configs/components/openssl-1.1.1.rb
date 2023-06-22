@@ -54,14 +54,19 @@ component 'openssl' do |pkg, settings, platform|
     ldflags = "-R/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
     target = platform.architecture =~ /86/ ? 'solaris-x86-gcc' : 'solaris-sparcv9-gcc'
   elsif platform.is_macos?
-    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
+    if platform.os_version.to_i >= 13 && platform.architecture == 'arm64'
+      pkg.environment 'PATH', '/opt/homebrew/bin:$(PATH):/usr/local/bin'
+    else
+      pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
+    end
 
     cflags = settings[:cflags]
-    target = if platform.is_cross_compiled?
-               'darwin64-arm64-cc'
-             else
-               'darwin64-x86_64-cc'
-             end
+
+    target =  if platform.architecture == 'arm64'
+                'darwin64-arm64-cc'
+              else
+                'darwin64-x86_64-cc'
+              end
   elsif platform.is_linux?
     pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
 

@@ -28,7 +28,7 @@ component "yaml-cpp" do |pkg, settings, platform|
       pkg.environment 'CXX', 'clang++ -target arm64-apple-macos12' if platform.name =~ /osx-12/
     elsif platform.architecture == 'arm64' && platform.os_version.to_i >= 13
       pkg.environment 'CXX', 'clang++'
-      cmake = "/opt/homebrew/bin/cmake" if platform.architecture == "arm64"
+      cmake = "/opt/homebrew/bin/cmake"
     end
 
   elsif platform.is_windows?
