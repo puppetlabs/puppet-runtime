@@ -1,5 +1,6 @@
 platform "solaris-11-i386" do |plat|
   plat.inherit_from_default
+  plat.make "gmake"
 
   packages = %w(
     pl-binutils-i386
