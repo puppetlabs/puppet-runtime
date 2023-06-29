@@ -66,7 +66,8 @@ component "rubygem-ffi" do |pkg, settings, platform|
   pkg.environment "MAKE", platform[:make] if platform.is_solaris?
 
   if platform.is_cross_compiled_linux? || platform.is_solaris?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$(PATH)"
+    # PA-5639, if we back out the CSW GCC change we should remove the CSW from this path
+    pkg.environment "PATH", "/opt/csw/bin:/opt/pl-build-tools/bin:$(PATH)"
   end
 
   if platform.name =~ /solaris-11-i386/
