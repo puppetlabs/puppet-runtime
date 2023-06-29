@@ -85,6 +85,8 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
     #   collect2: error: ld returned 16 exit status
 
     pkg.environment 'optflags', "-O2 -fPIC -g0 "
+  elsif platform.is_solaris?
+    pkg.environment 'optflags', '-O1'
   else
     pkg.environment 'optflags', '-O2'
   end
@@ -223,7 +225,7 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
     elsif platform.name =~ /osx-12/
       rbconfig_changes["CC"] = 'clang -target arm64-apple-macos12'
     else
-      rbconfig_changes["CC"] = "gcc"
+      rbconfig_changes["CC"] =  'gcc'
       rbconfig_changes["warnflags"] = "-Wall -Wextra -Wno-unused-parameter -Wno-parentheses -Wno-long-long -Wno-missing-field-initializers -Wno-tautological-compare -Wno-parentheses-equality -Wno-constant-logical-operand -Wno-self-assign -Wunused-variable -Wimplicit-int -Wpointer-arith -Wwrite-strings -Wdeclaration-after-statement -Wimplicit-function-declaration -Wdeprecated-declarations -Wno-packed-bitfield-compat -Wsuggest-attribute=noreturn -Wsuggest-attribute=format -Wno-maybe-uninitialized"
     end
     if platform.name =~ /el-7-ppc64/
