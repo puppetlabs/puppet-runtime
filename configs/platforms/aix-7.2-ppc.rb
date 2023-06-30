@@ -1,7 +1,6 @@
 platform "aix-7.2-ppc" do |plat|
   # os_version = 7.2
   plat.make "gmake"
-  plat.mktemp "/opt/freeware/bin/mktemp -d -p /var/tmp"
   plat.patch "/opt/freeware/bin/patch"
   plat.rpmbuild "/usr/bin/rpm"
   plat.servicetype "aix"
@@ -39,6 +38,9 @@ packages = %w(
 
   # No upstream rsync packages
   plat.provision_with "rpm -Uvh https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS/ppc/rsync/rsync-3.0.6-1.aix5.3.ppc.rpm"
+
+  # lots of things expect mktemp to be installed in the usual place, so link it
+  plat.provision_with "ln -sf /opt/freeware/bin/mktemp /usr/bin/mktemp"
 
   plat.install_build_dependencies_with "yum install --assumeyes "
   plat.vmpooler_template "aix-7.2-power"
