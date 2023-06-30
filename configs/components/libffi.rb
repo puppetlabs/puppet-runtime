@@ -16,14 +16,6 @@ component 'libffi' do |pkg, settings, platform|
     pkg.environment "LDFLAGS", settings[:ldflags]
   elsif platform.is_solaris?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
-    # use pl-build-tools for agent-runtime-7.x and /opt/csw for agent-runtime-main project
-    # if settings[:runtime_project] =~ /7.x/ # try using pl-build-tools to see if that's what the issue is
-    #   pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
-    # else
-    #   pkg.environment "PATH", "/opt/csw/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
-    #   pkg.environment "LD", "/opt/csw/bin/gld"
-    #   pkg.environment "AR", "/opt/csw/bin/gar"
-    # end
     pkg.environment "CFLAGS", "#{settings[:cflags]} -std=c99"
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment 'MAKE', 'gmake'

@@ -61,7 +61,7 @@ component 'openssl' do |pkg, settings, platform|
     target = 'aix-gcc'
   elsif platform.is_solaris?
     pkg.environment 'PATH', '/opt/csw/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin'
-    pkg.environment 'CC', "/opt/csw/bin/#{settings[:platform_triple]}-gcc"
+    pkg.environment 'CC', "/opt/csw/bin/gcc"
 
     cflags = "#{settings[:cflags]} -fPIC"
     ldflags = "-R/opt/csw/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/csw/#{settings[:platform_triple]}/lib"

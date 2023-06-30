@@ -156,7 +156,7 @@ if platform.name =~ /sles-15|el-8|debian-10/ || platform.is_fedora?
   proj.setting(:ldflags, "-L#{proj.libdir} -Wl,-rpath=#{proj.libdir},-z,relro,-z,now")
 end
 
-if ruby_version_x == "3" 
+if ruby_version_x == "3"
   proj.setting(:openssl_version, '3.0')
 elsif platform.name =~ /^redhatfips-/
   proj.setting(:openssl_version, '1.1.1-fips')
