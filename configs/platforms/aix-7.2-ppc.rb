@@ -13,6 +13,12 @@ tar xvf openssl-1.0.2.1800.tar;
 cd openssl-1.0.2.1800 && /usr/sbin/installp -acgwXY -d $PWD openssl.base;
 curl --output yum.sh https://artifactory.delivery.puppetlabs.net/artifactory/generic__buildsources/buildsources/aix-yum.sh && sh yum.sh]
 
+  # After installing yum, but before yum installing packages, point yum to artifactory
+  # AIX sed doesn't support in-place replacement, so download GNU sed and use that
+  plat.provision_with %[
+rpm -Uvh https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS/ppc/sed/sed-4.1.1-1.aix5.1.ppc.rpm;
+/opt/freeware/bin/sed -i 's|https://anonymous:anonymous@public.dhe.ibm.com/aix/freeSoftware/aixtoolbox/RPMS|https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS|' /opt/freeware/etc/yum/yum.conf]
+
 packages = %w(
     autoconf
     cmake

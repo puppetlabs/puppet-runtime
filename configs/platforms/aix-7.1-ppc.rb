@@ -41,6 +41,7 @@ uncompress openssl-1.0.2.1800.tar.Z;
 tar xvf openssl-1.0.2.1800.tar;
 cd openssl-1.0.2.1800 && /usr/sbin/installp -acgwXY -d $PWD openssl.base;
 curl --output yum.sh https://artifactory.delivery.puppetlabs.net/artifactory/generic__buildsources/buildsources/aix-yum.sh && sh yum.sh;
+/opt/freeware/bin/sed -i 's|https://anonymous:anonymous@public.dhe.ibm.com/aix/freeSoftware/aixtoolbox/RPMS|https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS|' /opt/freeware/etc/yum/yum.conf;
 yum install -y gcc8-c++;
 ln -sf /opt/freeware/lib/gcc/powerpc-ibm-aix7.1.0.0/8/libgcc_s.a /opt/freeware/lib/libgcc_s.a]
 
