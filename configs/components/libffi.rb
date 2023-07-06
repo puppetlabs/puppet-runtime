@@ -18,6 +18,7 @@ component 'libffi' do |pkg, settings, platform|
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
     pkg.environment "CFLAGS", "#{settings[:cflags]} -std=c99"
     pkg.environment "LDFLAGS", settings[:ldflags]
+    pkg.environment 'MAKE', 'gmake'
   elsif platform.is_macos?
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
