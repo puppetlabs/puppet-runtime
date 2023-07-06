@@ -53,8 +53,9 @@ component 'openssl' do |pkg, settings, platform|
     pkg.environment 'CC', '/opt/freeware/bin/gcc'
 
     cflags = "#{settings[:cflags]} -static-libgcc"
-    # see https://github.com/openssl/openssl/issues/18007
-    ldflags = "#{settings[:ldflags]} -latomic -lm"
+    # see https://github.com/openssl/openssl/issues/18007 about -latomic
+    # see https://www.ibm.com/docs/en/aix/7.2?topic=l-ld-command about -R<path>, which is equivalent to -rpath
+    ldflags = "#{settings[:ldflags]} -Wl,-R#{settings[:libdir]} -latomic -lm"
     target = 'aix-gcc'
   # elsif platform.is_solaris?
   #   pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin'
