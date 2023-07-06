@@ -41,17 +41,6 @@ component 'curl' do |pkg, settings, platform|
     configure_options << "--disable-dependency-tracking"
   end
 
-  if platform.name == 'aix-7.2-ppc'
-    # yum on aix installs an old version of libcurl.a that /opt/freeware/bin/gcc seems
-    # to use no matter what -L search path I use, so use the same workaround as bbf248fb6
-    pkg.configure do
-      [
-        'mkdir -p /opt/freeware/lib/hide',
-        'mv /opt/freeware/lib/libcurl.a /opt/freeware/lib/hide/libcurl.a'
-      ]
-    end
-  end
-
   pkg.configure do
     ["CPPFLAGS='#{settings[:cppflags]}' \
       LDFLAGS='#{settings[:ldflags]}' \
@@ -68,12 +57,6 @@ component 'curl' do |pkg, settings, platform|
 
   pkg.build do
     ["#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"]
-  end
-
-  if platform.name == 'aix-7.2-ppc'
-    pkg.build do
-      ['mv /opt/freeware/lib/hide/libcurl.a /opt/freeware/lib/libcurl.a']
-    end
   end
 
   install_steps = [
