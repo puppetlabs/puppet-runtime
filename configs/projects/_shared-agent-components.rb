@@ -30,7 +30,7 @@ else
   proj.component "openssl-#{proj.openssl_version}"
 end
 
-proj.component 'curl' if platform.name != 'aix-7.2-ppc' # PA-5618
+proj.component 'curl'
 proj.component 'puppet-ca-bundle'
 proj.component "ruby-#{proj.ruby_version}"
 proj.component "readline" if platform.is_macos?
