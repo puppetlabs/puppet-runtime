@@ -44,7 +44,7 @@ rpm -Uvh https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix
   plat.provision_with "yum install --assumeyes #{packages.join(' ')}"
 
   # No upstream rsync packages
-  plat.provision_with "rpm -Uvh https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS/ppc/rsync/rsync-3.0.6-1.aix5.3.ppc.rpm"
+  plat.provision_with "rpm -Uvh --replacepkgs https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix_linux_toolbox/RPMS/ppc/rsync/rsync-3.0.6-1.aix5.3.ppc.rpm"
 
   # lots of things expect mktemp to be installed in the usual place, so link it
   plat.provision_with "ln -sf /opt/freeware/bin/mktemp /usr/bin/mktemp"
