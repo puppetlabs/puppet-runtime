@@ -39,7 +39,8 @@ component "yaml-cpp" do |pkg, settings, platform|
     cmake_toolchain_file = "-DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/pl-build-toolchain.cmake"
   else
     if platform.is_aix?
-      pkg.environment "PATH", "$PATH:/opt/freeware/bin"
+      pkg.environment "PATH", "$(PATH):/opt/freeware/bin"
+      cmake = "/opt/freeware/bin/cmake"
     end
     pkg.environment 'CPPFLAGS', settings[:cppflags]
     pkg.environment 'CFLAGS', settings[:cflags]
