@@ -12,6 +12,8 @@ component 'openssl' do |pkg, settings, platform|
     pkg.build_requires 'perl-core'
   elsif platform.is_windows?
     pkg.build_requires 'strawberryperl'
+  elsif platform.is_solaris?
+    # perl is installed in platform definition
   else
     pkg.build_requires 'perl'
   end
@@ -57,13 +59,13 @@ component 'openssl' do |pkg, settings, platform|
     # see https://www.ibm.com/docs/en/aix/7.2?topic=l-ld-command about -R<path>, which is equivalent to -rpath
     ldflags = "#{settings[:ldflags]} -Wl,-R#{settings[:libdir]} -latomic -lm"
     target = 'aix-gcc'
-  # elsif platform.is_solaris?
-  #   pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin'
-  #   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
+  elsif platform.is_solaris?
+    pkg.environment 'PATH', '/opt/csw/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin'
+    pkg.environment 'CC', "/opt/csw/bin/gcc"
 
-  #   cflags = "#{settings[:cflags]} -fPIC"
-  #   ldflags = "-R/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
-  #   target = platform.architecture =~ /86/ ? 'solaris-x86-gcc' : 'solaris-sparcv9-gcc'
+    cflags = "#{settings[:cflags]} -fPIC"
+    ldflags = "-R/opt/csw/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/csw/#{settings[:platform_triple]}/lib"
+    target = platform.architecture =~ /86/ ? 'solaris-x86-gcc' : 'solaris-sparcv9-gcc'
   elsif platform.is_macos?
     pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH):/usr/local/bin'
 
