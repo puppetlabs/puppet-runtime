@@ -200,7 +200,7 @@ if platform.is_macos?
   # break gcc or clang if they try to use the RPATH values we forced.
   proj.setting(:cppflags, "-I#{proj.includedir}")
   proj.setting(:ldflags, "-L#{proj.libdir}")
-  if platform.is_cross_compiled?
+  if platform.architecture == 'arm64'
     proj.setting(:cflags, "#{proj.cppflags}")
   else
     proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")

@@ -70,7 +70,8 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
 
   if platform.is_macos?
     pkg.environment 'optflags', settings[:cflags]
-    pkg.environment 'PATH', '$(PATH):/usr/local/bin'
+    pkg.environment 'PATH', '$(PATH):/opt/homebrew/bin:/usr/local/bin'
+    
   elsif platform.is_windows?
     pkg.environment 'optflags', settings[:cflags] + ' -O3'
     pkg.environment 'MAKE', 'make'
@@ -237,6 +238,8 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
       # the ancient gcc version on sles-12-ppc64le does not understand -fstack-protector-strong, so remove the `strong` part
       rbconfig_changes["LDFLAGS"] = "-L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector -rdynamic -Wl,-export-dynamic -L/opt/puppetlabs/puppet/lib"
     end
+  elsif platform.is_macos? && platform.architecture == 'arm64' && platform.os_version.to_i >= 13
+    rbconfig_changes["CC"] = 'clang'
   elsif platform.is_windows?
     if platform.architecture == "x64"
       rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
