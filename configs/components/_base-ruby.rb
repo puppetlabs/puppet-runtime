@@ -67,6 +67,8 @@ elsif platform.is_macos?
     end
     pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
     pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
+  elsif platform.architecture == 'arm64' && platform.os_version.to_i >= 13
+    pkg.environment 'CC', 'clang'
   end
 end
 

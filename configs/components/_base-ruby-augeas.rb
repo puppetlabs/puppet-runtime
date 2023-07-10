@@ -48,6 +48,11 @@ elsif platform.is_cross_compiled?
     ruby = "#{host_ruby} -r#{settings[:datadir]}/doc/rbconfig-#{ruby_version}-orig.rb"
     pkg.environment "LDFLAGS", settings[:ldflags]
   end
+elsif platform.is_macos? && platform.architecture == 'arm64' && platform.os_version.to_i >= 13
+  pkg.environment "PATH", "$(PATH):/opt/homebrew/bin"
+  pkg.environment 'CC', 'clang'
+  pkg.environment "LDFLAGS", settings[:ldflags]
+  ruby = File.join(ruby_bindir, 'ruby')
 else
   ruby = File.join(ruby_bindir, 'ruby')
 end
