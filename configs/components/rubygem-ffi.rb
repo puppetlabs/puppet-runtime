@@ -68,7 +68,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
   if platform.is_cross_compiled_linux?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
   elsif platform.is_solaris?
-    if settings[:runtime_project] == 'agent-runtime-main'
+    if settings[:ruby_version] =~ /3\.\d+\.\d+/
       pkg.environment "PATH", "/opt/csw/bin:/opt/pl-build-tools/bin:$(PATH)"
     else
       pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$(PATH)"
