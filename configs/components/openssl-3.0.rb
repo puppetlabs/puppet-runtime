@@ -133,7 +133,9 @@ component 'openssl' do |pkg, settings, platform|
     'no-whirlpool'
   ]
 
-  if !settings[:use_legacy_openssl_algos]
+  if settings[:use_legacy_openssl_algos]
+    pkg.apply_patch 'resources/patches/openssl/openssl-3-activate-legacy-algos.patch'
+  else
     configure_flags << 'no-legacy' << 'no-md4' << 'no-des'
   end
 
