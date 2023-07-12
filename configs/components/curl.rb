@@ -12,6 +12,7 @@ component 'curl' do |pkg, settings, platform|
   pkg.build_requires "openssl-#{settings[:openssl_version]}"
   pkg.build_requires "puppet-ca-bundle"
 
+  ldflags = settings[:ldflags]
   if platform.is_cross_compiled_linux?
     pkg.build_requires "runtime-#{settings[:runtime_project]}"
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
@@ -22,7 +23,10 @@ component 'curl' do |pkg, settings, platform|
     pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
     pkg.environment "CYGWIN", settings[:cygwin]
   elsif platform.is_aix? && platform.name != 'aix-7.1-ppc'
+    pkg.environment "PKG_CONFIG_PATH", "/opt/puppetlabs/puppet/lib/pkgconfig"
     pkg.environment 'PATH', "/opt/freeware/bin:$(PATH):#{settings[:bindir]}"
+    # exclude -Wl,-brtl
+    ldflags = "-L#{settings[:libdir]}"
   else
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
   end
@@ -43,7 +47,7 @@ component 'curl' do |pkg, settings, platform|
 
   pkg.configure do
     ["CPPFLAGS='#{settings[:cppflags]}' \
-      LDFLAGS='#{settings[:ldflags]}' \
+      LDFLAGS='#{ldflags}' \
      ./configure --prefix=#{settings[:prefix]} \
         #{configure_options.join(" ")} \
         --enable-threaded-resolver \

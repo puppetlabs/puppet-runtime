@@ -29,6 +29,11 @@ component "runtime-agent" do |pkg, settings, platform|
     pkg.install_file File.join(libdir, "libgcc_s.a"), "/opt/puppetlabs/puppet/lib/libgcc_s.a"
     if platform.name != 'aix-7.1-ppc'
       pkg.install_file File.join(libdir, "libatomic.a"), "/opt/puppetlabs/puppet/lib/libatomic.a"
+      pkg.install_file "/opt/freeware/lib/libiconv.a", "/opt/puppetlabs/puppet/lib/libiconv.a"
+      pkg.install_file "/opt/freeware/lib/libncurses.so.6.3.0", "/opt/puppetlabs/puppet/lib/libncurses.so.6.3.0"
+      pkg.link         "libncurses.so.6.3.0", "/opt/puppetlabs/puppet/lib/libncurses.so"
+      pkg.install_file "/opt/freeware/lib/libreadline.a", "/opt/puppetlabs/puppet/lib/libreadline.a"
+      pkg.install_file "/opt/freeware/lib/libz.a", "/opt/puppetlabs/puppet/lib/libz.a"
     end
   elsif platform.is_windows?
     lib_type = platform.architecture == "x64" ? "seh" : "sjlj"

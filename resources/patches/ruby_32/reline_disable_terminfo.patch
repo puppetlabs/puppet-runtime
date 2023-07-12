@@ -1,0 +1,23 @@
+commit e0e58e7f5ee53e14f7a87a7399ad977a1381861a
+Author: Josh Cooper <joshcooper@users.noreply.github.com>
+Date:   Mon Jul 10 22:34:25 2023 -0700
+
+    Disable terminfo
+    
+    If curses libraries can be loaded but terminfo isn't installed, then
+    reline raises, killing irb. Apply this patch to disable terminfo
+    integration.
+
+diff --git a/lib/reline/terminfo.rb b/lib/reline/terminfo.rb
+index f53642b919..e0633f802b 100644
+--- a/lib/reline/terminfo.rb
++++ b/lib/reline/terminfo.rb
+@@ -163,7 +163,7 @@ def self.tigetnum(capname)
+   end
+ 
+   def self.enabled?
+-    true
++    false
+   end
+ end if Reline::Terminfo.curses_dl
+ 
