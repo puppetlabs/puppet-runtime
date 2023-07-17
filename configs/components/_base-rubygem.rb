@@ -21,6 +21,9 @@ if platform.is_windows?
   pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(shell cygpath -u #{settings[:ruby_bindir]}):$(shell cygpath -u #{settings[:bindir]}):/cygdrive/c/Windows/system32:/cygdrive/c/Windows:/cygdrive/c/Windows/System32/WindowsPowerShell/v1.0:$(PATH)"
 end
 
+if name =~ /ffi/ && settings[:ruby_version].to_f >= 3.2 && platform.is_solaris?
+  extra_install_settings = ' -- --enable-system-libffi'
+end
 # When cross-compiling, we can't use the rubygems we just built.
 # Instead we use the host gem installation and override GEM_HOME. Yay?
 pkg.environment "GEM_HOME", settings[:gem_home]
@@ -38,5 +41,5 @@ pkg.url("https://rubygems.org/downloads/#{name}-#{version}.gem")
 pkg.mirror("#{settings[:buildsources_url]}/#{name}-#{version}.gem")
 
 pkg.install do
-  "#{settings[:gem_install]} #{name}-#{version}.gem"
+  "#{settings[:gem_install]} #{name}-#{version}.gem#{extra_install_settings}"
 end
