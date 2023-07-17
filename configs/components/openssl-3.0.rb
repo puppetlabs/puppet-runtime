@@ -128,12 +128,17 @@ component 'openssl' do |pkg, settings, platform|
     # 'no-bf', pgcrypto is requires this cipher in postgres for puppetdb
     # 'no-cast', pgcrypto is requires this cipher in postgres for puppetdb
     'no-rc5',
-    # 'no-md4', puppet infra uses the agent's runtime and runs WinRM tasks using NTLM, so it needs DES & MD4
     'no-mdc2',
     # 'no-rmd160', this is causing failures with pxp, remove once pxp-agent does not need it
-    'no-whirlpool',
-    'no-legacy'
+    'no-whirlpool'
   ]
+
+  if settings[:use_legacy_openssl_algos]
+    pkg.apply_patch 'resources/patches/openssl/openssl-3-activate-legacy-algos.patch'
+  else
+    configure_flags << 'no-legacy' << 'no-md4' << 'no-des'
+  end
+
 
   # Individual projects may provide their own openssl configure flags:
   project_flags = settings[:openssl_extra_configure_flags] || []

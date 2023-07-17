@@ -3,10 +3,11 @@ project 'pe-installer-runtime-main' do |proj|
   proj.setting(:runtime_project, 'pe-installer')
   proj.setting(:ruby_version, '3.2.2')
   proj.setting(:augeas_version, '1.13.0')
-  # We need to explicitly define 1.1.1k here to avoid
-  # build dep conflicts between openssl-1.1.1 needed by curl
-  # and krb5-devel
   proj.setting(:openssl_version, '3.0')
+  # NLTM uses MD4 unconditionally in its protocol, so legacy algos must be
+  # enabled in OpenSSL >= 3.0 for Bolt's WinRM transport to work.
+  # We DO NOT WANT legacy algos enabled for the Puppet Agent runtime.
+  proj.setting(:use_legacy_openssl_algos, true)
   platform = proj.get_platform
 
   proj.version_from_git
@@ -95,10 +96,6 @@ project 'pe-installer-runtime-main' do |proj|
   proj.component 'rubygem-sys-filesystem'
   proj.component 'rubygem-prime'
   proj.component 'rubygem-erubi'
-
-  #TODO: Once we solve PE-36078 stop using forked ntlm
-  proj.setting(:gem_build, "#{proj.host_gem} build")
-  proj.component('rubygem-rubyntlm-fork')
 
   # What to include in package?
   proj.directory proj.prefix
