@@ -75,13 +75,14 @@ component "rubygem-ffi" do |pkg, settings, platform|
     end  
   end  
 
-  if platform.name =~ /solaris-11-i386/
+  # With Ruby 3.2 on Solaris-11 we install OpenSCW's libffi, no need to copy over the system libffi
+  if platform.name =~ /solaris-11-i386/ && rb_major_minor_version < 3.2
     pkg.install_file "/usr/lib/libffi.so.5.0.10", "#{settings[:libdir]}/libffi.so"
   elsif platform.name =~ /solaris-10-i386/
     pkg.install_file "/opt/csw/lib/libffi.so.6", "#{settings[:libdir]}/libffi.so.6"
   end
 
-
+  pkg.environment 'PKG_CONFIG_PATH', '/opt/puppetlabs/puppet/lib/pkgconfig:$(PKG_CONFIG_PATH)'
   pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
 
   if platform.is_cross_compiled? && !platform.is_macos?
