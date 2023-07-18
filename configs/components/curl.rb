@@ -34,6 +34,12 @@ component 'curl' do |pkg, settings, platform|
   configure_options = []
   configure_options << "--with-ssl=#{settings[:prefix]}"
 
+  # OpenSSL version 3.0 & up no longer ships by default the insecure algorithms
+  # that curl's ntlm module depends on (md4 & des).
+  if !settings[:use_legacy_openssl_algos] && settings[:openssl_version] =~ /^3\./
+    configure_options << "--disable-ntlm"
+  end
+
   extra_cflags = []
   if platform.is_cross_compiled? && platform.is_macos?
     extra_cflags << '-mmacosx-version-min=11.0 -arch arm64' if platform.name =~ /osx-11/
