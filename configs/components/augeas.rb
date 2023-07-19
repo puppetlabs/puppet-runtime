@@ -98,6 +98,9 @@ component 'augeas' do |pkg, settings, platform|
     if platform.os_version == "10"
       pkg.environment "PKG_CONFIG_PATH", "/opt/csw/lib/pkgconfig"
       pkg.environment "PKG_CONFIG", "/opt/csw/bin/pkg-config"
+    elsif !platform.is_cross_compiled? && platform.architecture == 'sparc'
+      pkg.environment "PKG_CONFIG_PATH", "#{settings[:libdir]}/pkgconfig"
+      pkg.environment "PKG_CONFIG", "/usr/bin/pkg-config"
     else
       pkg.environment "PKG_CONFIG_PATH", "/usr/lib/pkgconfig"
       pkg.environment "PKG_CONFIG", "/opt/pl-build-tools/bin/pkg-config"
