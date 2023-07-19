@@ -127,6 +127,9 @@ component 'openssl' do |pkg, settings, platform|
     'no-aria',
     # 'no-bf', pgcrypto is requires this cipher in postgres for puppetdb
     # 'no-cast', pgcrypto is requires this cipher in postgres for puppetdb
+    # 'no-des', pgcrypto is requires this cipher in postgres for puppetdb,
+    # should pgcrypto cease needing it, it will also be needed by ntlm
+    # and should only be enabled if "use_legacy_openssl_algos" is true.
     'no-rc5',
     'no-mdc2',
     # 'no-rmd160', this is causing failures with pxp, remove once pxp-agent does not need it
@@ -136,7 +139,7 @@ component 'openssl' do |pkg, settings, platform|
   if settings[:use_legacy_openssl_algos]
     pkg.apply_patch 'resources/patches/openssl/openssl-3-activate-legacy-algos.patch'
   else
-    configure_flags << 'no-legacy' << 'no-md4' << 'no-des'
+    configure_flags << 'no-legacy' << 'no-md4'
   end
 
 
