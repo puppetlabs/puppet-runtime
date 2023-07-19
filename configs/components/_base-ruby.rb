@@ -59,9 +59,10 @@ elsif platform.is_windows?
 elsif platform.is_macos?
   pkg.environment 'optflags', settings[:cflags]
   if platform.is_cross_compiled?
-    # Pin to an older version of ruby@2.5. This can be removed once we're no longer cross-compiling
-    if ruby_version_y == "2.5"
-      pkg.build_requires "puppetlabs/puppet/ruby@2.5"
+    # Pin to an older version of ruby@2.7 hosted by Puppet as Homebrew
+    # moved its Ruby 2.7 formula from OpenSSL 1.1 to 3.0
+    if ruby_version_y == "2.7"
+      pkg.build_requires "puppetlabs/puppet/ruby@2.7"
     else
       pkg.build_requires "ruby@#{ruby_version_y}"
     end
