@@ -8,7 +8,5 @@ project 'pe-bolt-server-runtime-2021.7.x' do |proj|
   proj.setting(:no_doc, true)
 
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-bolt-server.rb'))
-  # TODO: Move ntml back to shared runtime when PE-36078 is done
-  proj.component('rubygem-rubyntlm')
   proj.component 'rubygem-prime'
 end
