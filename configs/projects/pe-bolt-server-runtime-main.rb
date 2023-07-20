@@ -7,7 +7,11 @@ project 'pe-bolt-server-runtime-main' do |proj|
   # Once we are no longer using ruby 2.5 we can update.
   proj.setting(:no_doc, true)
 
-  instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-bolt-server.rb'))
+  proj.setting(:ruby_version, '3.2.2')
+  proj.setting(:openssl_version, '3.0')
+
+  instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-bolt-server_with_ruby.rb'))
+
   # TODO: Work around PE-36078 by using forked non-optimal solution
   proj.component('rubygem-rubyntlm-fork')
   proj.component 'rubygem-prime'
