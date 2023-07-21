@@ -3,14 +3,27 @@ component "ruby-shadow" do |pkg, settings, platform|
   pkg.ref "refs/tags/2.5.0"
 
   pkg.build_requires "ruby-#{settings[:ruby_version]}"
-  pkg.environment "PATH", "$(PATH):/usr/ccs/bin:/usr/sfw/bin"
+  if !platform.is_cross_compiled? && platform.architecture == 'sparc'
+    pkg.environment "PATH", "$(PATH):/opt/pl-build-tools/bin:/usr/ccs/bin:/usr/sfw/bin"
+  else
+    pkg.environment "PATH", "$(PATH):/usr/ccs/bin:/usr/sfw/bin"
+  end
+
   pkg.environment "CONFIGURE_ARGS", '--vendor'
 
   if platform.is_solaris?
-    if platform.architecture == 'sparc'
+    if platform.is_cross_compiled?
       pkg.environment "RUBY", settings[:host_ruby]
     end
-    ruby = "#{settings[:host_ruby]} -r#{settings[:datadir]}/doc/rbconfig-#{settings[:ruby_version]}-orig.rb"
+
+    if !platform.is_cross_compiled? && platform.architecture == 'sparc'
+      ruby = File.join(settings[:ruby_bindir], 'ruby')
+    else
+      # This should really only be done when cross compiling but
+      # to avoid breaking solaris x86_64 in 7.x continue preloading
+      # our hook.
+      ruby = "#{settings[:host_ruby]} -r#{settings[:datadir]}/doc/rbconfig-#{settings[:ruby_version]}-orig.rb"
+    end
   elsif platform.is_cross_compiled?
     pkg.environment "RUBY", settings[:host_ruby]
     ruby = "#{settings[:host_ruby]} -r#{settings[:datadir]}/doc/rbconfig-#{settings[:ruby_version]}-orig.rb"
@@ -18,7 +31,7 @@ component "ruby-shadow" do |pkg, settings, platform|
     ruby = File.join(settings[:ruby_bindir], 'ruby')
   end
 
-  matchdata = platform.settings[:ruby_version].match /(\d+)\.(\d+)\.\d+/
+  matchdata = platform.settings[:ruby_version].match(/(\d+)\.(\d+)\.\d+/)
   ruby_major_version = matchdata[1].to_i
   if ruby_major_version >= 3
     base = "resources/patches/ruby_32"
