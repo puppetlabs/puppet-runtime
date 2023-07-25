@@ -49,8 +49,6 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
 
   if platform.is_aix?
     pkg.apply_patch "#{base}/reline_disable_terminfo.patch"
-    # TODO: Remove this patch once PA-1607 is resolved.
- #   pkg.apply_patch "#{base}/aix_configure.patch"
  #   pkg.apply_patch "#{base}/aix-fix-libpath-in-configure.patch"
  #   pkg.apply_patch "#{base}/aix-do-not-use-realpath.patch"
  #   pkg.apply_patch "#{base}/aix_ruby_2.1_fix_make_test_failure_r2.5.patch"
