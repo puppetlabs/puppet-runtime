@@ -49,7 +49,6 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
 
   if platform.is_aix?
     pkg.apply_patch "#{base}/reline_disable_terminfo.patch"
- #   pkg.apply_patch "#{base}/aix-do-not-use-realpath.patch"
  #   pkg.apply_patch "#{base}/aix_ruby_2.1_fix_make_test_failure_r2.5.patch"
  #   pkg.apply_patch "#{base}/Remove-O_CLOEXEC-check-for-AIX-builds_r2.5.patch"
   end
