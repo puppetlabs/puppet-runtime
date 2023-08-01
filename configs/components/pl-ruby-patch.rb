@@ -61,9 +61,16 @@ component "pl-ruby-patch" do |pkg, settings, platform|
       sed_command = %(s|Gem.ruby.shellsplit|& << '-r/opt/puppetlabs/puppet/share/doc/rbconfig-#{settings[:ruby_version]}-orig.rb'|)
     end
 
+    # rubygems switched which file has the command we need to patch starting with ruby 3.2.2
+    if Gem::Version.new(settings[:ruby_version]) >= Gem::Version.new('3.2.2')
+      filename = 'builder.rb'
+    else
+      filename = 'ext_conf_builder.rb'
+    end
+
     pkg.build do
       [
-        %(#{platform[:sed]} -i "#{sed_command}" #{base_ruby}/rubygems/ext/ext_conf_builder.rb)
+        %(#{platform[:sed]} -i "#{sed_command}" #{base_ruby}/rubygems/ext/#{filename})
       ]
     end
   end
