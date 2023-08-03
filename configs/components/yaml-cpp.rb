@@ -13,13 +13,18 @@ component "yaml-cpp" do |pkg, settings, platform|
     cmake = "/opt/pl-build-tools/bin/cmake"
     cmake_toolchain_file = "-DPL_TOOLS_ROOT=/opt/freeware -DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/#{settings[:platform_triple]}/pl-build-toolchain.cmake"
   elsif platform.is_solaris?
-    if platform.os_version == "11"
+    if platform.os_version != '10'
       make = '/usr/bin/gmake'
     end
-    # We always use the i386 build of cmake, even on sparc
-    cmake = "/opt/pl-build-tools/i386-pc-solaris2.#{platform.os_version}/bin/cmake"
-    cmake_toolchain_file = "-DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/#{settings[:platform_triple]}/pl-build-toolchain.cmake"
-    pkg.environment "PATH", "$(PATH):/opt/csw/bin"
+
+    if !platform.is_cross_compiled? && platform.architecture == 'sparc'
+      pkg.environment "PATH", "$(PATH):/opt/pl-build-tools/bin"
+    else
+      # We always use the i386 build of cmake, even when cross-compiling on sparc
+      cmake = "/opt/pl-build-tools/i386-pc-solaris2.#{platform.os_version}/bin/cmake"
+      cmake_toolchain_file = "-DCMAKE_TOOLCHAIN_FILE=#{settings[:tools_root]}/#{settings[:platform_triple]}/pl-build-toolchain.cmake"
+      pkg.environment "PATH", "$(PATH):/opt/csw/bin"
+    end
   elsif platform.is_macos?
     cmake_toolchain_file = ""
     cmake = "/usr/local/bin/cmake"
