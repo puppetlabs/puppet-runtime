@@ -31,10 +31,15 @@ if platform.is_aix?
 elsif platform.is_solaris?
   # See PA-5639, if we decide to go without OpenCSW GCC then we can simplify this logic
   if ruby_version_y >= '3.0'
-    pkg.environment 'PATH', "#{settings[:bindir]}:/opt/csw/bin:/usr/ccs/bin:/usr/sfw/bin:$(PATH)"
-    pkg.environment 'CC', '/opt/csw/bin/gcc'
-    pkg.environment 'LD', '/opt/csw/bin/gld'
-    pkg.environment 'AR', '/opt/csw/bin/gar'
+    if !platform.is_cross_compiled? && platform.architecture == 'sparc'
+      pkg.environment 'PATH', "#{settings[:bindir]}:/opt/pl-build-tools/bin:/opt/csw/bin:/usr/ccs/bin:/usr/sfw/bin:$(PATH)"
+      pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
+    else
+      pkg.environment 'PATH', "#{settings[:bindir]}:/opt/csw/bin:/usr/ccs/bin:/usr/sfw/bin:$(PATH)"
+      pkg.environment 'CC', '/opt/csw/bin/gcc'
+      pkg.environment 'LD', '/opt/csw/bin/gld'
+      pkg.environment 'AR', '/opt/csw/bin/gar'
+    end
   else
     pkg.environment 'PATH', "#{settings[:bindir]}:/usr/ccs/bin:/usr/sfw/bin:$(PATH):/opt/csw/bin"
     pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"

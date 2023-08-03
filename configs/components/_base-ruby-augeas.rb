@@ -36,10 +36,18 @@ pkg.environment "CONFIGURE_ARGS", '--vendor'
 pkg.environment "PKG_CONFIG_PATH", "#{File.join(settings[:libdir], 'pkgconfig')}:/usr/lib/pkgconfig"
 
 if platform.is_solaris?
-  if platform.architecture == 'sparc'
+  if platform.is_cross_compiled?
     pkg.environment "RUBY", host_ruby
   end
-  ruby = "#{host_ruby} -r#{settings[:datadir]}/doc/rbconfig-#{ruby_version}-orig.rb"
+
+  if !platform.is_cross_compiled? && platform.architecture == 'sparc'
+    ruby = File.join(ruby_bindir, 'ruby')
+  else
+    # This should really only be done when cross compiling but
+    # to avoid breaking solaris x86_64 in 7.x continue preloading
+    # our hook.
+    ruby = "#{host_ruby} -r#{settings[:datadir]}/doc/rbconfig-#{ruby_version}-orig.rb"
+  end
 elsif platform.is_cross_compiled?
   if platform.is_linux? || platform.is_macos?
     pkg.environment "RUBY", host_ruby

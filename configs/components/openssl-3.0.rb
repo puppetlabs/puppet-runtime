@@ -61,10 +61,15 @@ component 'openssl' do |pkg, settings, platform|
     target = 'aix-gcc'
   elsif platform.is_solaris?
     pkg.environment 'PATH', '/opt/csw/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin'
-    pkg.environment 'CC', "/opt/csw/bin/gcc"
-
+    if !platform.is_cross_compiled? && platform.architecture == 'sparc'
+      pkg.environment 'CC', "/opt/pl-build-tools/bin/gcc"
+      gcc_lib = "/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
+    else
+      pkg.environment 'CC', "/opt/csw/bin/gcc"
+      gcc_lib = "/opt/csw/#{settings[:platform_triple]}/lib"
+    end
     cflags = "#{settings[:cflags]} -fPIC"
-    ldflags = "-R/opt/csw/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/csw/#{settings[:platform_triple]}/lib"
+    ldflags = "-R#{gcc_lib} -Wl,-rpath=#{settings[:libdir]} -L#{gcc_lib}"
     target = platform.architecture =~ /86/ ? 'solaris-x86-gcc' : 'solaris-sparcv9-gcc'
   elsif platform.is_macos?
 

@@ -89,11 +89,15 @@ platform_triple = "powerpc64le-linux-gnu" if platform.architecture == "ppc64el"
 platform_triple = "arm-linux-gnueabihf" if platform.architecture == "armhf"
 platform_triple = "aarch64-apple-darwin" if platform.is_cross_compiled? && platform.is_macos?
 
+# Ruby's build process needs a functional "baseruby". When native compiling,
+# ruby will build "miniruby" and use that as "baseruby". When cross compiling,
+# we need a "host" ruby from somewhere else.
+#
+# Our build process also needs a "host" ruby to install rubygem-* components.
 if platform.is_windows?
   proj.setting(:host_ruby, File.join(proj.ruby_bindir, "ruby.exe"))
   proj.setting(:host_gem, File.join(proj.ruby_bindir, "gem.bat"))
-elsif platform.is_cross_compiled_linux? || (platform.is_solaris? && platform.architecture == 'sparc')
-  # Install a standalone ruby for cross-compiled platforms
+elsif platform.is_cross_compiled? && (platform.is_linux? || platform.is_solaris?)
   if platform.name =~ /solaris-10-sparc/
     proj.setting(:host_ruby, "/opt/csw/bin/ruby")
     proj.setting(:host_gem, "/opt/csw/bin/gem2.0")
@@ -114,11 +118,13 @@ if platform.is_cross_compiled_linux?
 elsif platform.is_cross_compiled? && platform.is_macos?
   host = "--host aarch64-apple-darwin --build x86_64-apple-darwin --target aarch64-apple-darwin"
 elsif platform.is_solaris?
-  # For solaris, we build cross-compilers
   if platform.architecture == 'i386'
     platform_triple = "#{platform.architecture}-pc-solaris2.#{platform.os_version}"
-  else
+  elsif platform.is_cross_compiled?
     platform_triple = "#{platform.architecture}-sun-solaris2.#{platform.os_version}"
+    host = "--host #{platform_triple}"
+  else
+    platform_triple = "#{platform.architecture}-sun-solaris2.11"
     host = "--host #{platform_triple}"
   end
 elsif platform.is_windows?

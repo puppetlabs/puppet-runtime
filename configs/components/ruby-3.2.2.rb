@@ -105,7 +105,14 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
     # https://github.com/ruby/ruby/blob/c9c2245c0a25176072e02db9254f0e0c84c805cd/configure.ac#L2329-L2330
     special_flags += " --with-baseruby=#{host_ruby} --with-coroutine=arm64 "
   elsif platform.is_solaris? && platform.architecture == "sparc"
-    special_flags += " --with-baseruby=#{host_ruby} --enable-close-fds-by-recvmsg-with-peek "
+    if platform.is_cross_compiled?
+      special_flags += " --with-baseruby=#{host_ruby} "
+    else
+      # configure seems to enable dtrace because the executable is present,
+      # explicitly disable it and don't enable it below
+      special_flags += " --with-baseruby=no --enable-dtrace=no "
+    end
+    special_flags += "--enable-close-fds-by-recvmsg-with-peek "
   elsif platform.name =~ /el-6/
     special_flags += " --with-baseruby=no "
   elsif platform.is_windows?
@@ -131,6 +138,7 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
     'redhatfips-7-x86_64',
     'sles-12-ppc64le',
     'solaris-11-sparc',
+    'solaris-113-sparc',
     'windows-2012r2-x64',
     'windows-2012r2-x86',
     'windows-2019-x64',
@@ -212,10 +220,17 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
     rbconfig_topdir = "$$(#{ruby_bindir}/ruby -e \"puts RbConfig::CONFIG[\\\"topdir\\\"]\")"
   end
 
+  # When cross compiling or building on non-linux, we sometimes need to patch
+  # the rbconfig.rb in the "host" ruby so that later when we try to build gems
+  # with native extensions, like ffi, the "host" ruby's mkmf will use the CC,
+  # etc specified below. For example, if we're building on mac Intel for ARM,
+  # then the CC override allows us to build ffi_c.so for ARM as well. The
+  # "host" ruby is configured in _shared-agent-settings
   rbconfig_changes = {}
   if platform.is_aix?
     rbconfig_changes["CC"] = "gcc"
-  elsif platform.is_cross_compiled? || platform.is_solaris?
+  elsif platform.is_cross_compiled? || (platform.is_solaris? && platform.architecture != 'sparc')
+    # REMIND: why are we overriding rbconfig for solaris intel?
     if platform.name =~ /osx-11/
       rbconfig_changes["CC"] = 'clang -target arm64-apple-macos11'
     elsif platform.name =~ /osx-12/

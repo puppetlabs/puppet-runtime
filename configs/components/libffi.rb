@@ -16,7 +16,13 @@ component 'libffi' do |pkg, settings, platform|
     pkg.environment "LDFLAGS", settings[:ldflags]
   elsif platform.is_solaris?
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
-    pkg.environment "CFLAGS", "#{settings[:cflags]} -std=c99"
+    if !platform.is_cross_compiled? && platform.architecture == 'sparc'
+      # must use gnu99 due to `asm` keyword
+      # https://gcc.gnu.org/onlinedocs/gcc-7.2.0/gcc/Extended-Asm.html
+      pkg.environment "CFLAGS", "#{settings[:cflags]} -std=gnu99"
+    else
+      pkg.environment "CFLAGS", "#{settings[:cflags]} -std=c99"
+    end
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment 'MAKE', 'gmake'
   elsif platform.is_macos?

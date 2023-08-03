@@ -41,7 +41,7 @@ component 'curl' do |pkg, settings, platform|
     extra_cflags << '-mmacosx-version-min=12.0 -arch arm64' if platform.name =~ /osx-12/
   end
 
-  if (platform.is_solaris? && platform.os_version == "11") || platform.is_aix?
+  if (platform.is_solaris? && platform.os_version.start_with?("11")) || platform.is_aix?
     # Makefile generation with automatic dependency tracking fails on these platforms
     configure_options << "--disable-dependency-tracking"
   end
