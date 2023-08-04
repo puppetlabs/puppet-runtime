@@ -1,7 +1,7 @@
 # This platform definition is used to build natively on SPARC, unlike
 # solaris-10/11-sparc, which are cross compiled. Therefore, this definition does
 # not inherit from vanagon defaults.
-platform "solaris-11-sparc" do |plat|
+platform("solaris-11-sparc", override_name: true) do |plat|
   plat.servicedir "/lib/svc/manifest"
   plat.defaultdir "/lib/svc/method"
   plat.servicetype "smf"
