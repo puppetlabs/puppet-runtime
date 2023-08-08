@@ -62,7 +62,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
   end
 
   # due to contrib/make_sunver.pl missing on solaris 11 we cannot compile libffi, so we provide the opencsw library
-  pkg.environment "CPATH", "/opt/csw/lib/libffi-3.2.1/include" if platform.name.start_with?('solaris-11-')
+  pkg.environment "CPATH", "/opt/csw/lib/libffi-3.2.1/include" if platform.name =~ /solaris-11/ && (platform.is_cross_compiled? || platform.architecture != 'sparc')
   pkg.environment "MAKE", platform[:make] if platform.is_solaris?
 
   if platform.is_cross_compiled_linux?

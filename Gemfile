@@ -11,7 +11,7 @@ def location_for(place)
 end
 
 gem 'artifactory'
-gem 'vanagon', *location_for(ENV['VANAGON_LOCATION'] || '~> 0.28')
+gem 'vanagon', *location_for(ENV['VANAGON_LOCATION'] || '~> 0.39')
 gem 'packaging', *location_for(ENV['PACKAGING_LOCATION'] || '~> 0.105')
 gem 'rake', '~> 13.0'
 

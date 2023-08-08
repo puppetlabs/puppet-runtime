@@ -120,11 +120,8 @@ elsif platform.is_cross_compiled? && platform.is_macos?
 elsif platform.is_solaris?
   if platform.architecture == 'i386'
     platform_triple = "#{platform.architecture}-pc-solaris2.#{platform.os_version}"
-  elsif platform.is_cross_compiled?
-    platform_triple = "#{platform.architecture}-sun-solaris2.#{platform.os_version}"
-    host = "--host #{platform_triple}"
   else
-    platform_triple = "#{platform.architecture}-sun-solaris2.11"
+    platform_triple = "#{platform.architecture}-sun-solaris2.#{platform.os_version}"
     host = "--host #{platform_triple}"
   end
 elsif platform.is_windows?
