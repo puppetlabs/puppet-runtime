@@ -36,8 +36,6 @@ project 'pe-installer-runtime-main' do |proj|
   ruby_base_version = proj.ruby_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2.0')
   proj.setting(:gem_home, File.join(proj.libdir, 'ruby', 'gems', ruby_base_version))
   proj.setting(:gem_install, "#{proj.host_gem} install --no-document --local --bindir=#{proj.ruby_bindir}")
-  # Enable legacy openssl agls for wirnm
-  proj.setting(:use_legacy_openssl_algos, true)
 
   proj.setting(:artifactory_url, "https://artifactory.delivery.puppetlabs.net/artifactory")
   proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
