@@ -10,6 +10,15 @@ project 'pe-bolt-server-runtime-main' do |proj|
   proj.setting(:ruby_version, '3.2.2')
   proj.setting(:openssl_version, '3.0')
 
+  # We enable legacy algorithms for winrm transport. Currently the winrm transport
+  # does not work on FIPS, so in order to stay compliant we do not enable legacy algorithms
+  # on fips builds.
+  if proj.get_platform.name =~ /^redhatfips/
+    proj.setting(:use_legacy_openssl_algos, false)
+  else 
+    proj.setting(:use_legacy_openssl_algos, true)
+  end
+
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-bolt-server_with_ruby.rb'))
   proj.component 'rubygem-prime'
   proj.component 'rubygem-rexml'
