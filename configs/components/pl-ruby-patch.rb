@@ -61,8 +61,9 @@ component "pl-ruby-patch" do |pkg, settings, platform|
       sed_command = %(s|Gem.ruby.shellsplit|& << '-r/opt/puppetlabs/puppet/share/doc/rbconfig-#{settings[:ruby_version]}-orig.rb'|)
     end
 
-    # rubygems switched which file has the command we need to patch starting with ruby 3.2.2
-    if Gem::Version.new(settings[:ruby_version]) >= Gem::Version.new('3.2.2')
+    # rubygems switched which file has the command we need to patch starting in rubygems 3.4.10, which we install in our formula
+    # for ruby in homebrew-puppet
+    if Gem::Version.new(settings[:ruby_version]) >= Gem::Version.new('3.2.2') || platform.is_macos? && ruby_version_y.start_with?('2')
       filename = 'builder.rb'
     else
       filename = 'ext_conf_builder.rb'
