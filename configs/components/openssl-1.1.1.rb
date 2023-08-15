@@ -1,6 +1,6 @@
 component 'openssl' do |pkg, settings, platform|
-  pkg.version '1.1.1u'
-  pkg.sha256sum 'e2f8d84b523eecd06c7be7626830370300fbcc15386bf5142d72758f6963ebc6'
+  pkg.version '1.1.1v'
+  pkg.sha256sum 'd6697e2871e77238460402e9362d47d18382b15ef9f246aba6c7bd780d38a6b0'
   pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
