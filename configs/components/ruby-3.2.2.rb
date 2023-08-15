@@ -38,6 +38,8 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
 
   base = 'resources/patches/ruby_32'
 
+  pkg.apply_patch "#{base}/uri-redos-cve-2023-36617.patch"
+
   if platform.is_cross_compiled?
     unless platform.is_macos?
 #      pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
