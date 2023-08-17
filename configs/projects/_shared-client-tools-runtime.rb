@@ -23,9 +23,11 @@ platform = proj.get_platform
 # We need to explicitly define 1.1.1k here to avoid
 # build dep conflicts between openssl-1.1.1 needed by curl
 # and krb5-devel
-if platform.name =~ /^redhatfips-8/
+if proj.settings[:openssl_version]
+  # already defined in the project
+elsif platform.name =~ /^redhatfips-8/
   proj.setting(:openssl_version, '1.1.1k')
-else 
+else
   proj.setting(:openssl_version, '1.1.1')
 end
 
@@ -77,6 +79,8 @@ if platform.is_macos?
     # The core2 architecture is not available on M1 Macs
     proj.setting(:cflags, "#{proj.cppflags}")
     proj.setting(:host, "--host aarch64-apple-darwin --build x86_64-apple-darwin --target aarch64-apple-darwin")
+  elsif platform.architecture == 'arm64'
+    proj.setting(:cflags, "#{proj.cppflags}")
   else
     proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
   end
@@ -102,7 +106,10 @@ end
 
 # Common deps
 proj.component "runtime-client-tools"
-if platform.name =~ /^redhatfips-.*/
+
+if proj.settings[:openssl_version]
+  proj.component "openssl-#{proj.openssl_version}"
+elsif platform.name =~ /^redhatfips-.*/
   proj.component "openssl-1.1.1-fips"
 else
   proj.component "openssl-#{proj.openssl_version}"
