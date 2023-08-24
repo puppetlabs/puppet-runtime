@@ -107,11 +107,9 @@ end
 # Common deps
 proj.component "runtime-client-tools"
 
-if proj.settings[:openssl_version]
-  proj.component "openssl-#{proj.openssl_version}"
-elsif platform.name =~ /^redhatfips-.*/
+if(proj.settings[:openssl_version] == '1.1.1k')
   proj.component "openssl-1.1.1-fips"
-else
+elsif proj.settings[:openssl_version]
   proj.component "openssl-#{proj.openssl_version}"
 end
 proj.component "curl"
