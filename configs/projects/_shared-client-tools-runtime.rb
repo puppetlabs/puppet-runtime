@@ -107,7 +107,9 @@ end
 # Common deps
 proj.component "runtime-client-tools"
 
-if(proj.settings[:openssl_version] == '1.1.1k')
+if platform.name =~ /^redhatfips-7/ && proj.openssl_version == '1.1.1'
+  proj.component "openssl-1.1.1-fips"
+elsif platform.name =~ /^redhatfips-8/ && proj.openssl_version == '1.1.1k'
   proj.component "openssl-1.1.1-fips"
 elsif proj.settings[:openssl_version]
   proj.component "openssl-#{proj.openssl_version}"
