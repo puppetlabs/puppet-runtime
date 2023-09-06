@@ -6,10 +6,8 @@ component 'augeas' do |pkg, settings, platform|
   case version
   when '1.14.1'
     pkg.md5sum 'ac31216268b4b64809afd3a25f2515e5'
-    pkg.url "https://github.com/hercules-team/augeas/releases/download/release-1.14.1/augeas-1.14.1.tar.gz"
   when '1.13.0'
     pkg.md5sum '909b9934190f32ffcbc2c5a92efaf9d2'
-    pkg.url "https://github.com/hercules-team/augeas/releases/download/release-1.13.0/augeas-1.13.0.tar.gz"
     pkg.apply_patch 'resources/patches/augeas/augeas-1.13.0-patch_security_context-t_out.patch'
   when '1.8.1'
     pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
@@ -22,6 +20,13 @@ component 'augeas' do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/augeas/augeas-1.12.0-allow-hyphen-postgresql-lens.patch'
   else
     raise "augeas version #{version} has not been configured; Cannot continue."
+  end
+
+  # Starting with 1.13.0 Augeas started hosting on Github
+  if Gem::Version.new(version) >= Gem::Version.new('1.13.0')
+    pkg.url "https://github.com/hercules-team/augeas/releases/download/release-#{version}/augeas-#{version}.tar.gz"
+  else
+    pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
   end
 
   if ['1.11.0', '1.12.0', '1.13.0', '1.14.1'].include?(version)
@@ -50,7 +55,6 @@ component 'augeas' do |pkg, settings, platform|
     extra_config_flags = platform.name =~ /solaris-11|aix/ ? " --disable-dependency-tracking" : ""
   end
 
-  pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/augeas-#{pkg.get_version}.tar.gz"
 
   pkg.build_requires "libxml2"
