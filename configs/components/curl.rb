@@ -26,6 +26,11 @@ component 'curl' do |pkg, settings, platform|
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
   end
 
+  # Following 3 lines should we removed once we upgrade CURL to 8.x.x
+  pkg.apply_patch 'resources/patches/curl/CVE-2023-27535.patch'
+  pkg.apply_patch 'resources/patches/curl/CVE-2023-28319.patch'
+  pkg.apply_patch 'resources/patches/curl/CVE-2023-32001.patch'
+
   configure_options = []
   configure_options << "--with-ssl=#{settings[:prefix]}"
 
