@@ -1,7 +1,7 @@
 project 'pdk-runtime' do |proj|
   proj.setting(:runtime_project, 'pdk')
   proj.setting(:openssl_version, '1.1.1')
-  proj.setting(:augeas_version, '1.13.0')
+  proj.setting(:augeas_version, '1.14.1')
   proj.setting(:rubygem_fast_gettext_version, '1.1.2')
   proj.setting(:rubygem_gettext_version, '3.2.2')
   proj.setting(:rubygem_gettext_setup_version, '0.34')

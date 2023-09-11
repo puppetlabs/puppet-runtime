@@ -2,7 +2,7 @@ project 'pe-installer-runtime-main' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'pe-installer')
   proj.setting(:ruby_version, '3.2.2')
-  proj.setting(:augeas_version, '1.13.0')
+  proj.setting(:augeas_version, '1.14.1')
   proj.setting(:openssl_version, '3.0')
   # NLTM uses MD4 unconditionally in its protocol, so legacy algos must be
   # enabled in OpenSSL >= 3.0 for Bolt's WinRM transport to work.
