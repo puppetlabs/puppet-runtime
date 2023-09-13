@@ -1,6 +1,6 @@
 component 'rubygem-sys-filesystem' do |pkg, settings, platform|
-  pkg.version '1.4.3'
-  pkg.sha256sum '390919de89822ad6d3ba3daf694d720be9d83ed95cdf7adf54d4573c98b17421'
+  pkg.version '1.4.4'
+  pkg.sha256sum 'f5d3a19adf8249a8803a057534034cef6afa3f149fe1d07251cf76ee2c1ac59b'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
