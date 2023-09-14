@@ -10,8 +10,14 @@ component "puppet-ca-bundle" do |pkg, settings, platform|
     openssl_cmd = "#{settings[:bindir]}/openssl"
   end
 
+  target = if platform.is_fips?
+             'install-fips'
+           else
+             'install'
+           end
+
   install_commands = [
-    "#{platform[:make]} install OPENSSL=#{openssl_cmd} USER=0 GROUP=0 DESTDIR=#{File.join(settings[:prefix], 'ssl')}"
+    "#{platform[:make]} #{target} OPENSSL=#{openssl_cmd} USER=0 GROUP=0 DESTDIR=#{File.join(settings[:prefix], 'ssl')}"
   ]
 
   pkg.install do
