@@ -10,23 +10,34 @@ ruby_version ||= settings[:ruby_version]
 host_ruby ||= settings[:host_ruby]
 ruby_bindir ||= settings[:ruby_bindir]
 
+# We download tarballs because system development packages (e.g.
+# libselinux-devel) don't necessarily include Swig interface files (*.i files)
 if platform.name =~ /el-(6|7)|ubuntu-(16|18.04-amd64)/
   pkg.version "2.0.94"
   pkg.md5sum "544f75aab11c2af352facc51af12029f"
   pkg.url "https://raw.githubusercontent.com/wiki/SELinuxProject/selinux/files/releases/20100525/devel/libselinux-#{pkg.get_version}.tar.gz"
-  pkg.mirror "#{settings[:buildsources_url]}/libselinux-#{pkg.get_version}.tar.gz"
+elsif platform.name.start_with?('el-9')
+  # SELinux 3.3 is the minimum version available in RHEL 9 repos
+  pkg.version '3.3'
+  pkg.sha256sum 'acfdee27633d2496508c28727c3d41d3748076f66d42fccde2e6b9f3463a7057'
+  pkg.url "https://github.com/SELinuxProject/selinux/releases/download/#{pkg.get_version}/libselinux-#{pkg.get_version}.tar.gz"
 else
   pkg.version "2.9"
   pkg.md5sum "bb449431b6ed55a0a0496dbc366d6e31"
   pkg.apply_patch "resources/patches/ruby-selinux/selinux-29-function.patch"
   pkg.url "https://github.com/SELinuxProject/selinux/releases/download/20190315/libselinux-#{pkg.get_version}.tar.gz"
-  pkg.mirror "#{settings[:buildsources_url]}/libselinux-#{pkg.get_version}.tar.gz"
 end
+pkg.mirror "#{settings[:buildsources_url]}/libselinux-#{pkg.get_version}.tar.gz"
 
 pkg.build_requires "ruby-#{ruby_version}"
 cc = "/opt/pl-build-tools/bin/gcc"
-system_include = "-I/usr/include"
+system_include = '-I/usr/include'
 ruby = "#{ruby_bindir}/ruby -rrbconfig"
+
+# The RHEL 9 libselinux-devel package provides headers, but we don't want to
+# use the package becuase of a compatibility issue with the shared library. 
+# Instead, we use the headers provided in the tarball.
+system_include.prepend('-I./include ') if platform.name.start_with?('el-9')
 
 if platform.is_cross_compiled_linux?
   cc = "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
@@ -56,6 +67,11 @@ pkg.build do
   if ruby_version =~ /^3/
     steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_wrap.patch"
   end
+
+  # libselinux 3.3 is the minimum version we want to build on RHEL 9, but the
+  # libeselinux-devel-3.3 package confusingly installs a shared library that
+  # uses 3.4. The hacky workaround for this is to symlink an existing library.
+  steps << 'ln -s /usr/lib64/libselinux.so.1 /usr/lib64/libselinux.so' if platform.name.start_with?('el-9')
 
   steps.concat([
     "#{cc} $${INCLUDESTR} #{system_include} #{cflags} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -fPIC -DSHARED -c -o selinuxswig_ruby_wrap.lo selinuxswig_ruby_wrap.c",

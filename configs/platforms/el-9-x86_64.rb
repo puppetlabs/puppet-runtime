@@ -25,7 +25,6 @@ platform "el-9-x86_64" do |plat|
     java-1.8.0-openjdk-devel
     libsepol
     libsepol-devel
-    libselinux-devel
     pkgconfig
     readline-devel
     rpmdevtools
