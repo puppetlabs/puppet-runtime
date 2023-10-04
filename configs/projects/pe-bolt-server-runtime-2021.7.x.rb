@@ -1,6 +1,6 @@
 project 'pe-bolt-server-runtime-2021.7.x' do |proj|
   proj.setting(:pe_version, '2021.7')
-  proj.setting(:rubygem_puppet_version, '7.24.0')
+  proj.setting(:rubygem_puppet_version, '7.26.0')
   proj.setting(:rubygem_net_ssh_version, '6.1.0')
   # We build bolt server with the ruby installed in the puppet-agent dep. For ruby 2.7 we need to use a --no-document flag
   # for gem installs instead of --no-ri --no-rdoc. This setting allows us to use this while we support both ruby 2.5 and 2.7

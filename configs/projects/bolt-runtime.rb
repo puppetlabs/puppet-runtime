@@ -8,7 +8,7 @@ project 'bolt-runtime' do |proj|
   proj.setting(:augeas_version, '1.11.0')
   # TODO: Can runtime projects use these updated versions?
   proj.setting(:rubygem_deep_merge_version, '1.2.2')
-  proj.setting(:rubygem_puppet_version, '7.24.0')
+  proj.setting(:rubygem_puppet_version, '7.26.0')
 
   platform = proj.get_platform
 
