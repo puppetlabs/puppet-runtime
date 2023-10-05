@@ -1,6 +1,6 @@
 component "rubygem-json-schema" do |pkg, settings, platform|
-  pkg.version "4.0.0"
-  pkg.sha256sum "a3bfe5fa1ad9771f0637a7c339a598b8b258343c49a1110988288e04f4f3b994"
+  pkg.version "4.1.1"
+  pkg.sha256sum "89a8399745a710c2c7be3ff9564f67a0ae982c82f7590a95ab9cebe374fa2d49"
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
