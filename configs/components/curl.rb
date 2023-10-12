@@ -30,6 +30,7 @@ component 'curl' do |pkg, settings, platform|
   pkg.apply_patch 'resources/patches/curl/CVE-2023-27535.patch'
   pkg.apply_patch 'resources/patches/curl/CVE-2023-28319.patch'
   pkg.apply_patch 'resources/patches/curl/CVE-2023-32001.patch'
+  pkg.apply_patch 'resources/patches/curl/CVE-2023-38545.patch'
 
   configure_options = []
   configure_options << "--with-ssl=#{settings[:prefix]}"
