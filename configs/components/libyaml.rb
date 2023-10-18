@@ -1,7 +1,7 @@
 component 'libyaml' do |pkg, settings, platform|
   pkg.version '0.2.5'
   pkg.md5sum 'bb15429d8fb787e7d3f1c83ae129a999'
-  pkg.url "https://github.com/yaml/libyaml/releases/download/#{pkg.get_name}/yaml-#{pkg.get_version}-0.2.5.tar.gz"
+  pkg.url "https://github.com/yaml/libyaml/releases/download/#{pkg.get_version}/yaml-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/yaml-#{pkg.get_version}.tar.gz"
 
   if platform.is_aix?
