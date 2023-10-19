@@ -4,7 +4,9 @@ platform "el-9-x86_64" do |plat|
   plat.servicetype "systemd"
 
   # Temporary fix until new rhel 9 image is built
-  plat.provision_with("sed -i 's/beta-x86_64\\/baseos\\/x86_64/base/' /etc/yum.repos.d/localmirror-baseos.repo; sed -i 's/beta-x86_64\\/appstream\\/x86_64/appstream/' /etc/yum.repos.d/localmirror-appstream.repo")
+  if File.exist?("/etc/yum.repos.d/localmirror-appstream.repo")
+    plat.provision_with("sed -i 's/beta-x86_64\\/baseos\\/x86_64/base/' /etc/yum.repos.d/localmirror-baseos.repo; sed -i 's/beta-x86_64\\/appstream\\/x86_64/appstream/' /etc/yum.repos.d/localmirror-appstream.repo")
+  end
 
   packages = %w(
     gcc
