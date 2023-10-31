@@ -1,6 +1,3 @@
-# rubocop:disable Naming/FileName
-# frozen_string_literal: true
-
 platform 'amazon-2023-aarch64' do |plat|
   plat.inherit_from_default
 
@@ -16,5 +13,3 @@ platform 'amazon-2023-aarch64' do |plat|
   plat.install_build_dependencies_with 'dnf install -y --allowerasing'
   plat.vmpooler_template 'amazon-2023-arm64'
 end
-
-# rubocop:enable Naming/FileName
