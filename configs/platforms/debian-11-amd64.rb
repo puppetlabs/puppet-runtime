@@ -21,7 +21,6 @@ platform "debian-11-amd64" do |plat|
     'libreadline-dev',
     'libselinux1-dev',
     'make',
-    'openjdk-11-jdk',
     'pkg-config',
     'quilt',
     'rsync',

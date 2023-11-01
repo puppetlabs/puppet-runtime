@@ -12,7 +12,6 @@
     "gcc",
     "gcc-c++",
     "imake",
-    "java-1.8.0-openjdk-devel",
     "libsepol",
     "libsepol-devel",
     "libselinux-devel",

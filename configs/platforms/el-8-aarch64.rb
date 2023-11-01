@@ -3,7 +3,6 @@ platform 'el-8-aarch64' do |plat|
 
   packages = %w(
     perl-Getopt-Long 
-    java-1.8.0-openjdk-devel
     patch 
     swig 
     libselinux-devel 

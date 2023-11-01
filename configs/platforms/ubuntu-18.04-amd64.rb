@@ -5,7 +5,6 @@ platform "ubuntu-18.04-amd64" do |plat|
     libbz2-dev
     libreadline-dev
     libselinux1-dev
-    openjdk-8-jdk
     pl-cmake
     pl-gcc
     swig 

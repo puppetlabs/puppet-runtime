@@ -3,7 +3,6 @@ platform "el-6-i386" do |plat|
   
   packages = %w(
     bzip2-devel
-    java-1.8.0-openjdk-devel
     libsepol
     libsepol-devel
     libselinux-devel

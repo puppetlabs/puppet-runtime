@@ -18,7 +18,6 @@ platform "debian-10-armhf" do |plat|
     "libreadline-dev",
     "libselinux1-dev",
     "make",
-    "openjdk-11-jre-headless",
     "pkg-config",
     "cmake",
     "gcc",

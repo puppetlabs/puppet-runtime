@@ -5,7 +5,6 @@ platform "ubuntu-22.04-aarch64" do |plat|
     libbz2-dev
     libreadline-dev
     libselinux1-dev
-    openjdk-8-jre-headless
     gcc
     swig
     systemtap-sdt-dev

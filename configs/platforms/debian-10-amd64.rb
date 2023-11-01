@@ -4,7 +4,6 @@ platform "debian-10-amd64" do |plat|
     libbz2-dev
     libreadline-dev
     libselinux1-dev
-    openjdk-11-jdk
     swig systemtap-sdt-dev
     zlib1g-dev
   )
