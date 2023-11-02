@@ -71,7 +71,10 @@ pkg.build do
   # libselinux 3.3 is the minimum version we want to build on RHEL 9, but the
   # libeselinux-devel-3.3 package confusingly installs a shared library that
   # uses 3.4. The hacky workaround for this is to symlink an existing library.
-  steps << 'ln -s /usr/lib64/libselinux.so.1 /usr/lib64/libselinux.so' if platform.name.start_with?('el-9')
+  # PDK builds two Rubies so check if symlink exists first.
+  if platform.name.start_with?('el-9')
+    steps << 'if [ ! -L /usr/lib64/libselinux.so ]; then ln -s /usr/lib64/libselinux.so.1 /usr/lib64/libselinux.so; fi'
+  end
 
   steps.concat([
     "#{cc} $${INCLUDESTR} #{system_include} #{cflags} -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64 -fPIC -DSHARED -c -o selinuxswig_ruby_wrap.lo selinuxswig_ruby_wrap.c",
