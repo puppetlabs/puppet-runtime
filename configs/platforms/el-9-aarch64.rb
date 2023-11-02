@@ -4,7 +4,6 @@ platform 'el-9-aarch64' do |plat|
   packages = %w(
     perl
     perl-Getopt-Long 
-    java-1.8.0-openjdk-devel
     patch 
     swig 
     readline-devel 

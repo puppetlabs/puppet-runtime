@@ -12,7 +12,6 @@ platform "sles-12-ppc64le" do |plat|
     "bison",
     "gcc",
     "gcc-c++",
-    "java-1_7_0-openjdk-devel",
     "libbz2-devel",
     "make",
     "pkgconfig",

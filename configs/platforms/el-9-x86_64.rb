@@ -22,7 +22,6 @@ platform "el-9-x86_64" do |plat|
     rpm-sign
     libtool
     libarchive
-    java-1.8.0-openjdk-devel
     libsepol
     libsepol-devel
     pkgconfig

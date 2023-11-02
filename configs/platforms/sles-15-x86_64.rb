@@ -2,7 +2,6 @@ platform "sles-15-x86_64" do |plat|
   plat.inherit_from_default
 
   packages = %w(
-    java-1_8_0-openjdk-devel
     libbz2-devel
     pkg-config
     readline-devel

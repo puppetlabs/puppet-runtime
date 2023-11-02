@@ -5,7 +5,6 @@ platform "ubuntu-20.04-amd64" do |plat|
     libbz2-dev
     libreadline-dev
     libselinux1-dev
-    openjdk-8-jre-headless
     gcc
     swig
     systemtap-sdt-dev
