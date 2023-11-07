@@ -125,7 +125,6 @@ component 'openssl' do |pkg, settings, platform|
   configure_flags = [
     "--prefix=#{settings[:prefix]}",
     '--libdir=lib',
-    "--openssldir=#{settings[:prefix]}/ssl",
     'shared',
     'no-asm',
     target,
@@ -135,6 +134,12 @@ component 'openssl' do |pkg, settings, platform|
     'no-md2',
     'no-ssl3'
   ]
+
+  if platform.is_macos?
+    configure_flags << "--openssldir=#{settings[:prefix]}/openssl-1.1.1/ssl"
+  else
+    configure_flags << "--openssldir=#{settings[:prefix]}/ssl"
+  end
 
   # Individual projects may provide their own openssl configure flags:
   project_flags = settings[:openssl_extra_configure_flags] || []

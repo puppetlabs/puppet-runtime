@@ -118,7 +118,6 @@ component 'openssl' do |pkg, settings, platform|
   configure_flags = [
     "--prefix=#{settings[:prefix]}",
     '--libdir=lib',
-    "--openssldir=#{settings[:prefix]}/ssl",
     'shared',
     'no-gost',
     target,
@@ -140,6 +139,12 @@ component 'openssl' do |pkg, settings, platform|
     # 'no-rmd160', this is causing failures with pxp, remove once pxp-agent does not need it
     'no-whirlpool'
   ]
+
+  if platform.is_macos?
+    configure_flags << "--openssldir=#{settings[:prefix]}/openssl-3.0/ssl"
+  else
+    configure_flags << "--openssldir=#{settings[:prefix]}/ssl"
+  end
 
   if settings[:use_legacy_openssl_algos]
     pkg.apply_patch 'resources/patches/openssl/openssl-3-activate-legacy-algos.patch'

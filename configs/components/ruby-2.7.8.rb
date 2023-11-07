@@ -113,9 +113,9 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
     # implementation instead of 'arm64', so specify 'amd64' explicitly
     # https://github.com/ruby/ruby/blob/c9c2245c0a25176072e02db9254f0e0c84c805cd/configure.ac#L2329-L2330
     special_flags += " --with-baseruby=#{host_ruby} --with-coroutine=arm64 "
-  elsif platform.is_macos? && platform.architecture == 'arm64' && platform.os_version.to_i >= 13
+  elsif platform.is_macos?
     pkg.environment 'PATH', '/opt/homebrew/bin:$(PATH):/usr/local/bin'
-    special_flags += " --with-openssl-dir=#{settings[:prefix]} "
+    special_flags += " --with-openssl-dir=#{settings[:prefix]}/openssl-1.1.1 "
   elsif platform.is_solaris? && platform.architecture == "sparc"
     special_flags += " --with-baseruby=#{host_ruby} --enable-close-fds-by-recvmsg-with-peek "
   elsif platform.name =~ /el-6/

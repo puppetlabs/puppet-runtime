@@ -130,7 +130,7 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
       special_flags += " --build i686-w64-mingw32 "
     end
   elsif platform.is_macos?
-    special_flags += " --with-openssl-dir=#{settings[:prefix]} "
+    special_flags += " --with-openssl-dir=#{settings[:prefix]}/openssl-3.0 "
   end
 
   without_dtrace = [

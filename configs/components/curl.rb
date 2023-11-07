@@ -34,7 +34,11 @@ component 'curl' do |pkg, settings, platform|
   pkg.apply_patch 'resources/patches/curl/CVE-2023-38546.patch'
 
   configure_options = []
-  configure_options << "--with-ssl=#{settings[:prefix]}"
+  if platform.is_macos?
+    configure_options << "--with-ssl=#{settings[:prefix]}/openssl-1.1.1"
+  else
+    configure_options << "--with-ssl=#{settings[:prefix]}"
+  end
 
   # OpenSSL version 3.0 & up no longer ships by default the insecure algorithms
   # that curl's ntlm module depends on (md4 & des).
