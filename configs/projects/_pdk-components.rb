@@ -1,21 +1,6 @@
 # This file is used to define the components that make up the PDK runtime package.
 
 if proj.ruby_major_version >= 3
-
-  openssl3_platform = [
-    platform.is_el?,
-    platform.is_fedora?,
-    platform.is_sles?,
-    platform.is_deb?,
-    platform.is_macos?,
-    platform.is_windows?
-  ].any?
-
-  openssl_version = proj.openssl_version
-  openssl_version = '3.0' if openssl3_platform
-
-  proj.component "openssl-#{openssl_version}"
-
   # Ruby 3.2 does not package these two libraries so we need to add them
   proj.component 'libffi'
   proj.component 'libyaml'
@@ -53,6 +38,10 @@ proj.component 'ruby-stomp'
 # Additional Rubies
 if proj.respond_to?(:additional_rubies)
   proj.additional_rubies.each_key do |rubyver|
+    raise "Not sure which openssl version to use for ruby #{rubyver}" unless rubyver.start_with?("2.7")
+
+    # old ruby versions don't support openssl 3
+    proj.component "openssl-1.1.1"
     proj.component "ruby-#{rubyver}"
 
     ruby_minor = rubyver.split('.')[0, 2].join('.')
