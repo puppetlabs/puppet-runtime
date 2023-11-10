@@ -41,6 +41,7 @@ if proj.respond_to?(:additional_rubies)
     raise "Not sure which openssl version to use for ruby #{rubyver}" unless rubyver.start_with?("2.7")
 
     # old ruby versions don't support openssl 3
+    proj.component "pre-additional-rubies"
     proj.component "openssl-1.1.1"
     proj.component "ruby-#{rubyver}"
 
@@ -49,6 +50,7 @@ if proj.respond_to?(:additional_rubies)
     proj.component "ruby-#{ruby_minor}-augeas" unless platform.is_windows?
     proj.component "ruby-#{ruby_minor}-selinux" if platform.is_el? || platform.is_fedora?
     proj.component "ruby-#{ruby_minor}-stomp"
+    proj.component "post-additional-rubies"
   end
 end
 
