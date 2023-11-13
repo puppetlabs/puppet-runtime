@@ -1,6 +1,6 @@
 project 'pdk-runtime' do |proj|
   proj.setting(:runtime_project, 'pdk')
-  proj.setting(:openssl_version, '1.1.1')
+  proj.setting(:openssl_version, '3.0')
   proj.setting(:augeas_version, '1.14.1')
   proj.setting(:rubygem_fast_gettext_version, '1.1.2')
   proj.setting(:rubygem_gettext_version, '3.2.2')
@@ -157,10 +157,4 @@ project 'pdk-runtime' do |proj|
   proj.publish_yaml_settings
 
   proj.timeout 7200 if platform.is_windows?
-
-  # Here we rewrite public http urls to use our internal source host instead.
-  # Something like https://www.openssl.org/source/openssl-1.0.0r.tar.gz gets
-  # rewritten as
-  # https://artifactory.delivery.puppetlabs.net/artifactory/generic/buildsources/openssl-1.0.0r.tar.gz
-  # proj.register_rewrite_rule 'http', proj.buildsources_url
 end
