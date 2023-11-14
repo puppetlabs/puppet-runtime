@@ -131,7 +131,10 @@ if platform.is_windows? && settings[:bindir] != ruby_bindir
     ssl_postfix = ''
   end
 
-  if Gem::Version.new(settings[:openssl_version]) >= Gem::Version.new('1.1.0')
+  if Gem::Version.new(settings[:openssl_version]) >= Gem::Version.new('3.0')
+    ssl_lib = "libssl-3#{ssl_postfix}.dll"
+    crypto_lib = "libcrypto-3#{ssl_postfix}.dll"
+  elsif Gem::Version.new(settings[:openssl_version]) >= Gem::Version.new('1.1.0')
     ssl_lib = "libssl-1_1#{ssl_postfix}.dll"
     crypto_lib = "libcrypto-1_1#{ssl_postfix}.dll"
   else
