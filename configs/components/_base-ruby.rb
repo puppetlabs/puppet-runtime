@@ -114,15 +114,28 @@ pkg.install do
   [ "#{platform[:make]} -j$(shell expr $(shell #{platform[:num_cores]}) + 1) install" ]
 end
 
+# For the pdk runtime, the ruby bin directory is different then the main bin
+# directory. In order to run ruby *outside* of the normal pdk.bat then we need
+# to copy all dlls that ruby depends on from the main bin directory to ruby's
+# bin directory. This is because the main bin directory is not in our system
+# PATH and Windows doesn't support RPATH. However, as mentioned in
+# https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order,
+# Windows searches for DLLs in "The folder the calling process was loaded from
+# (the executable's folder)."
+#
+# The agent runtime used to have the same issue prior to puppet 6, for example
+# RE-7593. However, Windows paths were changed to match *nix in puppet 6, see
+# commit 4b9d126dd5b. So only the pdk has this issue.
 if platform.is_windows? && settings[:bindir] != ruby_bindir
-  # As things stand right now, ssl should build under [INSTALLDIR]\Puppet\puppet on
-  # windows. However, if things need to run *outside* of the normal batch file runs
-  # (puppet.bat ,mco.bat etcc) the location of openssl away from where ruby is
-  # installed will cause a failure. Specifically this is meant to help services like
-  # mco that require openssl but don't have access to environment.bat. Refer to
-  # https://tickets.puppetlabs.com/browse/RE-7593 for details on why this causes
-  # failures and why these copies fix that.
-  #                   -Sean P. McDonald 07/01/2016
+  # Ruby 3+
+  if Gem::Version.new(pkg.get_version) >= Gem::Version.new('3.0')
+    pkg.install do
+      [
+        "cp #{settings[:gcc_bindir]}/libssp-0.dll #{ruby_bindir}",
+      ]
+    end
+  end
+
   if platform.architecture == "x64"
     gcc_postfix = 'seh'
     ssl_postfix = '-x64'
@@ -131,6 +144,7 @@ if platform.is_windows? && settings[:bindir] != ruby_bindir
     ssl_postfix = ''
   end
 
+  # OpenSSL
   if Gem::Version.new(settings[:openssl_version]) >= Gem::Version.new('3.0')
     ssl_lib = "libssl-3#{ssl_postfix}.dll"
     crypto_lib = "libcrypto-3#{ssl_postfix}.dll"

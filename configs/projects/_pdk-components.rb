@@ -25,12 +25,6 @@ proj.component 'libxml2' unless platform.is_windows?
 proj.component 'libxslt' unless platform.is_windows?
 proj.component "ruby-#{proj.ruby_version}"
 
-# After installing ruby, we need to copy libssp to the ruby bindir on windows
-if platform.is_windows?
-  ruby_component = @project.get_component "ruby-#{proj.ruby_version}"
-  ruby_component.install.push "cp '#{settings[:bindir]}/libssp-0.dll' '#{settings[:ruby_bindir]}/libssp-0.dll'"
-end
-
 proj.component 'ruby-augeas' unless platform.is_windows?
 proj.component 'ruby-selinux' if platform.is_el? || platform.is_fedora?
 proj.component 'ruby-stomp'
