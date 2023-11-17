@@ -132,6 +132,8 @@ if platform.is_windows? && settings[:bindir] != ruby_bindir
     pkg.install do
       [
         "cp #{settings[:gcc_bindir]}/libssp-0.dll #{ruby_bindir}",
+        "cp #{settings[:bindir]}/libffi-8.dll #{ruby_bindir}",
+        "cp #{settings[:bindir]}/libyaml-0-2.dll #{ruby_bindir}"
       ]
     end
   end
