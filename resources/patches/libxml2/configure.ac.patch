@@ -1,0 +1,11 @@
+--- a/configure.ac	2024-02-13 20:48:04.340733431 +0000
++++ b/configure.ac	2024-02-13 20:47:55.056533429 +0000
+@@ -39,7 +39,7 @@
+
+ VERSION=${LIBXML_VERSION}
+
+-AM_INIT_AUTOMAKE([1.16.3 foreign no-dist-gzip dist-xz])
++AM_INIT_AUTOMAKE([1.15 foreign no-dist-gzip dist-xz])
+ AM_MAINTAINER_MODE([enable])
+ AM_SILENT_RULES([yes])
+

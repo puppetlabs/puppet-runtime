@@ -1,14 +1,7 @@
 component "libxslt" do |pkg, settings, platform|
   pkg.version '1.1.37'
-  pkg.sha256sum 'a4ecab265f44e888ed3b39e11c7e925103ef6e26e09d62e9381f26977df96343'
-  pkg.url "#{settings[:buildsources_url]}/libxslt-v#{pkg.get_version}.tar.gz"
-
-  # Newer versions of libxslt either ship as tar.xz or do not ship with a configure file
-  # and require a newer version of GNU Autotools to generate. This causes problems with
-  # the older and esoteric (AIX, Solaris) platforms that we support.
-  # So we generate a configure file manually, compress as tar.gz, and host internally.
-
-  pkg.build_requires "libxml2"
+  pkg.sha256sum 'b6f96869b8c42e8257b19d633d31e38cf12ff770829352a9dd109795ffc78bf2'
+  pkg.url "https://gitlab.gnome.org/GNOME/libxslt/-/archive/v#{pkg.get_version}/libxslt-v#{pkg.get_version}.tar.gz"
 
   if platform.is_aix?
     if platform.name == 'aix-7.1-ppc'
@@ -34,11 +27,45 @@ component "libxslt" do |pkg, settings, platform|
       pkg.environment 'CC', 'clang -target arm64-apple-macos11' if platform.name =~ /osx-11/
       pkg.environment 'CC', 'clang -target arm64-apple-macos12' if platform.name =~ /osx-12/
     end
+    pkg.environment 'PATH', '$(PATH):/opt/homebrew/bin:/usr/local/bin'
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
   else
     pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
+  end
+
+  build_deps = [ "libxml2" ]
+
+  if platform.is_sles?
+    build_deps << "autoconf"
+  elsif platform.is_deb? || platform.is_rpm?
+    build_deps << "dh-autoreconf"
+  end
+
+  if platform.name == 'el-8-x86_64' || platform.name == 'el-9-x86_64'
+    build_deps.reject! { |r| r == 'dh-autoreconf' }
+  end
+
+  build_deps.each do |dep|
+    pkg.build_requires dep
+  end
+
+  # Newer versions of libxslt either ship as tar.xz or do not ship with a configure file
+  # and require a newer version of GNU Autotools to generate. This causes problems with
+  # the older and esoteric (AIX, Solaris) platforms that we support.
+  # So we generate a configure file manually, compress as tar.gz, and host internally.
+  if (platform.is_aix? && platform.name == 'aix-7.1-ppc') || platform.is_solaris?
+    pkg.url "#{settings[:buildsources_url]}/libxslt-v#{pkg.get_version}-puppet.tar.gz"
+    pkg.sha256sum 'a4ecab265f44e888ed3b39e11c7e925103ef6e26e09d62e9381f26977df96343'
+  else
+    pkg.mirror "#{settings[:buildsources_url]}/libxslt-v#{pkg.get_version}.tar.gz"
+    # Patch downgrades autotools requirement from 1.16.3 to 1.15
+    # EL8 era distros and older do not support 1.16.3.
+    # Vendor only required it to fix a python 3.10 detection bug,
+    # 1.15 works just fine for our build.
+    pkg.apply_patch 'resources/patches/libxslt/configure.ac.patch'
+    pkg.configure { ["autoreconf --force --install"] }
   end
 
   pkg.configure do
