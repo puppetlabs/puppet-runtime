@@ -127,13 +127,15 @@ end
 # RE-7593. However, Windows paths were changed to match *nix in puppet 6, see
 # commit 4b9d126dd5b. So only the pdk has this issue.
 if platform.is_windows? && settings[:bindir] != ruby_bindir
+  bindir = settings[:bindir]
+
   # Ruby 3+
   if Gem::Version.new(pkg.get_version) >= Gem::Version.new('3.0')
     pkg.install do
       [
         "cp #{settings[:gcc_bindir]}/libssp-0.dll #{ruby_bindir}",
-        "cp #{settings[:bindir]}/libffi-8.dll #{ruby_bindir}",
-        "cp #{settings[:bindir]}/libyaml-0-2.dll #{ruby_bindir}"
+        "cp #{bindir}/libffi-8.dll #{ruby_bindir}",
+        "cp #{bindir}/libyaml-0-2.dll #{ruby_bindir}"
       ]
     end
   end
@@ -160,9 +162,9 @@ if platform.is_windows? && settings[:bindir] != ruby_bindir
 
   pkg.install do
     [
-      "cp #{settings[:bindir]}/libgcc_s_#{gcc_postfix}-1.dll #{ruby_bindir}",
-      "cp #{settings[:bindir]}/#{ssl_lib} #{ruby_bindir}",
-      "cp #{settings[:bindir]}/#{crypto_lib} #{ruby_bindir}",
+      "cp #{bindir}/libgcc_s_#{gcc_postfix}-1.dll #{ruby_bindir}",
+      "cp #{bindir}/#{ssl_lib} #{ruby_bindir}",
+      "cp #{bindir}/#{crypto_lib} #{ruby_bindir}"
     ]
   end
 
