@@ -128,11 +128,12 @@ project 'pdk-runtime' do |proj|
     proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir}")
   elsif platform.is_macos?
     proj.setting(:cppflags, "-I#{proj.includedir}")
+    proj.setting(:cflags, "#{proj.cppflags}")
 
     # Since we are cross-compiling for later use, we can only optimize for
     # the oldest supported platform and even up to macOS 10.13 there are
     # a few Core 2 hardware platforms supported. (4 May 2018)
-    proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
+    proj.setting(:cflags, "-march=core2 -msse4 #{proj.cflags}") unless platform.architecture == 'arm64'
 
     # OS X doesn't use RPATH for linking. We shouldn't
     # define it or try to force it in the linker, because this might

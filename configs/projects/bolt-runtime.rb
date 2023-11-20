@@ -85,14 +85,17 @@ project 'bolt-runtime' do |proj|
   end
 
   if platform.is_macos?
-    # For OS X, we should optimize for an older architecture than Apple
+    proj.setting(:cppflags, "-I#{proj.includedir}")
+    proj.setting(:cflags, proj.cppflags.to_s)
+
+    # For OS X, we should optimize for an older x86 architecture than Apple
     # currently ships for; there's a lot of older xeon chips based on
     # that architecture still in use throughout the Mac ecosystem.
     # Additionally, OS X doesn't use RPATH for linking. We shouldn't
     # define it or try to force it in the linker, because this might
     # break gcc or clang if they try to use the RPATH values we forced.
-    proj.setting(:cppflags, "-I#{proj.includedir}")
-    proj.setting(:cflags, "-march=core2 -msse4 #{proj.cppflags}")
+    proj.setting(:cflags, "-march=core2 -msse4 #{proj.cflags}") unless platform.architecture == 'arm64'
+
     proj.setting(:ldflags, "-L#{proj.libdir} ")
   end
 
