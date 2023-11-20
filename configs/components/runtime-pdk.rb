@@ -7,26 +7,30 @@ component "runtime-pdk" do |pkg, settings, platform|
       pkg.install_file File.join(settings[:gcc_bindir], dll), File.join(settings[:bindir], dll)
     end
 
-    # Ruby needs zlib
+    tools_bindir = File.join(settings[:tools_root], 'bin')
+
+    # curl, openssl, etc need zlib, so install in *main* bin dir
     pkg.build_requires "pl-zlib-#{platform.architecture}"
-    pkg.install_file "#{settings[:tools_root]}/bin/zlib1.dll", "#{settings[:bindir]}/zlib1.dll"
+    pkg.install_file "#{tools_bindir}/zlib1.dll", "#{settings[:bindir]}/zlib1.dll"
 
     # zlib, gdbm, yaml-cpp and iconv are all runtime dependancies of ruby, and their libraries need
-    # To exist inside our vendored ruby
-    pkg.install_file "#{settings[:tools_root]}/bin/zlib1.dll", "#{settings[:ruby_bindir]}/zlib1.dll"
-    pkg.install_file "#{settings[:tools_root]}/bin/libgdbm-4.dll", "#{settings[:ruby_bindir]}/libgdbm-4.dll"
-    pkg.install_file "#{settings[:tools_root]}/bin/libgdbm_compat-4.dll", "#{settings[:ruby_bindir]}/libgdbm_compat-4.dll"
-    pkg.install_file "#{settings[:tools_root]}/bin/libiconv-2.dll", "#{settings[:ruby_bindir]}/libiconv-2.dll"
-    pkg.install_file "#{settings[:tools_root]}/bin/libffi-6.dll", "#{settings[:ruby_bindir]}/libffi-6.dll"
+    # to exist inside our primary ruby's bin dir
+    ruby_bindir = settings[:ruby_bindir]
+    pkg.install_file "#{tools_bindir}/zlib1.dll",            "#{ruby_bindir}/zlib1.dll"
+    pkg.install_file "#{tools_bindir}/libgdbm-4.dll",        "#{ruby_bindir}/libgdbm-4.dll"
+    pkg.install_file "#{tools_bindir}/libgdbm_compat-4.dll", "#{ruby_bindir}/libgdbm_compat-4.dll"
+    pkg.install_file "#{tools_bindir}/libiconv-2.dll",       "#{ruby_bindir}/libiconv-2.dll"
+    pkg.install_file "#{tools_bindir}/libffi-6.dll",         "#{ruby_bindir}/libffi-6.dll" if settings[:ruby_version].start_with?('2')
 
     # Copy the DLLs into additional ruby install bindirs as well.
     if settings.has_key?(:additional_rubies)
       settings[:additional_rubies].each do |rubyver, local_settings|
-        pkg.install_file "#{settings[:tools_root]}/bin/zlib1.dll", "#{local_settings[:ruby_bindir]}/zlib1.dll"
-        pkg.install_file "#{settings[:tools_root]}/bin/libgdbm-4.dll", "#{local_settings[:ruby_bindir]}/libgdbm-4.dll"
-        pkg.install_file "#{settings[:tools_root]}/bin/libgdbm_compat-4.dll", "#{local_settings[:ruby_bindir]}/libgdbm_compat-4.dll"
-        pkg.install_file "#{settings[:tools_root]}/bin/libiconv-2.dll", "#{local_settings[:ruby_bindir]}/libiconv-2.dll"
-        pkg.install_file "#{settings[:tools_root]}/bin/libffi-6.dll", "#{local_settings[:ruby_bindir]}/libffi-6.dll"
+        local_bindir = local_settings[:ruby_bindir]
+        pkg.install_file "#{tools_bindir}/zlib1.dll",            "#{local_bindir}/zlib1.dll"
+        pkg.install_file "#{tools_bindir}/libgdbm-4.dll",        "#{local_bindir}/libgdbm-4.dll"
+        pkg.install_file "#{tools_bindir}/libgdbm_compat-4.dll", "#{local_bindir}/libgdbm_compat-4.dll"
+        pkg.install_file "#{tools_bindir}/libiconv-2.dll",       "#{local_bindir}/libiconv-2.dll"
+        pkg.install_file "#{tools_bindir}/libffi-6.dll",         "#{local_bindir}/libffi-6.dll" if rubyver.start_with?('2')
       end
     end
 
