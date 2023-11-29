@@ -65,7 +65,9 @@ pkg.build do
   ]
 
   if ruby_version =~ /^3/
-    steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_wrap.patch"
+    unless platform.name =~ /debian-12/
+      steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_wrap.patch"
+    end
   end
 
   # libselinux 3.3 is the minimum version we want to build on RHEL 9, but the
