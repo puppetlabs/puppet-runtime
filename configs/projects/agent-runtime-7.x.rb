@@ -12,7 +12,7 @@ project 'agent-runtime-7.x' do |proj|
   if platform.is_solaris? || platform.is_aix?
     proj.setting :augeas_version, '1.12.0'
   else
-    proj.setting :augeas_version, '1.13.0'
+    proj.setting :augeas_version, '1.14.1'
   end
 
   ########
