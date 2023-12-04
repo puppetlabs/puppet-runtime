@@ -21,6 +21,12 @@ elsif platform.name.start_with?('el-9')
   pkg.version '3.3'
   pkg.sha256sum 'acfdee27633d2496508c28727c3d41d3748076f66d42fccde2e6b9f3463a7057'
   pkg.url "https://github.com/SELinuxProject/selinux/releases/download/#{pkg.get_version}/libselinux-#{pkg.get_version}.tar.gz"
+elsif platform.name.start_with?('debian-12')
+  # SELinux 3.4 is the minimum version available in Debian 12 repos
+  pkg.version '3.4'
+  pkg.sha256sum '77c294a927e6795c2e98f74b5c3adde9c8839690e9255b767c5fca6acff9b779'
+  pkg.url "https://github.com/SELinuxProject/selinux/releases/download/#{pkg.get_version}/libselinux-#{pkg.get_version}.tar.gz"
+  pkg.build_requires 'python3-distutils'
 else
   pkg.version "2.9"
   pkg.md5sum "bb449431b6ed55a0a0496dbc366d6e31"
