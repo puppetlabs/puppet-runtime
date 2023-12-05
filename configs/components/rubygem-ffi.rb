@@ -86,6 +86,16 @@ component "rubygem-ffi" do |pkg, settings, platform|
     pkg.install_file "/opt/csw/lib/libffi.so.6", "#{settings[:libdir]}/libffi.so.6"
   end
 
+  if rb_major_minor_version > 2.7
+    pkg.install do
+      "#{settings[:gem_install]} ffi-#{pkg.get_version}.gem -- --enable-system-ffi"
+    end
+  else
+    pkg.install do
+      "#{settings[:gem_install]} ffi-#{pkg.get_version}.gem -- --disable-system-ffi"
+    end
+  end
+
   pkg.environment 'PKG_CONFIG_PATH', '/opt/puppetlabs/puppet/lib/pkgconfig:$(PKG_CONFIG_PATH)'
   pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
 
