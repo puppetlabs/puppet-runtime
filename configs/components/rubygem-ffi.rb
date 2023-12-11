@@ -19,6 +19,16 @@ component "rubygem-ffi" do |pkg, settings, platform|
 
   rb_major_minor_version = settings[:ruby_version].to_f
 
+  if rb_major_minor_version > 2.7
+    pkg.install do
+      "#{settings[:gem_install]} ffi-#{pkg.get_version}.gem -- --enable-system-ffi"
+    end
+  else
+    pkg.install do
+      "#{settings[:gem_install]} ffi-#{pkg.get_version}.gem -- --disable-system-ffi"
+    end
+  end
+
   # Windows versions of the FFI gem have custom filenames, so we overwite the
   # defaults that _base-rubygem provides here, just for Windows for Ruby < 3.2
   if platform.is_windows? && rb_major_minor_version < 3.2
@@ -84,16 +94,6 @@ component "rubygem-ffi" do |pkg, settings, platform|
     pkg.install_file "/usr/lib/libffi.so.5.0.10", "#{settings[:libdir]}/libffi.so"
   elsif platform.name =~ /solaris-10-i386/
     pkg.install_file "/opt/csw/lib/libffi.so.6", "#{settings[:libdir]}/libffi.so.6"
-  end
-
-  if rb_major_minor_version > 2.7
-    pkg.install do
-      "#{settings[:gem_install]} ffi-#{pkg.get_version}.gem -- --enable-system-ffi"
-    end
-  else
-    pkg.install do
-      "#{settings[:gem_install]} ffi-#{pkg.get_version}.gem -- --disable-system-ffi"
-    end
   end
 
   pkg.environment 'PKG_CONFIG_PATH', '/opt/puppetlabs/puppet/lib/pkgconfig:$(PKG_CONFIG_PATH)'
