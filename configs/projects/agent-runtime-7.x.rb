@@ -6,7 +6,6 @@ project 'agent-runtime-7.x' do |proj|
   proj.setting :rubygem_fast_gettext_version, '1.1.2'
   proj.setting :rubygem_gettext_version, '3.2.2'
   proj.setting :rubygem_gettext_setup_version, '0.34'
-  proj.setting :rubygem_concurrent_ruby_version, '1.1.9'
 
   # Solaris and AIX depend on libedit which breaks augeas compliation starting with 1.13.0
   if platform.is_solaris? || platform.is_aix?

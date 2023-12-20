@@ -144,7 +144,6 @@ project 'pdk-runtime' do |proj|
   proj.setting(:git_sysconfdir, '/etc')
 
   # Load PDK component definitions
-  proj.setting(:rubygem_concurrent_ruby_version, '1.1.10')
   proj.setting(:rubygem_deep_merge_version, '1.2.2')
   instance_eval File.read(File.join(File.dirname(__FILE__), '_pdk-components.rb'))
 
