@@ -1,7 +1,7 @@
 # The file name of the ruby component must match the ruby_version
-component 'ruby-3.2.2' do |pkg, settings, platform|
-  pkg.version '3.2.2'
-  pkg.sha256sum '96c57558871a6748de5bc9f274e93f4b5aad06cd8f37befa0e8d94e7b8a423bc'
+component 'ruby-3.2.3' do |pkg, settings, platform|
+  pkg.version '3.2.3'
+  pkg.sha256sum 'af7f1757d9ddb630345988139211f1fd570ff5ba830def1cc7c468ae9b65c9ba'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
@@ -38,7 +38,6 @@ component 'ruby-3.2.2' do |pkg, settings, platform|
 
   base = 'resources/patches/ruby_32'
 
-  pkg.apply_patch "#{base}/uri-redos-cve-2023-36617.patch"
 
   if platform.is_cross_compiled?
     unless platform.is_macos?
