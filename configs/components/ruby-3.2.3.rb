@@ -56,6 +56,7 @@ component 'ruby-3.2.3' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/windows_mingw32_mkmf.patch"
     pkg.apply_patch "#{base}/windows_nocodepage_utf8_fallback_r2.5.patch"
     pkg.apply_patch "#{base}/ruby-faster-load_32.patch"
+    pkg.apply_patch "#{base}/revert_speed_up_rebuilding_loaded_feature_index.patch"
     pkg.apply_patch "#{base}/revert-ruby-double-load-symlink.patch"
     pkg.apply_patch "#{base}/revert_ruby_utf8_default_encoding.patch"
   end
