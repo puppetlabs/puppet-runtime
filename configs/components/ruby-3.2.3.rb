@@ -38,14 +38,8 @@ component 'ruby-3.2.3' do |pkg, settings, platform|
 
   base = 'resources/patches/ruby_32'
 
-
   if platform.is_cross_compiled?
-    unless platform.is_macos?
-#      pkg.apply_patch "#{base}/Replace-reference-to-RUBY-var-with-opt-pl-build-tool.patch"
-    end
-
     pkg.apply_patch "#{base}/rbinstall_gem_path.patch"
- #   pkg.apply_patch "#{base}/revert_host_value_changes.patch"
   end
 
   if platform.is_aix?
@@ -68,7 +62,6 @@ component 'ruby-3.2.3' do |pkg, settings, platform|
   if platform.is_macos?
     pkg.environment 'optflags', settings[:cflags]
     pkg.environment 'PATH', '$(PATH):/opt/homebrew/bin:/usr/local/bin'
-    
   elsif platform.is_windows?
     pkg.environment 'optflags', settings[:cflags] + ' -O3'
     pkg.environment 'MAKE', 'make'
