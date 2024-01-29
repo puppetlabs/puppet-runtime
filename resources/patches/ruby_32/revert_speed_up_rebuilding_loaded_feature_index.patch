@@ -1,0 +1,145 @@
+commit 6c6b5199a4bb18d09b1da255b5c8bd549b03dc42
+Author: Josh Cooper <josh.cooper@perforce.com>
+Date:   Wed Jan 24 22:31:57 2024 +0000
+
+    Revert "merge revision(s) 1f115f141dd17f75049a5e17107906c5bcc372e1:"
+    
+    This reverts commit 5baf94f9131fb45d50c8c408e007a138ced46606.
+    
+    Commit 79a4484a072e9769b603e7b4fbdb15b1d7eccb15 resulted in many more calls to
+    `rb_realpath` when trying to load a file.
+    
+    Commit 8346d1630b8193eef1ec9dd537b16de74afdc2e8 added a cache to fix that.
+    It was reverted in commit 1c7624469880bcb964be09a49e4907873f45b026.
+    
+    Commit 788b03d5ba82fd8b35ce1fe2618ce6bacc648333 added a second fix.
+    It was reverted in e777064e4b064fd77aca65c123f1919433f6732d.
+    
+    Commit 5baf94f9131fb45d50c8c408e007a138ced46606 added a third fix and released in 3.2.3.
+    The change does reduce the number of file I/O syscalls on RHEL 8:
+    
+                             puppet-agent 8.4.0        puppet-agent 8.4.0
+                             ruby 3.2.2 w/o patches    ruby 3.2.3 w/o patches
+                             calls      errors         calls     errors
+    
+        puppet --version     57996      5955           34511     6069
+    
+        puppet apply -e ""  455006      18845          55159    19089
+    
+    In both scenarios, the number of file syscalls dropped from:
+    
+        57996 -> 34511 (59.5%)
+       455006 -> 55159 (12.1%)
+    
+    And the time to apply an empty catalog dropped from 1.908 seconds to 1.435 seconds.
+    
+    However, platforms like Windows don't HAVE_REALPATH. Instead ruby emulates it
+    by walking each ancestor directory. So revert the third attempt to speed up the
+    feature index and realpath cache so that we can revert 79a4484a072e9769b603e7b4fbdb15b1d7eccb15
+
+diff --git a/load.c b/load.c
+index b2e5e962c8..f0219fcf50 100644
+--- a/load.c
++++ b/load.c
+@@ -163,12 +163,6 @@ get_loaded_features_realpaths(rb_vm_t *vm)
+     return vm->loaded_features_realpaths;
+ }
+ 
+-static VALUE
+-get_loaded_features_realpath_map(rb_vm_t *vm)
+-{
+-    return vm->loaded_features_realpath_map;
+-}
+-
+ static VALUE
+ get_LOADED_FEATURES(ID _x, VALUE *_y)
+ {
+@@ -367,10 +361,7 @@ get_loaded_features_index(rb_vm_t *vm)
+         st_foreach(vm->loaded_features_index, loaded_features_index_clear_i, 0);
+ 
+         VALUE realpaths = vm->loaded_features_realpaths;
+-        VALUE realpath_map = vm->loaded_features_realpath_map;
+-        VALUE previous_realpath_map = rb_hash_dup(realpath_map);
+         rb_hash_clear(realpaths);
+-        rb_hash_clear(realpath_map);
+         features = vm->loaded_features;
+         for (i = 0; i < RARRAY_LEN(features); i++) {
+             VALUE entry, as_str;
+@@ -387,14 +378,9 @@ get_loaded_features_index(rb_vm_t *vm)
+         long j = RARRAY_LEN(features);
+         for (i = 0; i < j; i++) {
+             VALUE as_str = rb_ary_entry(features, i);
+-            VALUE realpath = rb_hash_aref(previous_realpath_map, as_str);
+-            if (NIL_P(realpath)) {
+-                realpath = rb_check_realpath(Qnil, as_str, NULL);
+-                if (NIL_P(realpath)) realpath = as_str;
+-                realpath = rb_fstring(realpath);
+-            }
+-            rb_hash_aset(realpaths, realpath, Qtrue);
+-            rb_hash_aset(realpath_map, as_str, realpath);
++            VALUE realpath = rb_check_realpath(Qnil, as_str, NULL);
++            if (NIL_P(realpath)) realpath = as_str;
++            rb_hash_aset(realpaths, rb_fstring(realpath), Qtrue);
+         }
+     }
+     return vm->loaded_features_index;
+@@ -1176,7 +1162,6 @@ require_internal(rb_execution_context_t *ec, VALUE fname, int exception, bool wa
+     volatile VALUE saved_path;
+     volatile VALUE realpath = 0;
+     VALUE realpaths = get_loaded_features_realpaths(th->vm);
+-    VALUE realpath_map = get_loaded_features_realpath_map(th->vm);
+     volatile bool reset_ext_config = false;
+     struct rb_ext_config prev_ext_config;
+ 
+@@ -1267,9 +1252,7 @@ require_internal(rb_execution_context_t *ec, VALUE fname, int exception, bool wa
+         rb_provide_feature(th2->vm, path);
+         VALUE real = realpath;
+         if (real) {
+-            real = rb_fstring(real);
+-            rb_hash_aset(realpaths, real, Qtrue);
+-            rb_hash_aset(realpath_map, path, real);
++            rb_hash_aset(realpaths, rb_fstring(real), Qtrue);
+         }
+     }
+     ec->errinfo = saved.errinfo;
+@@ -1498,8 +1481,6 @@ Init_load(void)
+     vm->loaded_features_index = st_init_numtable();
+     vm->loaded_features_realpaths = rb_hash_new();
+     rb_obj_hide(vm->loaded_features_realpaths);
+-    vm->loaded_features_realpath_map = rb_hash_new();
+-    rb_obj_hide(vm->loaded_features_realpath_map);
+ 
+     rb_define_global_function("load", rb_f_load, -1);
+     rb_define_global_function("require", rb_f_require, 1);
+diff --git a/vm.c b/vm.c
+index de43d022c0..d009a5f64a 100644
+--- a/vm.c
++++ b/vm.c
+@@ -2703,7 +2703,6 @@ rb_vm_update_references(void *ptr)
+         vm->loaded_features = rb_gc_location(vm->loaded_features);
+         vm->loaded_features_snapshot = rb_gc_location(vm->loaded_features_snapshot);
+         vm->loaded_features_realpaths = rb_gc_location(vm->loaded_features_realpaths);
+-        vm->loaded_features_realpath_map = rb_gc_location(vm->loaded_features_realpath_map);
+         vm->top_self = rb_gc_location(vm->top_self);
+         vm->orig_progname = rb_gc_location(vm->orig_progname);
+ 
+@@ -2795,7 +2794,6 @@ rb_vm_mark(void *ptr)
+         rb_gc_mark_movable(vm->loaded_features);
+         rb_gc_mark_movable(vm->loaded_features_snapshot);
+         rb_gc_mark_movable(vm->loaded_features_realpaths);
+-        rb_gc_mark_movable(vm->loaded_features_realpath_map);
+         rb_gc_mark_movable(vm->top_self);
+         rb_gc_mark_movable(vm->orig_progname);
+         RUBY_MARK_MOVABLE_UNLESS_NULL(vm->coverages);
+diff --git a/vm_core.h b/vm_core.h
+index b6adeadd87..d86fdbaecd 100644
+--- a/vm_core.h
++++ b/vm_core.h
+@@ -680,7 +680,6 @@ typedef struct rb_vm_struct {
+     VALUE loaded_features;
+     VALUE loaded_features_snapshot;
+     VALUE loaded_features_realpaths;
+-    VALUE loaded_features_realpath_map;
+     struct st_table *loaded_features_index;
+     struct st_table *loading_table;
+ #if EXTSTATIC
