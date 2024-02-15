@@ -27,7 +27,6 @@ proj.component "ruby-#{proj.ruby_version}"
 
 proj.component 'ruby-augeas' unless platform.is_windows?
 proj.component 'ruby-selinux' if platform.is_el? || platform.is_fedora?
-proj.component 'ruby-stomp'
 
 # Additional Rubies
 if proj.respond_to?(:additional_rubies)
@@ -43,7 +42,6 @@ if proj.respond_to?(:additional_rubies)
 
     proj.component "ruby-#{ruby_minor}-augeas" unless platform.is_windows?
     proj.component "ruby-#{ruby_minor}-selinux" if platform.is_el? || platform.is_fedora?
-    proj.component "ruby-#{ruby_minor}-stomp"
     proj.component "post-additional-rubies"
   end
 end
