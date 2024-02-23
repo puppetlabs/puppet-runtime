@@ -17,7 +17,6 @@ platform "sles-11-x86_64" do |plat|
     "zlib-devel"
   ]
   plat.provision_with("zypper -n --no-gpg-checks install -y #{packages.join(' ')}")
-  plat.provision_with "zypper install -y --oldpackage pl-gcc=4.8.2-1"
   plat.provision_with "zypper install -y --oldpackage pl-cmake=3.2.3-13.sles11"
   plat.install_build_dependencies_with "zypper -n --no-gpg-checks install -y"
   plat.vmpooler_template "sles-11-x86_64"

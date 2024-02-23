@@ -78,6 +78,9 @@ component 'ruby-3.2.3' do |pkg, settings, platform|
     pkg.environment 'optflags', "-O2 -fPIC -g0 "
   elsif platform.is_solaris?
     pkg.environment 'optflags', '-O1'
+  elsif platform.name == 'sles-11-x86_64'
+    pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH)'
+    pkg.environment 'optflags', '-O2'
   else
     pkg.environment 'optflags', '-O2'
   end
@@ -108,7 +111,9 @@ component 'ruby-3.2.3' do |pkg, settings, platform|
       special_flags += " --with-baseruby=no --enable-dtrace=no "
     end
     special_flags += "--enable-close-fds-by-recvmsg-with-peek "
-  elsif platform.name =~ /el-6/
+  elsif platform.name =~ /el-6/ || platform.name =~ /sles-11-x86_64/
+    # Since we're not cross compiling, ignore old ruby versions that happen to be in the PATH
+    # and force ruby to build miniruby and use that to bootstrap the rest of the build
     special_flags += " --with-baseruby=no "
   elsif platform.is_windows?
     # ruby's configure script guesses the build host is `cygwin`, because we're using
@@ -133,6 +138,7 @@ component 'ruby-3.2.3' do |pkg, settings, platform|
     'osx-11-arm64',
     'osx-12-arm64',
     'redhatfips-7-x86_64',
+    'sles-11-x86_64',
     'sles-12-ppc64le',
     'solaris-11-sparc',
     'solaris-113-sparc',
