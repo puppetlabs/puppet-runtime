@@ -1,0 +1,116 @@
+--- a/SPECS/openssl.spec	2024-02-20 10:19:41
++++ b/SPECS/openssl.spec	2024-02-23 11:38:58
+@@ -87,6 +87,10 @@
+ Patch84: openssl-1.1.1-cve-2022-1292.patch
+ Patch85: openssl-1.1.1-cve-2022-2068.patch
+ Patch86: openssl-1.1.1-cve-2022-2097.patch
++Patch100: openssl-1.1.1-force-fips-on-init.patch
++Patch101: openssl-1.1.1-openssl-cnf-fips-mode.patch
++Patch102: openssl-1.1.1-remove-env-check.patch
++Patch103: openssl-1.1.1l-sm2-plaintext.patch
+ 
+ License: OpenSSL and ASL 2.0
+ URL: http://www.openssl.org/
+@@ -212,6 +216,10 @@
+ %patch84 -p1 -b .cve-2022-1292
+ %patch85 -p1 -b .cve-2022-2068
+ %patch86 -p1 -b .cve-2022-2097
++%patch100 -p1 -b .force-fips-on-init
++%patch101 -p1 -b .openssl-cnf-fips-mode
++%patch102 -p1 -b .remove-env-check
++%patch103 -p1 -b .sm2-plaintext
+ 
+ %build
+ # Figure out which flags we want to use.
+@@ -220,7 +228,7 @@
+ %ifarch %ix86
+ sslarch=linux-elf
+ if ! echo %{_target} | grep -q i686 ; then
+-	sslflags="no-asm 386"
++  sslflags="no-asm 386"
+ fi
+ %endif
+ %ifarch x86_64
+@@ -286,13 +294,13 @@
+ # usable on all platforms.  The Configure script already knows to use -fPIC and
+ # RPM_OPT_FLAGS, so we can skip specifiying them here.
+ ./Configure \
+-	--prefix=%{_prefix} --openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
+-	--system-ciphers-file=%{_sysconfdir}/crypto-policies/back-ends/openssl.config \
+-	zlib enable-camellia enable-seed enable-rfc3779 enable-sctp \
+-	enable-cms enable-md2 enable-rc5\
+-	enable-weak-ssl-ciphers \
+-	no-mdc2 no-ec2m no-sm2 no-sm4 \
+-	shared  ${sslarch} $RPM_OPT_FLAGS '-DDEVRANDOM="\"/dev/urandom\""'
++  --prefix=%{_prefix} --openssldir=%{_sysconfdir}/pki/tls ${sslflags} \
++  --system-ciphers-file=%{_sysconfdir}/crypto-policies/back-ends/openssl.config \
++  zlib enable-camellia enable-seed enable-rfc3779 enable-sctp \
++  enable-cms enable-md2 enable-rc5\
++  enable-weak-ssl-ciphers \
++  no-mdc2 no-ec2m no-sm2 no-sm4 \
++  shared  ${sslarch} $RPM_OPT_FLAGS '-DDEVRANDOM="\"/dev/urandom\""'
+ 
+ # Do not run this in a production package the FIPS symbols must be patched-in
+ #util/mkdef.pl crypto update
+@@ -352,9 +360,9 @@
+ make DESTDIR=$RPM_BUILD_ROOT install
+ rename so.%{soversion} so.%{version} $RPM_BUILD_ROOT%{_libdir}/*.so.%{soversion}
+ for lib in $RPM_BUILD_ROOT%{_libdir}/*.so.%{version} ; do
+-	chmod 755 ${lib}
+-	ln -s -f `basename ${lib}` $RPM_BUILD_ROOT%{_libdir}/`basename ${lib} .%{version}`
+-	ln -s -f `basename ${lib}` $RPM_BUILD_ROOT%{_libdir}/`basename ${lib} .%{version}`.%{soversion}
++  chmod 755 ${lib}
++  ln -s -f `basename ${lib}` $RPM_BUILD_ROOT%{_libdir}/`basename ${lib} .%{version}`
++  ln -s -f `basename ${lib}` $RPM_BUILD_ROOT%{_libdir}/`basename ${lib} .%{version}`.%{soversion}
+ done
+ 
+ # Install a makefile for generating keys and self-signed certs, and a script
+@@ -375,21 +383,21 @@
+ pushd $RPM_BUILD_ROOT%{_mandir}
+ ln -s -f config.5 man5/openssl.cnf.5
+ for manpage in man*/* ; do
+-	if [ -L ${manpage} ]; then
+-		TARGET=`ls -l ${manpage} | awk '{ print $NF }'`
+-		ln -snf ${TARGET}ssl ${manpage}ssl
+-		rm -f ${manpage}
+-	else
+-		mv ${manpage} ${manpage}ssl
+-	fi
++  if [ -L ${manpage} ]; then
++    TARGET=`ls -l ${manpage} | awk '{ print $NF }'`
++    ln -snf ${TARGET}ssl ${manpage}ssl
++    rm -f ${manpage}
++  else
++    mv ${manpage} ${manpage}ssl
++  fi
+ done
+ for conflict in passwd rand ; do
+-	rename ${conflict} ssl${conflict} man*/${conflict}*
++  rename ${conflict} ssl${conflict} man*/${conflict}*
+ # Fix dangling symlinks
+-	manpage=man1/openssl-${conflict}.*
+-	if [ -L ${manpage} ] ; then
+-		ln -snf ssl${conflict}.1ssl ${manpage}
+-	fi
++  manpage=man1/openssl-${conflict}.*
++  if [ -L ${manpage} ] ; then
++    ln -snf ssl${conflict}.1ssl ${manpage}
++  fi
+ done
+ popd
+ 
+@@ -424,11 +432,11 @@
+ # can have both a 32- and 64-bit version of the library, and they each need
+ # their own correct-but-different versions of opensslconf.h to be usable.
+ install -m644 %{SOURCE10} \
+-	$RPM_BUILD_ROOT/%{_prefix}/include/openssl/opensslconf-${basearch}.h
++  $RPM_BUILD_ROOT/%{_prefix}/include/openssl/opensslconf-${basearch}.h
+ cat $RPM_BUILD_ROOT/%{_prefix}/include/openssl/opensslconf.h >> \
+-	$RPM_BUILD_ROOT/%{_prefix}/include/openssl/opensslconf-${basearch}.h
++  $RPM_BUILD_ROOT/%{_prefix}/include/openssl/opensslconf-${basearch}.h
+ install -m644 %{SOURCE9} \
+-	$RPM_BUILD_ROOT/%{_prefix}/include/openssl/opensslconf.h
++  $RPM_BUILD_ROOT/%{_prefix}/include/openssl/opensslconf.h
+ %endif
+ LD_LIBRARY_PATH=`pwd`${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+ export LD_LIBRARY_PATH

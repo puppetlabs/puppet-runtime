@@ -1,6 +1,6 @@
 component 'openssl-1.1.1-fips' do |pkg, settings, platform|
-  pkg.version '1.1.1k-6'
-  pkg.sha256sum 'da536944410a0cbf5c0b6ee0b8f3ec62a9121be3b72bf2819bb4395a761662aa'
+  pkg.version '1.1.1k-7'
+  pkg.sha256sum '74f5175ea4e931ae3c2a078aa7f2e0314f1daa81d34a869746eff5bd61145a82'
   pkg.url "https://vault.centos.org/centos/8-stream/BaseOS/Source/SPackages/openssl-#{pkg.get_version}.el8.src.rpm"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.el8.src.rpm"
 
@@ -21,7 +21,7 @@ component 'openssl-1.1.1-fips' do |pkg, settings, platform|
   # proper fix would be extension in vanagon for source rpm handling
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-patch-openssl-cnf.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-force-fips-mode.patch'
-  pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-spec-file.patch'
+  pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1k-7-fips-spec-file.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-remove-env-check.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1l-sm2-plaintext.patch'
 
@@ -53,7 +53,7 @@ component 'openssl-1.1.1-fips' do |pkg, settings, platform|
     [
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-patch-openssl-cnf.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-force-fips-mode.patch && cd -",
-      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-spec-file.patch && cd -",
+      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1k-7-fips-spec-file.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-remove-env-check.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-sm2-plaintext.patch && cd -"
     ]
