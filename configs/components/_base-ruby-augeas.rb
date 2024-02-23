@@ -19,7 +19,12 @@ pkg.mirror "#{settings[:buildsources_url]}/ruby-augeas-#{pkg.get_version}.tgz"
 pkg.build_requires "ruby-#{ruby_version}"
 pkg.build_requires "augeas"
 
-pkg.environment "PATH", "$(PATH):/opt/pl-build-tools/bin:/usr/local/bin:/opt/csw/bin:/usr/ccs/bin:/usr/sfw/bin"
+if platform.name == 'sles-11-x86_64'
+  pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
+else
+  pkg.environment "PATH", "$(PATH):/opt/pl-build-tools/bin:/usr/local/bin:/opt/csw/bin:/usr/ccs/bin:/usr/sfw/bin"
+end
+
 if platform.is_aix?
   if platform.name == 'aix-7.1-ppc'
     pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"

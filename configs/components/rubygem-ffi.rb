@@ -87,6 +87,10 @@ component "rubygem-ffi" do |pkg, settings, platform|
     else
       pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/csw/bin:$(PATH)"
     end
+    elsif platform.is_aix?
+      pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)'
+    elsif platform.name == 'sles-11-x86_64'
+      pkg.environment 'PATH', '/opt/pl-build-tools/bin:$(PATH)'
   end
 
   # With Ruby 3.2 on Solaris-11 we install OpenSCW's libffi, no need to copy over the system libffi
@@ -97,7 +101,6 @@ component "rubygem-ffi" do |pkg, settings, platform|
   end
 
   pkg.environment 'PKG_CONFIG_PATH', '/opt/puppetlabs/puppet/lib/pkgconfig:$(PKG_CONFIG_PATH)'
-  pkg.environment 'PATH', '/opt/freeware/bin:/opt/pl-build-tools/bin:$(PATH)' if platform.is_aix?
 
   if platform.is_cross_compiled? && !platform.is_macos?
     base_ruby = case platform.name
