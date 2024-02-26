@@ -87,9 +87,6 @@ component 'openssl' do |pkg, settings, platform|
     end
   end
 
-  pkg.apply_patch 'resources/patches/openssl/CVE-2023-5678.patch'
-  pkg.apply_patch 'resources/patches/openssl/CVE-2024-0727.patch'
-
   ####################
   # BUILD REQUIREMENTS
   ####################
