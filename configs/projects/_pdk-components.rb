@@ -98,4 +98,7 @@ proj.component 'rubygem-json_pure'
 proj.component 'rubygem-diff-lcs'
 proj.component 'rubygem-pathspec'
 
+# Added to prevent conflicts with Bolt
+proj.component 'rubygem-CFPropertyList'
+
 proj.component 'ansicon' if platform.is_windows?
