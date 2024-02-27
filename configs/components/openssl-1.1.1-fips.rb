@@ -24,6 +24,9 @@ component 'openssl-1.1.1-fips' do |pkg, settings, platform|
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-spec-file.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-remove-env-check.patch'
   pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1l-sm2-plaintext.patch'
+  pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1k-CVE-2023-3446-fips.patch'
+  pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1k-CVE-2023-5678-fips.patch'
+  pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1k-CVE-2024-0727-fips.patch'
 
   if platform.name =~ /-7-/
     pkg.add_source 'file://resources/patches/openssl/openssl-1.1.1-fips-post-rand.patch'
@@ -55,7 +58,10 @@ component 'openssl-1.1.1-fips' do |pkg, settings, platform|
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-force-fips-mode.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-spec-file.patch && cd -",
       "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1-fips-remove-env-check.patch && cd -",
-      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-sm2-plaintext.patch && cd -"
+      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1l-sm2-plaintext.patch && cd -",
+      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1k-CVE-2023-3446-fips.patch && cd -",
+      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1k-CVE-2023-5678-fips.patch && cd -",
+      "cd openssl-#{pkg.get_version} && /usr/bin/patch --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../openssl-1.1.1k-CVE-2024-0727-fips.patch && cd -"
     ]
   end
 
