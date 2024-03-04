@@ -40,6 +40,9 @@ if proj.respond_to?(:additional_rubies)
 
     ruby_minor = rubyver.split('.')[0, 2].join('.')
 
+    # Added to prevent conflicts with Bolt
+    proj.component 'rubygem-CFPropertyList'
+
     proj.component "ruby-#{ruby_minor}-augeas" unless platform.is_windows?
     proj.component "ruby-#{ruby_minor}-selinux" if platform.is_el? || platform.is_fedora?
     proj.component "post-additional-rubies"
