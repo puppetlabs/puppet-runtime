@@ -27,6 +27,12 @@ elsif platform.name.start_with?('debian-12')
   pkg.sha256sum '77c294a927e6795c2e98f74b5c3adde9c8839690e9255b767c5fca6acff9b779'
   pkg.url "https://github.com/SELinuxProject/selinux/releases/download/#{pkg.get_version}/libselinux-#{pkg.get_version}.tar.gz"
   pkg.build_requires 'python3-distutils'
+elsif platform.name.start_with?('ubuntu-24')
+  # SELinux 3.5 is the minimum version available in Ubuntu 24 repos
+  pkg.version '3.5'
+  pkg.sha256sum '9a3a3705ac13a2ccca2de6d652b6356fead10f36fb33115c185c5ccdf29eec19'
+  pkg.url "https://github.com/SELinuxProject/selinux/releases/download/#{pkg.get_version}/libselinux-#{pkg.get_version}.tar.gz"
+  pkg.build_requires 'python3-setuptools'
 else
   pkg.version "2.9"
   pkg.md5sum "bb449431b6ed55a0a0496dbc366d6e31"
@@ -72,7 +78,7 @@ pkg.build do
 
   if ruby_version =~ /^3/
     # swig 4.1 generated interface does not need patching
-    unless platform.name =~ /debian-12/
+    unless platform.name =~ /^(debian-12|ubuntu-24)/
       steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_wrap.patch"
     end
   end
