@@ -3,9 +3,15 @@ component "runtime-agent" do |pkg, settings, platform|
   pkg.environment "PROJECT_SHORTNAME", "puppet"
   pkg.add_source "file://resources/files/runtime/runtime.sh"
 
-  if platform.name =~ /sles-11-x86_64/ && settings[:ruby_version] =~ /2.7/
-    pkg.install do 
-      "zypper install -y --oldpackage pl-gcc=4.8.2-1"
+  if platform.name =~ /sles-11-x86_64/
+    if settings[:ruby_version] =~ /2.7/
+      pkg.install do
+        "zypper install -y pl-gcc=4.8.2-1"
+      end
+    else
+      pkg.install do
+        "zypper install -y pl-gcc8"
+      end
     end
   end
 
