@@ -91,30 +91,40 @@ component 'ruby-3.2.3' do |pkg, settings, platform|
     special_flags += " CFLAGS='#{settings[:cflags]}' LDFLAGS='#{settings[:ldflags]}' CPPFLAGS='#{settings[:cppflags]}' "
   end
 
+  # Ruby's build process requires a "base" ruby and we need a ruby to install
+  # gems into the /opt/puppetlabs/puppet/lib directory.
+  #
+  # For cross-compiles, the base ruby must be executable on the host we're
+  # building on (usually Intel), not the arch we're building for (such as
+  # SPARC). This is usually pl-ruby.
+  #
+  # For native compiles, we don't want ruby's build process to use whatever ruby
+  # is in the PATH, as it's probably too old to build ruby 3.2. And we don't
+  # want to use/maintain pl-ruby if we don't have to. Instead set baseruby to
+  # "no" which will force ruby to build and use miniruby.
+  if platform.is_cross_compiled?
+    special_flags += " --with-baseruby=#{host_ruby} "
+  else
+    special_flags += " --with-baseruby=no "
+  end
+
   if platform.is_aix?
     # This normalizes the build string to something like AIX 7.1.0.0 rather
     # than AIX 7.1.0.2 or something
     special_flags += " --build=#{settings[:platform_triple]} "
-  elsif platform.is_cross_compiled? && platform.is_linux?
-    special_flags += " --with-baseruby=#{host_ruby} "
   elsif platform.is_cross_compiled? && platform.is_macos?
     # When the target arch is aarch64, ruby incorrectly selects the 'ucontext' coroutine
     # implementation instead of 'arm64', so specify 'amd64' explicitly
     # https://github.com/ruby/ruby/blob/c9c2245c0a25176072e02db9254f0e0c84c805cd/configure.ac#L2329-L2330
-    special_flags += " --with-baseruby=#{host_ruby} --with-coroutine=arm64 "
+    special_flags += " --with-coroutine=arm64 "
   elsif platform.is_solaris? && platform.architecture == "sparc"
-    if platform.is_cross_compiled?
-      special_flags += " --with-baseruby=#{host_ruby} "
-    else
+    unless platform.is_cross_compiled?
       # configure seems to enable dtrace because the executable is present,
       # explicitly disable it and don't enable it below
-      special_flags += " --with-baseruby=no --enable-dtrace=no "
+      special_flags += " --enable-dtrace=no "
     end
     special_flags += "--enable-close-fds-by-recvmsg-with-peek "
-  elsif platform.name =~ /el-6/ || platform.name =~ /sles-11-x86_64/
-    # Since we're not cross compiling, ignore old ruby versions that happen to be in the PATH
-    # and force ruby to build miniruby and use that to bootstrap the rest of the build
-    special_flags += " --with-baseruby=no "
+
   elsif platform.is_windows?
     # ruby's configure script guesses the build host is `cygwin`, because we're using
     # cygwin opensshd & bash. So mkmf will convert compiler paths, e.g. -IC:/... to
