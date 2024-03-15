@@ -55,6 +55,12 @@ component 'ruby-3.2.3' do |pkg, settings, platform|
     pkg.apply_patch "#{base}/revert_ruby_utf8_default_encoding.patch"
   end
 
+  if platform.is_fips?
+    # This is needed on Ruby < 3.3 until the fix is backported (if ever)
+    # See: https://bugs.ruby-lang.org/issues/20000
+    pkg.apply_patch "#{base}/openssl3_fips.patch"
+  end
+
   ####################
   # ENVIRONMENT, FLAGS
   ####################

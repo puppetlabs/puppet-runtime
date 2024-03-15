@@ -1,0 +1,84 @@
+From 678d41bc51fe31834eec0b653ba0e47de5420aa0 Mon Sep 17 00:00:00 2001
+From: Jun Aruga <jaruga@redhat.com>
+Date: Thu, 16 Mar 2023 21:36:43 +0100
+Subject: [PATCH] [ruby/openssl] Implement FIPS functions on OpenSSL 3.
+
+This commit is to implement the `OpenSSL::OPENSSL_FIPS`, `ossl_fips_mode_get`
+and `ossl_fips_mode_set` to pass the test `test/openssl/test_fips.rb`.
+
+It seems that the `OPENSSL_FIPS` macro is not used on the FIPS mode case any
+more, and some FIPS related APIs also were removed in OpenSSL 3.
+
+See the document <https://github.com/openssl/openssl/blob/master/doc/man7/migration_guide.pod#removed-fips_mode-and-fips_mode_set>
+the section OPENSSL 3.0 > Main Changes from OpenSSL 1.1.1 >
+Other notable deprecations and changes - Removed FIPS_mode() and FIPS_mode_set() .
+
+The `OpenSSL::OPENSSL_FIPS` returns always true in OpenSSL 3 because the used
+functions `EVP_default_properties_enable_fips` and `EVP_default_properties_is_fips_enabled`
+works with the OpenSSL installed without FIPS option.
+
+The `TEST_RUBY_OPENSSL_FIPS_ENABLED` is set on the FIPS mode case on the CI.
+Because I want to test that the `OpenSSL.fips_mode` returns the `true` or
+'false' surely in the CI. You can test the FIPS mode case by setting
+`TEST_RUBY_OPENSSL_FIPS_ENABLED` on local too. Right now I don't find a better
+way to get the status of the FIPS mode enabled or disabled for this purpose. I
+am afraid of the possibility that the FIPS test case is unintentionally skipped.
+
+I also replaced the ambiguous "returns" with "should return" in the tests.
+
+https://github.com/ruby/openssl/commit/c5b2bc1268
+---
+ ext/openssl/ossl.c        | 25 +++++++++++++++++++++----
+ test/openssl/test_fips.rb | 32 ++++++++++++++++++++++++++++----
+ 2 files changed, 49 insertions(+), 8 deletions(-)
+
+diff --git a/ext/openssl/ossl.c b/ext/openssl/ossl.c
+index 71ddcb9f02..be97b97a1a 100644
+--- a/ext/openssl/ossl.c
++++ b/ext/openssl/ossl.c
+@@ -418,7 +418,11 @@ static VALUE
+ ossl_fips_mode_get(VALUE self)
+ {
+
+-#ifdef OPENSSL_FIPS
++#if OSSL_OPENSSL_PREREQ(3, 0, 0)
++    VALUE enabled;
++    enabled = EVP_default_properties_is_fips_enabled(NULL) ? Qtrue : Qfalse;
++    return enabled;
++#elif OPENSSL_FIPS
+     VALUE enabled;
+     enabled = FIPS_mode() ? Qtrue : Qfalse;
+     return enabled;
+@@ -442,8 +446,18 @@ ossl_fips_mode_get(VALUE self)
+ static VALUE
+ ossl_fips_mode_set(VALUE self, VALUE enabled)
+ {
+-
+-#ifdef OPENSSL_FIPS
++#if OSSL_OPENSSL_PREREQ(3, 0, 0)
++    if (RTEST(enabled)) {
++        if (!EVP_default_properties_enable_fips(NULL, 1)) {
++            ossl_raise(eOSSLError, "Turning on FIPS mode failed");
++        }
++    } else {
++        if (!EVP_default_properties_enable_fips(NULL, 0)) {
++            ossl_raise(eOSSLError, "Turning off FIPS mode failed");
++        }
++    }
++    return enabled;
++#elif OPENSSL_FIPS
+     if (RTEST(enabled)) {
+ 	int mode = FIPS_mode();
+ 	if(!mode && !FIPS_mode_set(1)) /* turning on twice leads to an error */
+@@ -1198,7 +1212,10 @@ Init_openssl(void)
+      * Boolean indicating whether OpenSSL is FIPS-capable or not
+      */
+     rb_define_const(mOSSL, "OPENSSL_FIPS",
+-#ifdef OPENSSL_FIPS
++/* OpenSSL 3 is FIPS-capable even when it is installed without fips option */
++#if OSSL_OPENSSL_PREREQ(3, 0, 0)
++                    Qtrue
++#elif OPENSSL_FIPS
+ 		    Qtrue
+ #else
+ 		    Qfalse
