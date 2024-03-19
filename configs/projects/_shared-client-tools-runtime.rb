@@ -20,13 +20,10 @@ proj.version_from_git
 
 platform = proj.get_platform
 
-# We need to explicitly define 1.1.1k here to avoid
-# build dep conflicts between openssl-1.1.1 needed by curl
-# and krb5-devel
 if proj.settings[:openssl_version]
   # already defined in the project
-elsif platform.name =~ /^redhatfips-8/
-  proj.setting(:openssl_version, '1.1.1k')
+elsif platform.name =~ /^redhatfips-*/
+  proj.setting(:openssl_version, '1.1.1-fips')
 else
   proj.setting(:openssl_version, '1.1.1')
 end
@@ -106,14 +103,7 @@ end
 
 # Common deps
 proj.component "runtime-client-tools"
-
-if platform.name =~ /^redhatfips-7/ && proj.openssl_version == '1.1.1'
-  proj.component "openssl-1.1.1-fips"
-elsif platform.name =~ /^redhatfips-8/ && proj.openssl_version == '1.1.1k'
-  proj.component "openssl-1.1.1-fips"
-elsif proj.settings[:openssl_version]
-  proj.component "openssl-#{proj.openssl_version}"
-end
+proj.component "openssl-#{proj.openssl_version}"
 proj.component "curl"
 proj.component "puppet-ca-bundle"
 proj.component "libicu"
