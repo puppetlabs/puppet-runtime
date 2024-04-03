@@ -1,0 +1,14 @@
+diff --git a/Configure b/Configure
+index 84cc409464..bdf4f3c460 100755
+--- a/Configure
++++ b/Configure
+@@ -3409,7 +3409,8 @@ sub absolutedir {
+     # We use realpath() on Unix, since no other will properly clean out
+     # a directory spec.
+     use Cwd qw/realpath/;
+-
++    
++    mkdir $dir unless -d $dir;
+     return realpath($dir);
+ }
+ 

@@ -1,6 +1,6 @@
 component 'openssl' do |pkg, settings, platform|
-  pkg.version '3.0.12'
-  pkg.sha256sum 'f93c9e8edde5e9166119de31755fc87b4aa34863662f67ddfcba14d0b6b69b61'
+  pkg.version '3.0.13'
+  pkg.sha256sum '88525753f79d3bec27d2fa7c66aa0b92b3aa9498dafd93d7cfa4b3780cdae313'
   pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
@@ -27,6 +27,8 @@ component 'openssl' do |pkg, settings, platform|
     pkg.environment 'CYGWIN', settings[:cygwin]
     pkg.environment 'MAKE', platform[:make]
 
+    pkg.apply_patch 'resources/patches/openssl/openssl-3.0.13-create-dir-win.patch'
+    
     target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
   # elsif platform.is_cross_compiled_linux?
   #   pkg.environment 'PATH', "/opt/pl-build-tools/bin:$(PATH)"
