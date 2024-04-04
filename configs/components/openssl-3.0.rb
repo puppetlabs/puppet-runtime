@@ -28,26 +28,6 @@ component 'openssl' do |pkg, settings, platform|
     pkg.environment 'MAKE', platform[:make]
 
     target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
-  # elsif platform.is_cross_compiled_linux?
-  #   pkg.environment 'PATH', "/opt/pl-build-tools/bin:$(PATH)"
-  #   pkg.environment 'CC', "/opt/pl-build-tools/bin/#{settings[:platform_triple]}-gcc"
-
-  #   cflags = "#{settings[:cflags]} -fPIC"
-  #   if platform.architecture =~ /aarch/
-  #     # OpenSSL fails to work on aarch unless we turn down the compiler optimization.
-  #     # See PA-2135 for details
-  #     cflags += " -O2"
-  #   end
-  #   ldflags = "-Wl,-rpath=/opt/pl-build-tools/#{settings[:platform_triple]}/lib -Wl,-rpath=#{settings[:libdir]} -L/opt/pl-build-tools/#{settings[:platform_triple]}/lib"
-  #   target = if platform.architecture == 'aarch64'
-  #               'linux-aarch64'
-  #             elsif platform.name =~ /debian-8-arm/
-  #               'linux-armv4'
-  #             elsif platform.architecture =~ /ppc64le|ppc64el/ # Little-endian
-  #               'linux-ppc64le'
-  #             elsif platform.architecture =~ /ppc64/ # Big-endian
-  #               'linux-ppc64'
-  #             end
   elsif platform.is_aix?
     raise "openssl-3.0 is not supported on older AIX" if platform.name == 'aix-7.1-ppc'
 
@@ -147,7 +127,6 @@ component 'openssl' do |pkg, settings, platform|
     configure_flags << 'no-legacy' << 'no-md4'
   end
 
-
   # Individual projects may provide their own openssl configure flags:
   project_flags = settings[:openssl_extra_configure_flags] || []
   perl_exec = ''
@@ -200,11 +179,6 @@ component 'openssl' do |pkg, settings, platform|
 
   # Skip man and html docs
   install_commands << "#{platform[:make]} #{install_prefix} install_sw install_ssldirs"
-
-  # if settings[:runtime_project] == 'pdk'
-  #   install_commands << "rm -f #{settings[:prefix]}/bin/{openssl,c_rehash}"
-  # end
-
   install_commands << "rm -f #{settings[:prefix]}/bin/c_rehash"
 
   pkg.install do
