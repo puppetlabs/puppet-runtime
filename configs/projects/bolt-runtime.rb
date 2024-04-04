@@ -215,15 +215,6 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-yard'
 
   # Core Windows dependencies
-
-  # Omits from non-Windows platforms to avoid licensing issues
-  if platform.is_windows?
-    proj.component 'rubygem-win32-dir'
-    proj.component 'rubygem-win32-process'
-    proj.component 'rubygem-win32-security'
-    proj.component 'rubygem-win32-service'
-  end
-  
   proj.component 'rubygem-windows_error'
   proj.component 'rubygem-winrm'
   proj.component 'rubygem-winrm-fs'
