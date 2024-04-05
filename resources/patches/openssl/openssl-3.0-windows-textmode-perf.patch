@@ -1,0 +1,45 @@
+commit bb409da3f379b7d23c3e95e83fb07997cebb0309
+Author: Josh Cooper <joshcooper@users.noreply.github.com>
+Date:   Fri Apr 5 11:06:44 2024 -0700
+
+    Load cert related files in binary mode on Windows
+    
+    There's a bug in Windows UCRT when using ftell and text mode. OpenSSL
+    works around it by disabling all file buffering when using text mode:
+    
+        crypto/bio/bss_file.c:                setvbuf((FILE *)ptr, NULL, _IONBF, 0);
+    
+    This results in 116k calls to ReadFile on Windows, each of which reads
+    2 bytes.
+    
+    For now, open files in binary mode. One non-Windows, this is a noop,
+    since binary and text mode are the same. On Windows, it results in a 10%
+    faster load time when running `puppet help`:
+    
+    Before:
+    
+        PS C:\Program Files\Puppet Labs\Puppet\puppet\bin> Measure-Command { cmd /c puppet help }
+        ...
+        TotalMilliseconds : 2734.6002
+    
+    After:
+    
+        PS C:\Program Files\Puppet Labs\Puppet\puppet\bin> Measure-Command { cmd /c puppet help }
+        ...
+        TotalMilliseconds : 2520.6233
+    
+    The one downside is `cert.pem` and `crl.pem` must contain `\n` line endings.
+
+diff --git a/crypto/x509/by_file.c b/crypto/x509/by_file.c
+index 37d73ca84c..67a0074b6b 100644
+--- a/crypto/x509/by_file.c
++++ b/crypto/x509/by_file.c
+@@ -223,7 +223,7 @@ int X509_load_cert_crl_file_ex(X509_LOOKUP *ctx, const char *file, int type,
+ 
+     if (type != X509_FILETYPE_PEM)
+         return X509_load_cert_file_ex(ctx, file, type, libctx, propq);
+-    in = BIO_new_file(file, "r");
++    in = BIO_new_file(file, "rb");
+     if (!in) {
+         ERR_raise(ERR_LIB_X509, ERR_R_SYS_LIB);
+         return 0;

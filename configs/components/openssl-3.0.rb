@@ -30,6 +30,9 @@ component 'openssl' do |pkg, settings, platform|
     # Remove this in 3.0.14 or later
     pkg.apply_patch 'resources/patches/openssl/openssl-3.0.13-crypto-providers.patch'
 
+    # Remove this once openssl no longer calls "setvbuf((FILE *)ptr, NULL, _IONBF, 0)"
+    pkg.apply_patch 'resources/patches/openssl/openssl-3.0-windows-textmode-perf.patch'
+
     target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
   # elsif platform.is_cross_compiled_linux?
   #   pkg.environment 'PATH', "/opt/pl-build-tools/bin:$(PATH)"
