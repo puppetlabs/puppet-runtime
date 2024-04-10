@@ -19,6 +19,18 @@ component "rubygem-ffi" do |pkg, settings, platform|
 
   rb_major_minor_version = settings[:ruby_version].to_f
 
+  # Prior to ruby 3.2, both ruby and the ffi gem vendored a version of libffi.
+  # If libffi happened to be installed in /usr/lib, then the ffi gem preferred
+  # that instead of building libffi itself. To ensure consistency, we use
+  # --disable-system-ffi so that the ffi gem *always* builds libffi, then
+  # builds the ffi_c native extension and links it against libffi.so.
+  #
+  # In ruby 3.2 and up, libffi is no longer vendored. So we created a separate
+  # libffi vanagon component which is built before ruby. The ffi gem still
+  # vendors libffi, so we use the --enable-system-ffi option to ensure the ffi
+  # gem *always* uses the libffi.so we already built. Note the term "system" is
+  # misleading, because we override PKG_CONFIG_PATH below so that our libffi.so
+  # is preferred, not the one in /usr/lib.
   if rb_major_minor_version > 2.7
     pkg.install do
       "#{settings[:gem_install]} ffi-#{pkg.get_version}.gem -- --enable-system-ffi"
@@ -97,6 +109,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
   if platform.name =~ /solaris-11-i386/ && rb_major_minor_version < 3.2
     pkg.install_file "/usr/lib/libffi.so.5.0.10", "#{settings[:libdir]}/libffi.so"
   elsif platform.name =~ /solaris-10-i386/
+    # If we ever support Solaris-11 on Ruby 3.2, then we won't want to do this
     pkg.install_file "/opt/csw/lib/libffi.so.6", "#{settings[:libdir]}/libffi.so.6"
   end
 
@@ -127,7 +140,7 @@ component "rubygem-ffi" do |pkg, settings, platform|
 
       # move ld back after the gem is installed
       pkg.install { "mv /usr/bin/ld1 /usr/bin/ld" }
-    
+
     elsif platform.name =~ /solaris-10-sparc/
       sed_exp = 's|CONFIG\["LDFLAGS"\].*|CONFIG["LDFLAGS"] = "-Wl,-rpath-link,/opt/pl-build-tools/sparc-sun-solaris2.10/sysroot/lib:/opt/pl-build-tools/sparc-sun-solaris2.10/sysroot/usr/lib -L. -Wl,-rpath=/opt/puppetlabs/puppet/lib -fstack-protector"|'
       pkg.configure do
