@@ -1,6 +1,6 @@
 component 'rubygem-multipart-post' do |pkg, settings, platform|
-  pkg.version '2.3.0'
-  pkg.md5sum '067cd7270a1f476ce71454d499213671'
+  pkg.version '2.4.0'
+  pkg.md5sum '626fd8b3f8cd080c1eccfa0e25d7bfed'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end

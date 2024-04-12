@@ -7,7 +7,7 @@ project 'pe-installer-runtime-main' do |proj|
   proj.setting(:use_legacy_openssl_algos, true)
 
   # rubygem-net-ssh included in shared-agent-components
-  proj.setting(:rubygem_net_ssh_version, '7.0.1')
-  proj.setting(:rubygem_puppet_version, '8.3.1')
+  proj.setting(:rubygem_net_ssh_version, '7.2.3')
+  proj.setting(:rubygem_puppet_version, '8.6.0')
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-installer-runtime.rb'))
 end

@@ -1,6 +1,6 @@
 component "rubygem-diff-lcs" do |pkg, settings, platform|
-  pkg.version "1.5.0"
-  pkg.sha256sum "49b934001c8c6aedb37ba19daec5c634da27b318a7a3c654ae979d6ba1929b67"
+  pkg.version "1.5.1"
+  pkg.sha256sum "273223dfb40685548436d32b4733aa67351769c7dea621da7d9dd4813e63ddfe"
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
