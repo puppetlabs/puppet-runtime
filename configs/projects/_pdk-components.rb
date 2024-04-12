@@ -88,13 +88,6 @@ proj.component 'rubygem-public_suffix'
 proj.component 'rubygem-addressable'
 proj.component 'rubygem-json-schema'
 
-# Analytics deps
-proj.component 'rubygem-concurrent-ruby'
-proj.component 'rubygem-thor'
-proj.component 'rubygem-hocon'
-proj.component 'rubygem-facter'
-proj.component 'rubygem-httpclient'
-
 # Other deps
 proj.component 'rubygem-deep_merge'
 proj.component 'rubygem-json_pure'
