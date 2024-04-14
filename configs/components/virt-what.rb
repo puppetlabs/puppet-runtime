@@ -1,6 +1,6 @@
 component "virt-what" do |pkg, settings, platform|
-  pkg.version "1.22"
-  pkg.md5sum "0e9923de6a6c6f07bc0ddc3ec8fc1018"
+  pkg.version "1.25"
+  pkg.md5sum "2345f1ec5fa0836bff4071659730ac8f"
 
   pkg.url "https://people.redhat.com/~rjones/virt-what/files/virt-what-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/virt-what-#{pkg.get_version}.tar.gz"
