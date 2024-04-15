@@ -13,14 +13,10 @@ component 'rubygem-puppet' do |pkg, settings, platform|
   #
   # Always use the generic version below
   case version
-  when '8.3.1'
-    pkg.md5sum '9cff495eff59639fce989dceeff34560'
-  when '8.0.1'
-    pkg.md5sum '7e87d988e485c0f0c3d6ef76bd39409d'
-  when '7.27.0'
-    pkg.md5sum '6a49f375dffe5f786ed474b3eaaaf931'
-  when '7.26.0'
-    pkg.md5sum '347ec39281f59232be5cbb47daf9b539'
+  when '8.6.0'
+    pkg.md5sum '5ac831a42a5fbaef9c6e320c64bbcbd5'
+  when '7.30.0'
+    pkg.md5sum '1b36ae786efdf3c91edf60f60af54af7'
   when '6.28.0'
     pkg.md5sum '31520d986869f9362c88c7d6a4a5c103'
   else

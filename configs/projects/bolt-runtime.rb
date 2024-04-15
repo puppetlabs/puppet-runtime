@@ -7,7 +7,7 @@ project 'bolt-runtime' do |proj|
   proj.setting(:augeas_version, '1.11.0')
   # TODO: Can runtime projects use these updated versions?
   proj.setting(:rubygem_deep_merge_version, '1.2.2')
-  proj.setting(:rubygem_puppet_version, '7.27.0')
+  proj.setting(:rubygem_puppet_version, '7.30.0')
 
   platform = proj.get_platform
 
@@ -166,6 +166,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-aws-sdk-core'
   proj.component 'rubygem-aws-sdk-ec2'
   proj.component 'rubygem-aws-sigv4'
+  proj.component 'rubygem-base64'
   proj.component 'rubygem-bindata'
   proj.component 'rubygem-builder'
   proj.component 'rubygem-CFPropertyList'
@@ -193,6 +194,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-net-scp'
   proj.component 'rubygem-net-ssh'
   proj.component 'rubygem-net-ssh-krb'
+  proj.component 'rubygem-nkf'
   proj.component 'rubygem-nori'
   proj.component 'rubygem-orchestrator_client'
   proj.component 'rubygem-paint'

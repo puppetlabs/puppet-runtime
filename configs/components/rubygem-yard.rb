@@ -1,6 +1,6 @@
 component 'rubygem-yard' do |pkg, settings, platform|
-  pkg.version '0.9.34'
-  pkg.md5sum '9c8530eaaf9acf6fd32ee4b51119e46a'
+  pkg.version '0.9.36'
+  pkg.md5sum 'ffaaaaafc1257e3bb98aea44fa47c05d'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
