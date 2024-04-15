@@ -85,6 +85,7 @@ component 'openssl' do |pkg, settings, platform|
     end
   end
 
+  # Remove this in 3.0.14 or later
   pkg.apply_patch 'resources/patches/openssl/CVE-2024-2511.patch'
 
   ####################
