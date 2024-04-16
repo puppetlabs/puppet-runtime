@@ -5,6 +5,7 @@ project 'agent-runtime-main' do |proj|
   proj.setting :rubygem_deep_merge_version, '1.2.2'
   proj.setting :rubygem_highline_version, '3.0.1'
   proj.setting :rubygem_hocon_version, '1.4.0'
+  proj.setting :rubygem_net_ssh_version, '7.2.3'
 
   # Solaris and AIX depend on libedit which breaks augeas compliation starting with 1.13.0
   if platform.is_solaris? || platform.name == 'aix-7.1-ppc'
