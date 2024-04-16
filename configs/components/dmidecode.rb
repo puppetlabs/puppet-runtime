@@ -1,9 +1,10 @@
 component 'dmidecode' do |pkg, settings, platform|
-  pkg.version '3.3'
-  pkg.md5sum 'afca949fd71a23dd39c4a3c9cd946dc0'
+  pkg.version '3.5'
+  pkg.sha256sum '79d76735ee8e25196e2a722964cf9683f5a09581503537884b256b01389cc073'
 
-  pkg.apply_patch 'resources/patches/dmidecode/1117390c.patch'
-  pkg.apply_patch 'resources/patches/dmidecode/11e134e5.patch'
+  pkg.apply_patch 'resources/patches/dmidecode/80de3762.patch'
+  pkg.apply_patch 'resources/patches/dmidecode/c76ddda0.patch'
+  pkg.apply_patch 'resources/patches/dmidecode/de392ff0.patch'
 
   pkg.apply_patch 'resources/patches/dmidecode/dmidecode-install-to-bin.patch'
   pkg.url "http://download.savannah.gnu.org/releases/dmidecode/dmidecode-#{pkg.get_version}.tar.xz"
