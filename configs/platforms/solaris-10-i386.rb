@@ -50,7 +50,7 @@ basedir=default" > /var/tmp/vanagon-noask;
   /opt/csw/bin/pkgutil -l gcc | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l ruby18 | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
   /opt/csw/bin/pkgutil -l readline | xargs -I{} pkgrm -n -a /var/tmp/vanagon-noask {};
-  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i rsync gmake pkgconfig ggrep libffi_dev libreadline6 || exit 1;
+  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i rsync gmake pkgconfig ggrep libffi_dev libreadline6 CSWxz-5.2.8,REV=2022.11.16 || exit 1;
 
   # Install base build dependencies
   for pkg in #{base_pkgs.map { |pkg| "SUNW#{pkg}.pkg.gz" }.join(' ')}; do \

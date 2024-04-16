@@ -49,6 +49,7 @@ rpm -Uvh https://artifactory.delivery.puppetlabs.net/artifactory/rpm__remote_aix
     readline-devel
     sed
     tar
+    xz-5.4.3
     zlib
     zlib-devel
   )

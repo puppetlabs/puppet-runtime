@@ -12,7 +12,7 @@ component "libxslt" do |pkg, settings, platform|
 
   if platform.is_aix?
     if platform.name == 'aix-7.1-ppc'
-      pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
+      pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/freeware/bin:$(PATH)"
     else
       pkg.environment "PATH", "/opt/freeware/bin:$(PATH)"
     end
@@ -26,7 +26,7 @@ component "libxslt" do |pkg, settings, platform|
     # don't depend on libgcrypto
     disable_crypto = "--without-crypto"
   elsif platform.is_solaris?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/opt/csw/bin:#{settings[:bindir]}"
     pkg.environment "CFLAGS", settings[:cflags]
     pkg.environment "LDFLAGS", settings[:ldflags]
   elsif platform.is_macos?
