@@ -1,16 +1,14 @@
 component "libxml2" do |pkg, settings, platform|
   pkg.version '2.10.3'
-  pkg.sha256sum '26d2415e1c23e0aad8ca52358523fc9116a2eb6e4d4ef47577b1635c7cee3d5f'
-  pkg.url "#{settings[:buildsources_url]}/libxml2-#{pkg.get_version}.tar.gz"
+  pkg.sha256sum '5d2cc3d78bec3dbe212a9d7fa629ada25a7da928af432c93060ff5c17ee28a9c'
 
-  # Newer versions of libxml2 either ship as tar.xz or do not ship with a configure file
-  # and require a newer version of GNU Autotools to generate. This causes problems with
-  # the older and esoteric (AIX, Solaris) platforms that we support.
-  # So we generate a configure file manually, compress as tar.gz, and host internally.
+  libxml2_version_y = pkg.get_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2')
+  pkg.url "https://download.gnome.org/sources/libxml2/#{libxml2_version_y}/libxml2-#{pkg.get_version}.tar.xz"
+  pkg.mirror "#{settings[:buildsources_url]}/libxml2-#{pkg.get_version}.tar.xz"
 
   if platform.is_aix?
     if platform.name == 'aix-7.1-ppc'
-      pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
+      pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/freeware/bin:$(PATH)"
     else
       pkg.environment "PATH", "/opt/freeware/bin:$(PATH)"
     end
@@ -19,7 +17,7 @@ component "libxml2" do |pkg, settings, platform|
     pkg.environment "CFLAGS", settings[:cflags]
     pkg.environment "LDFLAGS", settings[:ldflags]
   elsif platform.is_solaris?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/opt/csw/bin:#{settings[:bindir]}"
     pkg.environment "CFLAGS", "#{settings[:cflags]} -std=c99"
     pkg.environment "LDFLAGS", settings[:ldflags]
   elsif platform.is_macos?

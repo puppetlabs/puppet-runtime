@@ -1,18 +1,16 @@
 component "libxslt" do |pkg, settings, platform|
   pkg.version '1.1.37'
-  pkg.sha256sum 'a4ecab265f44e888ed3b39e11c7e925103ef6e26e09d62e9381f26977df96343'
-  pkg.url "#{settings[:buildsources_url]}/libxslt-v#{pkg.get_version}.tar.gz"
+  pkg.sha256sum '3a4b27dc8027ccd6146725950336f1ec520928f320f144eb5fa7990ae6123ab4'
 
-  # Newer versions of libxslt either ship as tar.xz or do not ship with a configure file
-  # and require a newer version of GNU Autotools to generate. This causes problems with
-  # the older and esoteric (AIX, Solaris) platforms that we support.
-  # So we generate a configure file manually, compress as tar.gz, and host internally.
+  libxslt_version_y = pkg.get_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2')
+  pkg.url "https://download.gnome.org/sources/libxslt/#{libxslt_version_y}/libxslt-#{pkg.get_version}.tar.xz"
+  pkg.mirror "#{settings[:buildsources_url]}/libxslt-#{pkg.get_version}.tar.xz"
 
   pkg.build_requires "libxml2"
 
   if platform.is_aix?
     if platform.name == 'aix-7.1-ppc'
-      pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH)"
+      pkg.environment "PATH", "/opt/pl-build-tools/bin:/opt/freeware/bin:$(PATH)"
     else
       pkg.environment "PATH", "/opt/freeware/bin:$(PATH)"
     end
@@ -26,7 +24,7 @@ component "libxslt" do |pkg, settings, platform|
     # don't depend on libgcrypto
     disable_crypto = "--without-crypto"
   elsif platform.is_solaris?
-    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:#{settings[:bindir]}"
+    pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):/usr/local/bin:/usr/ccs/bin:/usr/sfw/bin:/opt/csw/bin:#{settings[:bindir]}"
     pkg.environment "CFLAGS", settings[:cflags]
     pkg.environment "LDFLAGS", settings[:ldflags]
   elsif platform.is_macos?
