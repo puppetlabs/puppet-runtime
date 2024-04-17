@@ -1,6 +1,6 @@
 component "libxslt" do |pkg, settings, platform|
-  pkg.version '1.1.37'
-  pkg.sha256sum '3a4b27dc8027ccd6146725950336f1ec520928f320f144eb5fa7990ae6123ab4'
+  pkg.version '1.1.39'
+  pkg.sha256sum '2a20ad621148339b0759c4d4e96719362dee64c9a096dbba625ba053846349f0'
 
   libxslt_version_y = pkg.get_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2')
   pkg.url "https://download.gnome.org/sources/libxslt/#{libxslt_version_y}/libxslt-#{pkg.get_version}.tar.xz"
