@@ -26,7 +26,10 @@ proj.component 'libxslt' unless platform.is_windows?
 proj.component "ruby-#{proj.ruby_version}"
 
 proj.component 'ruby-augeas' unless platform.is_windows?
-proj.component 'ruby-selinux' if platform.is_el? || platform.is_fedora?
+# We only build ruby-selinux for EL, Fedora, Debian and Ubuntu (amd64/i386)
+if platform.is_el? || platform.is_fedora? || platform.is_debian? || (platform.is_ubuntu? && platform.architecture !~ /ppc64el$/)
+  proj.component 'ruby-selinux'
+end
 
 # Additional Rubies
 if proj.respond_to?(:additional_rubies)

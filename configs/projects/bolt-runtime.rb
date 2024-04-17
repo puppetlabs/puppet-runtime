@@ -222,8 +222,8 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-winrm-fs'
 
   # Components from puppet-runtime included to support apply on localhost
-  # Only bundle SELinux gem for RHEL,Centos,Fedora
-  if platform.is_el? || platform.is_fedora?
+  # We only build ruby-selinux for EL, Fedora, Debian and Ubuntu (amd64/i386)
+  if platform.is_el? || platform.is_fedora? || platform.is_debian? || (platform.is_ubuntu? && platform.architecture !~ /ppc64el$/)
     proj.component 'ruby-selinux'
   end
 
