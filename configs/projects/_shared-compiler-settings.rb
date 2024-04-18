@@ -14,6 +14,7 @@ if ((platform.is_sles? && platform.os_version.to_i >= 15) ||
     (platform.is_el? && platform.os_version.to_i >= 8) ||
     platform.is_debian? ||
     (platform.is_ubuntu? && platform.os_version.to_i >= 20) ||
+    (platform.is_amazon? && platform.os_version.to_i >= 2023) ||
     platform.is_fedora?
    )
   proj.setting(:cppflags, "-I#{proj.includedir} -D_FORTIFY_SOURCE=2")
