@@ -72,6 +72,16 @@ project 'bolt-runtime' do |proj|
   proj.setting(:cflags, "#{proj.cppflags}")
   proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
 
+  # Harden Linux ELF binaries by compiling with PIE (Position Independent Executables) support,
+  # stack canary and full RELRO.
+  # We only do this on platforms that use their default OS toolchain since pl-gcc versions
+  # are too old to support these flags.
+  if (platform.is_sles? && platform.os_version.to_i >= 15) || (platform.is_el? && platform.os_version.to_i >= 8) || platform.is_debian? || (platform.is_ubuntu? && platform.os_version.to_i >= 20) || platform.is_fedora?
+    proj.setting(:cppflags, "-I#{proj.includedir} -D_FORTIFY_SOURCE=2")
+    proj.setting(:cflags, '-fstack-protector-strong -fno-plt -O2')
+    proj.setting(:ldflags, "-L#{proj.libdir} -Wl,-rpath=#{proj.libdir},-z,relro,-z,now")
+  end
+
   # Platform specific overrides or settings, which may override the defaults
   if platform.is_windows?
     arch = platform.architecture == "x64" ? "64" : "32"
