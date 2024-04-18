@@ -1,0 +1,37 @@
+From de392ff0599f9737aad5656f13356cb14005eb22 Mon Sep 17 00:00:00 2001
+From: Jean Delvare <jdelvare@suse.de>
+Date: Fri, 29 Mar 2024 09:27:58 +0100
+Subject: dmidecode: Fix flag mask in dmi_slot_characteristics
+
+When slot characteristics flags were added, the mask to test if at
+least one flag is set wasn't updated. This could result in slot
+characteristics being listed as "None" for slots with only new flags
+set.
+
+Fix this by dropping the mask for the second slot characteristics
+byte completely. It seems safe to assume that all the remaining bits
+of this byte will be used to future characteristic flags.
+
+Signed-off-by: Jean Delvare <jdelvare@suse.de>
+Fixes: f7d236dd5c4d ("dmidecode: Remaining support for SMBIOS 3.2.0")
+Fixes: 4304d3aca801 ("Add new slot characteristics2 from SMBIOS spec 3.4.0")
+---
+ dmidecode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/dmidecode.c b/dmidecode.c
+index d79f294..78def4c 100644
+--- a/dmidecode.c
++++ b/dmidecode.c
+@@ -2255,7 +2255,7 @@ static void dmi_slot_characteristics(const char *attr, u8 code1, u8 code2)
+ 
+ 	if (code1 & (1 << 0))
+ 		pr_attr(attr, "Unknown");
+-	else if ((code1 & 0xFE) == 0 && (code2 & 0x07) == 0)
++	else if ((code1 & 0xFE) == 0 && code2 == 0)
+ 		pr_attr(attr, "None");
+ 	else
+ 	{
+-- 
+cgit v1.1
+

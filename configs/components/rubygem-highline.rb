@@ -1,6 +1,15 @@
 component 'rubygem-highline' do |pkg, settings, _platform|
-  pkg.version '2.1.0'
-  pkg.md5sum '4209083bda845d47dcc05b7ab23f25fd'
+  version = settings[:rubygem_highline_version] || '2.1.0'
+  pkg.version version
+
+  case version
+  when '2.1.0'
+    pkg.md5sum '4209083bda845d47dcc05b7ab23f25fd'
+  when '3.0.1'
+    pkg.sha256sum 'ca18b218fd581b1fae832f89bfeaf2b34d3a93429c44fd4411042ffce286f009'
+  else
+    raise "rubygem-highline version #{version} has not been configured; Cannot continue."
+  end
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 
