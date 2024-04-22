@@ -79,6 +79,7 @@ component 'curl' do |pkg, settings, platform|
         --disable-ldaps \
         --with-ca-bundle=#{settings[:prefix]}/ssl/cert.pem \
         --with-ca-path=#{settings[:prefix]}/ssl/certs \
+        --without-nghttp2 \
         CFLAGS='#{settings[:cflags]} #{extra_cflags.join(" ")}' \
         #{settings[:host]}"]
   end
