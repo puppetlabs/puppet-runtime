@@ -78,7 +78,8 @@ pkg.build do
 
   if ruby_version =~ /^3/
     # swig 4.1 generated interface does not need patching
-    unless platform.name =~ /^(debian-12|ubuntu-24)/
+    if (!platform.is_debian? || platform.os_version.to_i < 12) &&
+       (!platform.is_ubuntu? || platform.os_version.to_i < 24)
       steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_wrap.patch"
     end
   end
