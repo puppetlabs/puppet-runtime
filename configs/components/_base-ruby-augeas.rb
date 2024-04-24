@@ -5,6 +5,9 @@
 
 pkg.add_source("file://resources/patches/augeas/ruby-augeas-0.5.0-patch_c_extension.patch")
 
+# We can remove the below patch after https://github.com/hercules-team/ruby-augeas/pull/17 is merged.
+pkg.add_source("file://resources/patches/augeas/ruby-augeas-0.5.0-patch_remove_unused_parameter.patch")
+
 # These can be overridden by the including component.
 ruby_version ||= settings[:ruby_version]
 host_ruby ||= settings[:host_ruby]
@@ -75,6 +78,7 @@ pkg.build do
   if ruby_version =~ /^3/
     build_commands << "#{platform.patch} --strip=2 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../ruby-augeas-0.5.0-patch_c_extension.patch"
   end
+  build_commands << "#{platform.patch} --strip=2 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../ruby-augeas-0.5.0-patch_remove_unused_parameter.patch"
   build_commands << "#{ruby} ext/augeas/extconf.rb"
   build_commands << "#{platform[:make]} -e -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"
 
