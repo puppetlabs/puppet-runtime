@@ -11,9 +11,8 @@ component 'libedit' do |pkg, settings, platform|
   elsif platform.is_aix?
     pkg.environment "CC", "/opt/pl-build-tools/bin/gcc"
     pkg.environment "LDFLAGS", settings[:ldflags]
-  end
-
-  if platform.is_macos?
+  else
+    pkg.environment "LDFLAGS", settings[:ldflags]
     pkg.environment "CFLAGS", settings[:cflags]
   end
 
