@@ -1,7 +1,7 @@
 # Define default CFLAGS and LDFLAGS for most platforms, and then
 # tweak or adjust them as needed.
 proj.setting(:cppflags, "-I#{proj.includedir} -I/opt/pl-build-tools/include")
-proj.setting(:cflags, "#{proj.cppflags}")
+proj.setting(:cflags, "-frecord-gcc-switches #{proj.cppflags}")
 proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
 
 # Platform specific overrides or settings, which may override the defaults
@@ -18,6 +18,6 @@ if ((platform.is_sles? && platform.os_version.to_i >= 15) ||
     platform.is_fedora?
    )
   proj.setting(:cppflags, "-I#{proj.includedir} -D_FORTIFY_SOURCE=2")
-  proj.setting(:cflags, '-fstack-protector-strong -fno-plt -O2')
+  proj.setting(:cflags, '-frecord-gcc-switches -fstack-protector-strong -fno-plt -O2')
   proj.setting(:ldflags, "-L#{proj.libdir} -Wl,-rpath=#{proj.libdir},-z,relro,-z,now")
 end
