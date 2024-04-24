@@ -1,4 +1,4 @@
-platform "windows-11-x86_64" do |plat|
+platform "windows-11-x64" do |plat|
   plat.vmpooler_template "win-11-ent-x86_64"
 
   plat.servicetype "windows"
