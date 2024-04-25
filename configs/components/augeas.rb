@@ -1,18 +1,11 @@
 component 'augeas' do |pkg, settings, platform|
   # Projects may define an :augeas_version setting, or we use 1.8.1 by default:
-  version = settings[:augeas_version] || '1.8.1'
+  version = settings[:augeas_version] || '1.14.1'
   pkg.version version
 
   case version
   when '1.14.1'
     pkg.md5sum 'ac31216268b4b64809afd3a25f2515e5'
-  when '1.13.0'
-    pkg.md5sum '909b9934190f32ffcbc2c5a92efaf9d2'
-    pkg.apply_patch 'resources/patches/augeas/augeas-1.13.0-patch_security_context-t_out.patch'
-  when '1.8.1'
-    pkg.md5sum '623ff89d71a42fab9263365145efdbfa'
-  when '1.11.0'
-    pkg.md5sum 'abf51f4c0cf3901d167f23687f60434a'
   when '1.12.0'
     pkg.md5sum '74f1c7b8550f4e728486091f6b907175'
 
@@ -22,14 +15,9 @@ component 'augeas' do |pkg, settings, platform|
     raise "augeas version #{version} has not been configured; Cannot continue."
   end
 
-  # Starting with 1.13.0 Augeas started hosting on Github
-  if Gem::Version.new(version) >= Gem::Version.new('1.13.0')
-    pkg.url "https://github.com/hercules-team/augeas/releases/download/release-#{version}/augeas-#{version}.tar.gz"
-  else
-    pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
-  end
+  pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
 
-  if ['1.11.0', '1.12.0', '1.13.0', '1.14.1'].include?(version)
+  if ['1.12.0', '1.14.1'].include?(version)
     if platform.is_el? || platform.is_fedora?
       # Augeas 1.11.0 needs a libselinux pkgconfig file on these platforms:
       pkg.build_requires 'ruby-selinux'
