@@ -4,6 +4,7 @@ platform 'amazon-7-aarch64' do |plat|
   packages = %w[
     perl-FindBin
     perl-lib
+    perl-IPC-Cmd
     readline-devel
     systemtap-sdt-devel
     zlib-devel
