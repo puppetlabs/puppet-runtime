@@ -37,6 +37,15 @@ end
 pkg.url("https://rubygems.org/downloads/#{name}-#{version}.gem")
 pkg.mirror("#{settings[:buildsources_url]}/#{name}-#{version}.gem")
 
-pkg.install do
-  "#{settings[:gem_install]} #{name}-#{version}.gem"
+# If a gem needs more command line options to install set the :gem_install_options
+# in its component file rubygem-<compoment>, before the instance_eval of this file.
+if settings[:gem_install_options].nil?
+  pkg.install do
+    "#{settings[:gem_install]} #{name}-#{version}.gem"
+  end
+else
+  pkg.install do
+    "#{settings[:gem_install]} #{name}-#{version}.gem #{settings[:gem_install_options]}"
+  end
 end
+
