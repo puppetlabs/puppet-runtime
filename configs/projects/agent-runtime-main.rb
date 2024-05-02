@@ -14,8 +14,6 @@ project 'agent-runtime-main' do |proj|
     proj.setting :augeas_version, '1.14.1'
   end
 
-  proj.setting :curl_version, '8.7.1'
-
   ########
   # Load shared agent settings
   ########
