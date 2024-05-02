@@ -1,17 +1,6 @@
 component 'curl' do |pkg, settings, platform|
-  # Projects may define a :curl_version setting
-  version = settings[:curl_version] || '7.88.1'
-  pkg.version version
-
-  case version
-  when '7.88.1'
-    pkg.sha256sum 'cdb38b72e36bc5d33d5b8810f8018ece1baa29a8f215b4495e495ded82bbf3c7'
-  when '8.7.1'
-    pkg.sha256sum 'f91249c87f68ea00cf27c44fdfa5a78423e41e71b7d408e5901a9896d905c495'
-  else
-    raise "curl version #{version} has not been configured; Cannot continue."
-  end
-
+  pkg.version '7.88.1'
+  pkg.sha256sum 'cdb38b72e36bc5d33d5b8810f8018ece1baa29a8f215b4495e495ded82bbf3c7'
   pkg.url "https://curl.se/download/curl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/curl-#{pkg.get_version}.tar.gz"
 
@@ -37,17 +26,15 @@ component 'curl' do |pkg, settings, platform|
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
   end
 
-  # Following lines should we removed once we drop curl 7
-  if version.start_with?('7')
-    pkg.apply_patch 'resources/patches/curl/CVE-2023-27535.patch'
-    pkg.apply_patch 'resources/patches/curl/CVE-2023-28319.patch'
-    pkg.apply_patch 'resources/patches/curl/CVE-2023-32001.patch'
-    pkg.apply_patch 'resources/patches/curl/CVE-2023-38545.patch'
-    pkg.apply_patch 'resources/patches/curl/CVE-2023-38546.patch'
-    pkg.apply_patch 'resources/patches/curl/CVE-2023-46218.patch'
-    pkg.apply_patch 'resources/patches/curl/CVE-2024-2004.patch'
-    pkg.apply_patch 'resources/patches/curl/CVE-2024-2398.patch'
-  end
+  # Following 3 lines should we removed once we upgrade CURL to 8.x.x
+  pkg.apply_patch 'resources/patches/curl/CVE-2023-27535.patch'
+  pkg.apply_patch 'resources/patches/curl/CVE-2023-28319.patch'
+  pkg.apply_patch 'resources/patches/curl/CVE-2023-32001.patch'
+  pkg.apply_patch 'resources/patches/curl/CVE-2023-38545.patch'
+  pkg.apply_patch 'resources/patches/curl/CVE-2023-38546.patch'
+  pkg.apply_patch 'resources/patches/curl/CVE-2023-46218.patch'
+  pkg.apply_patch 'resources/patches/curl/CVE-2024-2004.patch'
+  pkg.apply_patch 'resources/patches/curl/CVE-2024-2398.patch'
 
   configure_options = []
   configure_options << "--with-ssl=#{settings[:prefix]}"
