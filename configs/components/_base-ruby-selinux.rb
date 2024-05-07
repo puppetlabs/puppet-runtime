@@ -79,8 +79,11 @@ pkg.build do
   ]
 
   if ruby_version =~ /^3/
-    # swig 4.1 generated interface does not need patching
-    unless platform.name =~ /^(debian-12|ubuntu-24|fedora-40)/
+    # swig 4.1 generated interface does not need patching, so skip
+    # when running debian >= 12, fedora >= 40, etc
+    unless (platform.is_debian? && platform.os_version.to_i >= 12) ||
+        (platform.is_fedora? && platform.os_version.to_i >= 40) ||
+        (platform.is_ubuntu? && platform.os_version.to_i >= 24)
       steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_wrap.patch"
     end
     # EL 7 uses an older version of swig (2.0) so a different patch is needed to
@@ -90,7 +93,8 @@ pkg.build do
     else
       # Ubuntu 24 & Fedora 40 use a newer swig that already has the fix that's
       # being patched
-      unless platform.name =~ /^(ubuntu-24|fedora-40)/
+      unless (platform.is_fedora? && platform.os_version.to_i >= 40) ||
+          (platform.is_ubuntu? && platform.os_version.to_i >= 24)
         steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_undefining_allocator.patch"
       end
     end
