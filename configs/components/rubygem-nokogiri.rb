@@ -1,14 +1,13 @@
 component 'rubygem-nokogiri' do |pkg, _settings, _platform|
   pkg.version '1.14.2'
   pkg.sha256sum 'c765a74aac6cf430a710bb0b6038b8ee11f177393cd6ae8dadc7a44a6e2658b6'
-  # On macOS when we are not cross compiling we need to use runtime's libxml2 and libxslt
-  if platform.is_macos? && !platform.is_cross_compiled?
-    settings[:gem_install_options] = "-- --use-system-libraries \
+
+  settings[:gem_install_options] = "--platform=ruby -- \
+        --use-system-libraries \
         --with-xml2-lib=#{settings[:libdir]} \
         --with-xml2-include=#{settings[:includedir]}/libxml2 \
         --with-xslt-lib=#{settings[:libdir]} \
         --with-xslt-include=#{settings[:includedir]}"
-  end
   instance_eval File.read('configs/components/_base-rubygem.rb')
   pkg.build_requires 'rubygem-mini_portile2'
   gem_home = settings[:gem_home]
