@@ -237,7 +237,11 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
   elsif platform.is_macos? && platform.architecture == 'arm64' && platform.os_version.to_i >= 13
     rbconfig_changes["CC"] = 'clang'
   elsif platform.is_windows?
-    rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
+    if platform.architecture == "x64"
+      rbconfig_changes["CC"] = "x86_64-w64-mingw32-gcc"
+    else
+      rbconfig_changes["CC"] = "i686-w64-mingw32-gcc"
+    end
   end
 
   pkg.add_source("file://resources/files/ruby_vendor_gems/operating_system.rb")
