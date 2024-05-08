@@ -15,7 +15,13 @@ component 'augeas' do |pkg, settings, platform|
     raise "augeas version #{version} has not been configured; Cannot continue."
   end
 
-  pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
+  # releases from 1.13.0 onward are only available from github
+  if Gem::Version.new(pkg.get_version) < Gem::Version.new('1.13.0')
+    # this url may be removed once 1.12.0 is no longer supported
+    pkg.url "http://download.augeas.net/augeas-#{pkg.get_version}.tar.gz"
+  else
+    pkg.url "https://github.com/hercules-team/augeas/releases/download/release-#{pkg.get_version}/augeas-#{pkg.get_version}.tar.gz"
+  end
 
   if ['1.12.0', '1.14.1'].include?(version)
     if platform.is_el? || platform.is_fedora?
