@@ -63,19 +63,19 @@ component "rubygem-ffi" do |pkg, settings, platform|
     # Prior to ruby 3.2, both ruby and the ffi gem vendored a version of libffi.
     # If libffi happened to be installed in /usr/lib, then the ffi gem preferred
     # that instead of building libffi itself. To ensure consistency, we use
-    # --disable-system-ffi so that the ffi gem *always* builds libffi, then
+    # --disable-system-libffi so that the ffi gem *always* builds libffi, then
     # builds the ffi_c native extension and links it against libffi.so.
     #
     # In ruby 3.2 and up, libffi is no longer vendored. So we created a separate
     # libffi vanagon component which is built before ruby. The ffi gem still
-    # vendors libffi, so we use the --enable-system-ffi option to ensure the ffi
+    # vendors libffi, so we use the --enable-system-libffi option to ensure the ffi
     # gem *always* uses the libffi.so we already built. Note the term "system" is
     # misleading, because we override PKG_CONFIG_PATH below so that our libffi.so
     # is preferred, not the one in /usr/lib.
     settings[:gem_install_options] = if rb_major_minor_version > 2.7
-                                       "-- --enable-system-ffi"
+                                       "-- --enable-system-libffi"
                                      else
-                                       "-- --disable-system-ffi"
+                                       "-- --disable-system-libffi"
                                      end
     instance_eval File.read('configs/components/_base-rubygem.rb')
   end
