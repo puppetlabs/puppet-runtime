@@ -72,11 +72,12 @@ component "rubygem-ffi" do |pkg, settings, platform|
     # gem *always* uses the libffi.so we already built. Note the term "system" is
     # misleading, because we override PKG_CONFIG_PATH below so that our libffi.so
     # is preferred, not the one in /usr/lib.
-    settings[:gem_install_options] = if rb_major_minor_version > 2.7
-                                       "-- --enable-system-libffi"
-                                     else
-                                       "-- --disable-system-libffi"
-                                     end
+    settings["#{pkg.get_name}_gem_install_options".to_sym] =
+      if rb_major_minor_version > 2.7
+        "-- --enable-system-libffi"
+      else
+        "-- --disable-system-libffi"
+      end
     instance_eval File.read('configs/components/_base-rubygem.rb')
   end
 

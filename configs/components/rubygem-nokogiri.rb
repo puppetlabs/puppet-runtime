@@ -1,8 +1,8 @@
-component 'rubygem-nokogiri' do |pkg, _settings, _platform|
+component 'rubygem-nokogiri' do |pkg, settings, _platform|
   pkg.version '1.14.2'
   pkg.sha256sum 'c765a74aac6cf430a710bb0b6038b8ee11f177393cd6ae8dadc7a44a6e2658b6'
 
-  settings[:gem_install_options] = "--platform=ruby -- \
+  settings["#{pkg.get_name}_gem_install_options".to_sym] = "--platform=ruby -- \
         --use-system-libraries \
         --with-xml2-lib=#{settings[:libdir]} \
         --with-xml2-include=#{settings[:includedir]}/libxml2 \
