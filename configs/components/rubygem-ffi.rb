@@ -15,37 +15,15 @@ component "rubygem-ffi" do |pkg, settings, platform|
     pkg.sha256sum '6f2ed2fa68047962d6072b964420cba91d82ce6fa8ee251950c17fca6af3c2a0'
   end
 
-  instance_eval File.read('configs/components/_base-rubygem.rb')
-
   rb_major_minor_version = settings[:ruby_version].to_f
-
-  # Prior to ruby 3.2, both ruby and the ffi gem vendored a version of libffi.
-  # If libffi happened to be installed in /usr/lib, then the ffi gem preferred
-  # that instead of building libffi itself. To ensure consistency, we use
-  # --disable-system-ffi so that the ffi gem *always* builds libffi, then
-  # builds the ffi_c native extension and links it against libffi.so.
-  #
-  # In ruby 3.2 and up, libffi is no longer vendored. So we created a separate
-  # libffi vanagon component which is built before ruby. The ffi gem still
-  # vendors libffi, so we use the --enable-system-ffi option to ensure the ffi
-  # gem *always* uses the libffi.so we already built. Note the term "system" is
-  # misleading, because we override PKG_CONFIG_PATH below so that our libffi.so
-  # is preferred, not the one in /usr/lib.
-  if rb_major_minor_version > 2.7
-    pkg.install do
-      "#{settings[:gem_install]} ffi-#{pkg.get_version}.gem -- --enable-system-ffi"
-    end
-  else
-    pkg.install do
-      "#{settings[:gem_install]} ffi-#{pkg.get_version}.gem -- --disable-system-ffi"
-    end
-  end
 
   # Windows versions of the FFI gem have custom filenames, so we overwite the
   # defaults that _base-rubygem provides here, just for Windows for Ruby < 3.2
   if platform.is_windows? && rb_major_minor_version < 3.2
     # Pin this if lower than Ruby 2.7
     pkg.version '1.9.25' if rb_major_minor_version < 2.7
+
+    instance_eval File.read('configs/components/_base-rubygem.rb')
 
     # Vanagon's `pkg.mirror` is additive, and the _base_rubygem sets the
     # non-Windows gem as the first mirror, which is incorrect. We need to unset
@@ -81,6 +59,25 @@ component "rubygem-ffi" do |pkg, settings, platform|
     pkg.install do
       "#{settings[:gem_install]} ffi-#{pkg.get_version}-#{platform.architecture}-mingw32.gem"
     end
+  else
+    # Prior to ruby 3.2, both ruby and the ffi gem vendored a version of libffi.
+    # If libffi happened to be installed in /usr/lib, then the ffi gem preferred
+    # that instead of building libffi itself. To ensure consistency, we use
+    # --disable-system-ffi so that the ffi gem *always* builds libffi, then
+    # builds the ffi_c native extension and links it against libffi.so.
+    #
+    # In ruby 3.2 and up, libffi is no longer vendored. So we created a separate
+    # libffi vanagon component which is built before ruby. The ffi gem still
+    # vendors libffi, so we use the --enable-system-ffi option to ensure the ffi
+    # gem *always* uses the libffi.so we already built. Note the term "system" is
+    # misleading, because we override PKG_CONFIG_PATH below so that our libffi.so
+    # is preferred, not the one in /usr/lib.
+    settings[:gem_install_options] = if rb_major_minor_version > 2.7
+                                       "-- --enable-system-ffi"
+                                     else
+                                       "-- --disable-system-ffi"
+                                     end
+    instance_eval File.read('configs/components/_base-rubygem.rb')
   end
 
   # due to contrib/make_sunver.pl missing on solaris 11 we cannot compile libffi, so we provide the opencsw library
