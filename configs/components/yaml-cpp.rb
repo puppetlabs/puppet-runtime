@@ -4,9 +4,13 @@ component "yaml-cpp" do |pkg, settings, platform|
 
   # Build-time Configuration
   cmake_toolchain_file = ''
-  cmake = '/usr/bin/cmake'
   make = 'make'
   mkdir = 'mkdir'
+  cmake = if platform.name =~ /amazon-7-aarch64/
+    '/usr/bin/cmake3'
+  else
+    'cmake'
+  end
 
   if platform.is_cross_compiled_linux?
     # We're using the x86_64 version of cmake
