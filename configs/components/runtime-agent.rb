@@ -13,6 +13,14 @@ component "runtime-agent" do |pkg, settings, platform|
         "zypper install -y pl-gcc8"
       end
     end
+  elsif platform.is_macos? && platform.is_cross_compiled?
+    if settings[:ruby_version] =~ /^3\./
+      pkg.install do
+        # These are dependencies of ruby@3.x, remove symlinks from /usr/local
+        # so our build doesn't use the wrong headers
+        "cd /etc/homebrew && su test -c '#{platform.brew} unlink openssl libyaml'"
+      end
+    end
   end
 
   if platform.is_cross_compiled?

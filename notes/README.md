@@ -13,6 +13,7 @@ The notes directory is sorted by platform.
 
 ## macOS
 
+* [General](macos/README.md)
 * [Boost](macos/boost.md)
 
 ## Solaris
