@@ -3,8 +3,7 @@ name: Mend Monitor
 on:
   push:
     branches:
-      - 7.x
-      - main
+      - master
 jobs:
   mend_monitor:
     if: ${{ github.repository_owner == 'puppetlabs' }}
@@ -33,4 +32,3 @@ jobs:
           WS_USERKEY: ${{ secrets.MEND_TOKEN }}
           WS_PRODUCTNAME: Puppet Agent
           WS_PROJECTNAME: ${{ github.event.repository.name }}
-
