@@ -11,8 +11,8 @@ component "rubygem-ffi" do |pkg, settings, platform|
     pkg.version '1.13.1'
     pkg.sha256sum '4e15f52ee45af7c5674d656041855448adbb5022618be252cd602d81b8e2978a'
   else
-    pkg.version '1.15.5'
-    pkg.sha256sum '6f2ed2fa68047962d6072b964420cba91d82ce6fa8ee251950c17fca6af3c2a0'
+    pkg.version '1.16.3'
+    pkg.sha256sum '6d3242ff10c87271b0675c58d68d3f10148fabc2ad6da52a18123f06078871fb'
   end
 
   rb_major_minor_version = settings[:ruby_version].to_f
@@ -37,8 +37,8 @@ component "rubygem-ffi" do |pkg, settings, platform|
       case pkg.get_version
       when '1.9.25'
         pkg.sha256sum '5473ac958b78f271f53e9a88197c35cd3e990fbe625d21e525c56d62ae3750da'
-      when '1.15.5'
-        pkg.sha256sum '9acc4e474bef25dbcf827b1e6fce4067e9a1eff74a0296d25f0af392fafcd096'
+      when '1.16.3'
+        pkg.sha256sum '6ec709011e3955e97033fa77907a8ab89a9150137d4c45c82c77399b909c9259'
       end
 
       pkg.url "https://rubygems.org/downloads/ffi-#{pkg.get_version}-x64-mingw32.gem"
@@ -48,8 +48,8 @@ component "rubygem-ffi" do |pkg, settings, platform|
       case pkg.get_version
       when '1.9.25'
         pkg.sha256sum '43d357732a6a0e3e41dc7e28a9c9c5112ac66f4a6ed9e1de40afba9ffcb836c1'
-      when '1.15.5'
-        pkg.sha256sum '6e52c39fdbbccc085ae05d489d1b835ce05dcdf2a4c88ba739e3b42afd2b5404'
+      when '1.16.3'
+        pkg.sha256sum '6344ea0da65decec0d4454dfcf080e3ab39213e76f0bed6aed5b0eeb1073c501'
       end
 
       pkg.url "https://rubygems.org/downloads/ffi-#{pkg.get_version}-x86-mingw32.gem"
