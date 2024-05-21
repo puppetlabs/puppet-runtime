@@ -92,10 +92,8 @@ elsif platform.is_windows?
   proj.setting(:ldflags, "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir} -Wl,--nxcompat -Wl,--dynamicbase")
   proj.setting(:cygwin, "nodosfilewarning winsymlinks:native")
 else
-  proj.setting(:tools_root, "/opt/pl-build-tools")
-  proj.setting(:cppflags, "-I#{proj.includedir} -I/opt/pl-build-tools/include")
-  proj.setting(:cflags, "#{proj.cppflags}")
-  proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
+  # Load default compiler settings
+  instance_eval File.read('configs/projects/_shared-compiler-settings.rb')
 end
 
 # What to build?

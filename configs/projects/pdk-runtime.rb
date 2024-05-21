@@ -111,11 +111,8 @@ project 'pdk-runtime' do |proj|
     proj.setting(:host, "--host #{platform.platform_triple}")
   end
 
-  # Define default CFLAGS and LDFLAGS for most platforms, and then
-  # tweak or adjust them as needed.
-  proj.setting(:cppflags, "-I#{proj.includedir} -I/opt/pl-build-tools/include")
-  proj.setting(:cflags, proj.cppflags.to_s)
-  proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
+  # Load default compiler settings
+  instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-compiler-settings.rb'))
 
   if platform.is_windows?
     proj.setting(:gcc_root, 'C:/tools/mingw64')

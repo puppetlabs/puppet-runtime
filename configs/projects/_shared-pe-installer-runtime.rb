@@ -31,11 +31,8 @@ proj.setting(:gem_install, "#{proj.host_gem} install --no-document --local --bin
 proj.setting(:artifactory_url, "https://artifactory.delivery.puppetlabs.net/artifactory")
 proj.setting(:buildsources_url, "#{proj.artifactory_url}/generic/buildsources")
 
-# Define default CFLAGS and LDFLAGS for most platforms, and then
-# tweak or adjust them as needed.
-proj.setting(:cppflags, "-I#{proj.includedir} -I/opt/pl-build-tools/include")
-proj.setting(:cflags, "#{proj.cppflags}")
-proj.setting(:ldflags, "-L#{proj.libdir} -L/opt/pl-build-tools/lib -Wl,-rpath=#{proj.libdir}")
+# Load default compiler settings
+instance_eval File.read('configs/projects/_shared-compiler-settings.rb')
 
 # These flags are applied in addition to the defaults in configs/component/openssl.rb.
 proj.setting(:openssl_extra_configure_flags, [
