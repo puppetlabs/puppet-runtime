@@ -70,6 +70,7 @@ proj.component 'rubygem-cri'
 # Childprocess and deps
 proj.component 'rubygem-childprocess'
 proj.component 'rubygem-hitimes'
+proj.component 'rubygem-strscan' if platform.is_windows?
 
 ## tty-reader and deps
 proj.component 'rubygem-tty-screen'
@@ -93,8 +94,8 @@ proj.component 'rubygem-json-schema'
 
 # Other deps
 proj.component 'rubygem-deep_merge'
-proj.component 'rubygem-json_pure'
 proj.component 'rubygem-diff-lcs'
+proj.component 'rubygem-json_pure'
 proj.component 'rubygem-pathspec'
 
 proj.component 'ansicon' if platform.is_windows?
