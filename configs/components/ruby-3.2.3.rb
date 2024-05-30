@@ -37,6 +37,7 @@ component 'ruby-3.2.3' do |pkg, settings, platform|
   #########
 
   base = 'resources/patches/ruby_32'
+  pkg.apply_patch "#{base}/regexp_use_after_free.patch"
 
   if platform.is_cross_compiled?
     pkg.apply_patch "#{base}/rbinstall_gem_path.patch"

@@ -38,6 +38,7 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
   base = 'resources/patches/ruby_27'
   # Patch for https://bugs.ruby-lang.org/issues/14972
   pkg.apply_patch "#{base}/net_http_eof_14972_r2.5.patch"
+  pkg.apply_patch "#{base}/regexp_use_after_free.patch"
 
   pkg.apply_patch "#{base}/uri-redos-cve-2023-36617.patch"
 
