@@ -6,7 +6,7 @@ component "yaml-cpp" do |pkg, settings, platform|
   cmake_toolchain_file = ''
   make = 'make'
   mkdir = 'mkdir'
-  cmake = if platform.name =~ /amazon-7-aarch64/
+  cmake = if platform.name =~ /amazon-2-aarch64/
     '/usr/bin/cmake3'
   else
     'cmake'
