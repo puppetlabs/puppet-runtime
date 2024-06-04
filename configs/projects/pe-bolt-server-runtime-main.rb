@@ -6,7 +6,7 @@ project 'pe-bolt-server-runtime-main' do |proj|
   # Once we are no longer using ruby 2.5 we can update.
   proj.setting(:no_doc, true)
 
-  proj.setting(:ruby_version, '3.2.3')
+  proj.setting(:ruby_version, '3.2.4')
   proj.setting(:openssl_version, '3.0')
 
   # We enable legacy algorithms for winrm transport. Currently the winrm transport
