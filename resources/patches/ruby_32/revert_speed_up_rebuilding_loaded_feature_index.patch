@@ -132,14 +132,14 @@ index de43d022c0..d009a5f64a 100644
          rb_gc_mark_movable(vm->orig_progname);
          RUBY_MARK_MOVABLE_UNLESS_NULL(vm->coverages);
 diff --git a/vm_core.h b/vm_core.h
-index b6adeadd87..d86fdbaecd 100644
+index a8c1e6b917..1842519edd 100644
 --- a/vm_core.h
 +++ b/vm_core.h
-@@ -680,7 +680,6 @@ typedef struct rb_vm_struct {
+@@ -676,7 +676,6 @@ typedef struct rb_vm_struct {
      VALUE loaded_features;
      VALUE loaded_features_snapshot;
      VALUE loaded_features_realpaths;
 -    VALUE loaded_features_realpath_map;
      struct st_table *loaded_features_index;
      struct st_table *loading_table;
- #if EXTSTATIC
+     // For running the init function of statically linked

@@ -1,5 +1,5 @@
 project 'pe-installer-runtime-main' do |proj|
-  proj.setting(:ruby_version, '3.2.3')
+  proj.setting(:ruby_version, '3.2.4')
   proj.setting(:openssl_version, '3.0')
   # NLTM uses MD4 unconditionally in its protocol, so legacy algos must be
   # enabled in OpenSSL >= 3.0 for Bolt's WinRM transport to work.

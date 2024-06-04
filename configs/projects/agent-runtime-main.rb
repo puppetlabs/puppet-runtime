@@ -1,7 +1,7 @@
 project 'agent-runtime-main' do |proj|
 
   # Set preferred component versions if they differ from defaults:
-  proj.setting :ruby_version, '3.2.3'
+  proj.setting :ruby_version, '3.2.4'
   proj.setting :rubygem_deep_merge_version, '1.2.2'
   proj.setting :rubygem_highline_version, '3.0.1'
   proj.setting :rubygem_hocon_version, '1.4.0'
