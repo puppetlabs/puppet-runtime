@@ -4,7 +4,6 @@
 #
 
 pkg.add_source("file://resources/patches/ruby-selinux/selinuxswig_ruby_wrap.patch")
-pkg.add_source("file://resources/patches/ruby-selinux/selinuxswig_ruby_undefining_allocator.patch")
 
 # These can be overridden by the including component.
 ruby_version ||= settings[:ruby_version]
@@ -82,7 +81,6 @@ pkg.build do
     unless platform.name =~ /^(debian-12|ubuntu-24|fedora-40)/
       steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_wrap.patch"
     end
-    steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_undefining_allocator.patch"
   end
 
   # libselinux 3.3 is the minimum version we want to build on RHEL 9, but the
