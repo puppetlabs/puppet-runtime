@@ -1,0 +1,10 @@
+--- selinuxswig_ruby_wrap_orig.c	2024-06-14 18:03:11.946019756 +0000
++++ selinuxswig_ruby_wrap.c	2024-06-14 18:08:23.057169863 +0000
+@@ -1486,7 +1486,7 @@
+     _cSWIG_Pointer = rb_define_class_under(_mSWIG, "Pointer", rb_cObject);
+     rb_undef_method(CLASS_OF(_cSWIG_Pointer), "new");
+   }
+-  klass = rb_define_class_under(_mSWIG, klass_name, _cSWIG_Pointer);
++  rb_undef_alloc_func(rb_define_class_under(_mSWIG, klass_name, _cSWIG_Pointer));
+   free((void *) klass_name);
+ }
