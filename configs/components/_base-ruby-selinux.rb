@@ -4,6 +4,8 @@
 #
 
 pkg.add_source("file://resources/patches/ruby-selinux/selinuxswig_ruby_wrap.patch")
+pkg.add_source("file://resources/patches/ruby-selinux/selinuxswig_ruby_undefining_allocator.patch")
+pkg.add_source("file://resources/patches/ruby-selinux/undefining_allocator_el_7.patch")
 
 # These can be overridden by the including component.
 ruby_version ||= settings[:ruby_version]
@@ -80,6 +82,17 @@ pkg.build do
     # swig 4.1 generated interface does not need patching
     unless platform.name =~ /^(debian-12|ubuntu-24|fedora-40)/
       steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_wrap.patch"
+    end
+    # EL 7 uses an older version of swig (2.0) so a different patch is needed to
+    # fix warning:undefining the allocator of T_DATA class
+    if platform.name =~ /el-7|redhatfips-7/
+      steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../undefining_allocator_el_7.patch"
+    else
+      # Ubuntu 24 & Fedora 40 use a newer swig that already has the fix that's
+      # being patched
+      unless platform.name =~ /^(ubuntu-24|fedora-40)/
+        steps << "#{platform.patch} --strip=0 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../selinuxswig_ruby_undefining_allocator.patch"
+      end
     end
   end
 
