@@ -56,7 +56,6 @@ project 'agent-runtime-main' do |proj|
   # When adding components to this list, please
   # add them to pe-installer-runtime-main as well
   proj.component 'rubygem-concurrent-ruby'
-  proj.component 'rubygem-ffi'
   proj.component 'rubygem-multi_json'
   proj.component 'rubygem-optimist'
   proj.component 'rubygem-highline'

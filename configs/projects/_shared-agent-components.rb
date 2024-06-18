@@ -60,10 +60,10 @@ proj.component 'rubygem-text'
 proj.component 'rubygem-locale'
 proj.component 'rubygem-gettext'
 proj.component 'rubygem-fast_gettext'
+proj.component 'rubygem-ffi'
 
 if platform.is_windows? || platform.is_solaris?
   proj.component 'rubygem-minitar'
-  proj.component 'rubygem-ffi'
 end
 
 if platform.is_macos?
