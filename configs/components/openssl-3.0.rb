@@ -1,6 +1,6 @@
 component 'openssl' do |pkg, settings, platform|
-  pkg.version '3.0.13'
-  pkg.sha256sum '88525753f79d3bec27d2fa7c66aa0b92b3aa9498dafd93d7cfa4b3780cdae313'
+  pkg.version '3.0.14'
+  pkg.sha256sum 'eeca035d4dd4e84fc25846d952da6297484afa0650a6f84c682e39df3a4123ca'
   pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
@@ -26,9 +26,6 @@ component 'openssl' do |pkg, settings, platform|
     pkg.environment 'PATH', "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
     pkg.environment 'CYGWIN', settings[:cygwin]
     pkg.environment 'MAKE', platform[:make]
-
-    # Remove this in 3.0.14 or later
-    pkg.apply_patch 'resources/patches/openssl/openssl-3.0.13-crypto-providers.patch'
 
     target = platform.architecture == 'x64' ? 'mingw64' : 'mingw'
   elsif platform.is_aix?
@@ -84,9 +81,6 @@ component 'openssl' do |pkg, settings, platform|
       target = 'linux-armv4'
     end
   end
-
-  # Remove this in 3.0.14 or later
-  pkg.apply_patch 'resources/patches/openssl/CVE-2024-2511.patch'
 
   ####################
   # BUILD REQUIREMENTS
