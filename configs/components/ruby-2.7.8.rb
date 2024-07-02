@@ -42,6 +42,7 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
 
   pkg.apply_patch "#{base}/uri-redos-cve-2023-36617.patch"
 
+
   if platform.is_cross_compiled?
     unless platform.is_macos?
       pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.5.patch"
@@ -170,6 +171,26 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
   end
 
   #########
+  # BUILD 
+  #########
+
+  pkg.add_source("file://resources/patches/ruby_27/rexml_for_CVE-2024-35176.patch")
+
+  pkg.build do
+    # This patch is applied after install because rexml gem is the bundled gem unlike default gems and hence
+    # not able to find the path of the files to be patched prior configuring and installing
+    #this patch is not required in ruby >= 3.2.5
+    ruby = "#{ruby_bindir}/ruby -rrbconfig"
+    steps = [
+      "export RUBYHDRDIR=$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"rubyhdrdir\"]')",
+      "export VENDORARCHDIR=$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"vendorarchdir\"]')",
+      "export ARCHDIR=$${RUBYHDRDIR}/$(shell #{ruby} -e 'puts RbConfig::CONFIG[\"arch\"]')",
+      "export INCLUDESTR=\"-I#{settings[:includedir]} -I$${RUBYHDRDIR} -I$${ARCHDIR}\""
+    ]
+    steps = ["#{platform.patch} --strip=1 --fuzz=3 --ignore-whitespace --no-backup-if-mismatch < ../rexml_for_CVE-2024-35176.patch"]
+  end
+
+  #########
   # INSTALL
   #########
 
@@ -268,4 +289,5 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
       ]
     end
   end
+
 end
