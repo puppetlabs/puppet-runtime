@@ -300,4 +300,18 @@ component 'ruby-3.2.4' do |pkg, settings, platform|
       ]
     end
   end
+
+  #########
+  # BUILD 
+  #########
+
+  pkg.add_source("file://resources/patches/ruby_32/rexml_for_CVE-2024-35176.patch")
+
+  pkg.build do
+    # This patch is applied after the install step because rexml gem is the bundled gem hence build
+    # cannot find the path of the files to be patched prior to configuring and installing.
+    # This patch is not required for ruby >= 3.3.3
+    steps = ["#{platform.patch} --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../rexml_for_CVE-2024-35176.patch"]
+  end
+
 end

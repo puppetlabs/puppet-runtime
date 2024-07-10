@@ -42,6 +42,9 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
 
   pkg.apply_patch "#{base}/uri-redos-cve-2023-36617.patch"
 
+  # This patch is not required for ruby >= 3.3.3
+  pkg.apply_patch "#{base}/rexml_for_CVE-2024-35176.patch"
+
   if platform.is_cross_compiled?
     unless platform.is_macos?
       pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.5.patch"
