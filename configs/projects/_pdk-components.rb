@@ -91,6 +91,9 @@ proj.component 'rubygem-public_suffix'
 proj.component 'rubygem-addressable'
 proj.component 'rubygem-json-schema'
 
+# PDK build
+proj.component 'rubygem-puppet-modulebuilder'
+
 # Other deps
 proj.component 'rubygem-deep_merge'
 proj.component 'rubygem-json_pure'
