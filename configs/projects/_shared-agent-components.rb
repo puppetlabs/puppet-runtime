@@ -61,6 +61,7 @@ proj.component 'rubygem-locale'
 proj.component 'rubygem-gettext'
 proj.component 'rubygem-fast_gettext'
 proj.component 'rubygem-ffi'
+proj.component 'rubygem-rexml'
 
 if platform.is_windows? || platform.is_solaris? || platform.is_aix?
   proj.component 'rubygem-minitar'
