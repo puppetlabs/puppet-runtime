@@ -66,6 +66,8 @@ else
   proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local --bindir=#{proj.bindir}")
 end
 
+proj.setting(:gem_cleanup, "#{proj.host_gem} cleanup")
+
 # What to build?
 # --------------
 

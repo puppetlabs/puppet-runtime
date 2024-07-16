@@ -43,6 +43,8 @@ project 'agent-runtime-main' do |proj|
   # platforms that use older rubies.
   proj.setting(:gem_install, "#{proj.host_gem} install --no-document --local")
 
+  proj.setting(:gem_cleanup, "#{proj.host_gem} cleanup")
+
   ########
   # Load shared agent components
   ########

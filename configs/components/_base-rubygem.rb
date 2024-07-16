@@ -40,13 +40,22 @@ pkg.mirror("#{settings[:buildsources_url]}/#{name}-#{version}.gem")
 # If a gem needs more command line options to install set the :gem_install_options
 # in its component file rubygem-<compoment>, before the instance_eval of this file.
 gem_install_options = settings["#{pkg.get_name}_gem_install_options".to_sym]
-if gem_install_options.nil?
-  pkg.install do
-    "#{settings[:gem_install]} #{name}-#{version}.gem"
+pkg.install do
+  steps = []
+  if gem_install_options.nil?
+    steps << "#{settings[:gem_install]} #{name}-#{version}.gem"
+  else
+    steps << "#{settings[:gem_install]} #{name}-#{version}.gem #{gem_install_options}"
   end
-else
-  pkg.install do
-    "#{settings[:gem_install]} #{name}-#{version}.gem #{gem_install_options}"
+
+  # We gem installed rexml to 3.2.9 in ruby 3 for CVE 2024-35176. Since rexml is a bundled gem in ruby 3, we end up having 
+  # two versions of rexml -- 1) the bundled version shipped with ruby 3 (3.2.5) and 2) the one we manually installed with 
+  # the above gem install command (3.2.9).
+  # So, we run gem cleanup so that it deletes the older version 3.2.5. 
+  # Note: We won't need to cleanup and install rexml once we upgrade to ruby >= 3.3.3
+  if name == 'rexml' && settings[:ruby_version].to_i == 3
+    steps << "#{settings[:gem_cleanup]} #{name}"
   end
+  steps
 end
 
