@@ -48,7 +48,7 @@ component "git" do |pkg, settings, platform|
     ]
   end
 
-  if platform.name == 'el-8-x86_64' || platform.name == 'el-9-x86_64'
+  if platform.name.match(/^el\-(?:8|9)\-(?:x86_64|aarch64)/)
     build_deps.reject! { |r| r == 'dh-autoreconf' }
   end
 
