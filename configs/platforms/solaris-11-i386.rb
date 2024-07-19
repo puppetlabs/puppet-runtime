@@ -41,7 +41,7 @@ action=nocheck
 basedir=default" > /var/tmp/vanagon-noask;
   echo "mirror=https://artifactory.delivery.puppetlabs.net/artifactory/generic__remote_opencsw_mirror/testing" > /var/tmp/vanagon-pkgutil.conf;
   pkgadd -n -a /var/tmp/vanagon-noask -d http://get.opencsw.org/now all
-  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i libffi_dev autoconf gcc4core CSWxz-5.2.8,REV=2022.11.16 || exit 1;
+  /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i libffi_dev autoconf gcc4core CSWxz-5.6.2,REV=2024.06.13 || exit 1;
   ntpdate pool.ntp.org]
   plat.output_dir File.join("solaris", "11", "PC1")
 end
