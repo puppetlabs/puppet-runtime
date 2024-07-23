@@ -62,6 +62,10 @@ proj.component 'rubygem-gettext'
 proj.component 'rubygem-fast_gettext'
 proj.component 'rubygem-ffi'
 
+# Note: We won't need to explicitly add 'rubygem-rexml' to agent-runtimes once ruby is upgraded to 3.3.3 or higher (CVE-2024-35176 and CVE-2024-39908).
+# This is because the bundled rexml gem version shipped with ruby itself will be free from these CVEs.
+proj.component 'rubygem-rexml'
+
 if platform.is_windows? || platform.is_solaris? || platform.is_aix?
   proj.component 'rubygem-minitar'
 end

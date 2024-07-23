@@ -68,6 +68,7 @@ else
   proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local --bindir=#{proj.bindir}")
 end
 
+proj.setting(:gem_cleanup, "#{proj.host_gem} cleanup")
 
 proj.setting(:datadir, File.join(proj.prefix, "share"))
 proj.setting(:mandir, File.join(proj.datadir, "man"))
