@@ -55,6 +55,6 @@ action=nocheck
 basedir=default" > /var/tmp/vanagon-noask;
   echo "mirror=https://artifactory.delivery.puppetlabs.net/artifactory/generic__remote_opencsw_mirror/testing" > /var/tmp/vanagon-pkgutil.conf;
   pkgadd -n -a /var/tmp/vanagon-noask -d http://get.opencsw.org/now all
-  /opt/csw/bin/pkgutil -U && /opt/csw/bin/pkgutil -y -i bison CSWxz-5.2.8,REV=2022.11.16 || exit 1
+  /opt/csw/bin/pkgutil -U && /opt/csw/bin/pkgutil -y -i bison CSWxz-5.6.2,REV=2024.06.13 || exit 1
   ]
 end
