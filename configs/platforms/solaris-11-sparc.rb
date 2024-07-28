@@ -41,7 +41,9 @@ action=nocheck
 basedir=default" > /var/tmp/vanagon-noask;
   echo "mirror=https://artifactory.delivery.puppetlabs.net/artifactory/generic__remote_opencsw_mirror/testing" > /var/tmp/vanagon-pkgutil.conf;
   pkgadd -n -a /var/tmp/vanagon-noask -d http://get.opencsw.org/now all
-  /opt/csw/bin/pkgutil -U && /opt/csw/bin/pkgutil -y -i gcc4g++ bison CSWxz-5.2.8,REV=2022.11.16 || exit 1
+  # See PA-6877 for why gcc4g++ needs to be installed seperately from the other packages
+  /opt/csw/bin/pkgutil -U && /opt/csw/bin/pkgutil -y -i gcc4g++ && \
+  /opt/csw/bin/pkgutil -config=/var/tmp/vanagon-pkgutil.conf -U && /opt/csw/bin/pkgutil -config=/var/tmp/vanagon-pkgutil.conf -y -i bison CSWxz-5.2.8,REV=2022.11.16 || exit 1
 
   ntpdate pool.ntp.org]
 end
