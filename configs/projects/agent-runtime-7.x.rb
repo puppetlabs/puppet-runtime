@@ -61,6 +61,11 @@ project 'agent-runtime-7.x' do |proj|
   proj.component 'rubygem-thor'
   proj.component 'rubygem-scanf'
 
+  # We add rexml explicitly in here because even though ruby 2 ships with rexml as its default gem, the version
+  # of rexml it ships with contains CVE-2024-35176 and CVE-2024-39908. So, we add it here to update to a higher version
+  # free from the CVEs.
+  proj.component 'rubygem-rexml'
+
   if platform.is_linux?
     proj.component "virt-what"
     proj.component "dmidecode" unless platform.architecture =~ /ppc64/
