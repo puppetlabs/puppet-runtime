@@ -90,7 +90,7 @@ elsif GEM_VERSION <= Gem::Version.new('3.4.14')
   regexp  = /Gem\.ruby\.shellsplit/
   replace = "\\& << '-r/opt/puppetlabs/puppet/share/doc/rbconfig-#{target_ruby_version}-orig.rb'"
   builder = 'rubygems/ext/builder.rb'
-elsif GEM_VERSION <= Gem::Version.new('3.5.10')
+elsif GEM_VERSION <= Gem::Version.new('3.5.16')
   # $ git show v3.4.9:lib/rubygems/ext/builder.rb
   #     cmd = Shellwords.split(Gem.ruby)
   #
