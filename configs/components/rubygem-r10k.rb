@@ -1,6 +1,6 @@
 component 'rubygem-r10k' do |pkg, settings, platform|
-  pkg.version '3.16.0'
-  pkg.sha256sum 'b149769db941e93494e2748229fc247c34a8509261209f640a57e16e40560ba5'
+  pkg.version '3.16.2'
+  pkg.sha256sum '9775a726ba94a543bf49952b10dcd23690a54f5d2a361746b78b1292abe32eb9'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end

@@ -1,6 +1,6 @@
 component 'rubygem-rexml' do |pkg, settings, platform|
-  pkg.version '3.3.2'
-  pkg.md5sum '55d213401f5e6a7a83ff3d2cd64a23fe'
+  pkg.version '3.3.4'
+  pkg.md5sum 'b7411377f3c1a9cbe65e862f74067f91'
 
   # If the platform is solaris with sparc architecture in agent-runtime-7.x project, we want to gem install rexml
   # ignoring the dependencies, this is because the pl-ruby version used in these platforms is ancient so it gets
