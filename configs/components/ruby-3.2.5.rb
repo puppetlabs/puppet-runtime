@@ -1,7 +1,7 @@
 # The file name of the ruby component must match the ruby_version
 component 'ruby-3.2.4' do |pkg, settings, platform|
-  pkg.version '3.2.4'
-  pkg.sha256sum 'c72b3c5c30482dca18b0f868c9075f3f47d8168eaf626d4e682ce5b59c858692'
+  pkg.version '3.2.5'
+  pkg.sha256sum 'ef0610b498f60fb5cfd77b51adb3c10f4ca8ed9a17cb87c61e5bea314ac34a16'
 
   # rbconfig-update is used to munge rbconfigs after the fact.
   pkg.add_source("file://resources/files/ruby/rbconfig-update.rb")
