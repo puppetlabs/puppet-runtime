@@ -4,8 +4,8 @@ component 'rubygem-concurrent-ruby' do |pkg, settings, platform|
   pkg.version version
 
   case version
-  when '1.2.3'
-    pkg.sha256sum '82fdd3f8a0816e28d513e637bb2b90a45d7b982bdf4f3a0511722d2e495801e2'
+  when '1.3.3'
+    pkg.sha256sum '4f9cd28965c4dcf83ffd3ea7304f9323277be8525819cb18a3b61edcb56a7c6a'
   else
     raise "rubygem-concurrent-ruby #{version} has not been configured; Cannot continue."
   end
