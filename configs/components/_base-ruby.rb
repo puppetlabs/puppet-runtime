@@ -76,6 +76,14 @@ elsif platform.is_macos?
   elsif platform.architecture == 'arm64' && platform.os_version.to_i >= 13
     pkg.environment 'CC', 'clang'
   end
+elsif((platform.is_sles? && platform.os_version.to_i >= 15) ||
+      (platform.is_el? && platform.os_version.to_i >= 8 && platform.architecture !~ /ppc64/) ||
+      (platform.is_debian? && platform.os_version.to_i >= 10) ||
+      (platform.is_ubuntu? && platform.os_version.to_i >= 20) ||
+      platform.is_fedora?
+    )
+  pkg.environment 'LDFLAGS', settings[:ldflags]
+  pkg.environment 'optflags', settings[:cflags]
 end
 
 ####################
