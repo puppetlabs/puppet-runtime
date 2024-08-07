@@ -291,6 +291,9 @@ component 'ruby-3.2.4' do |pkg, settings, platform|
   pkg.add_source('file://resources/files/rubygems/GlobalSignRootCA_R3.pem')
   pkg.install_file '../GlobalSignRootCA_R3.pem', File.join(certs_dir, 'GlobalSignRootCA_R3.pem')
 
+  pkg.add_source('file://resources/files/rubygems/DigiCertGlobalRootG2.pem')
+  pkg.install_file '../DigiCertGlobalRootG2.pem', File.join(certs_dir, 'DigiCertGlobalRootG2.pem')
+
   if rbconfig_changes.any?
     pkg.install do
       [
