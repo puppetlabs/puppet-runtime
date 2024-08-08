@@ -2,6 +2,7 @@ component 'rubygem-highline' do |pkg, settings, _platform|
   version = settings[:rubygem_highline_version] || '2.1.0'
   pkg.version version
 
+  # leaving this at 3.0.1 for gem update on 12/08/2024 see https://github.com/puppetlabs/puppet-runtime/pull/888 for more info
   case version
   when '2.1.0'
     pkg.md5sum '4209083bda845d47dcc05b7ab23f25fd'

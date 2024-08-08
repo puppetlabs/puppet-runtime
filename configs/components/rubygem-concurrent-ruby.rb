@@ -3,6 +3,7 @@ component 'rubygem-concurrent-ruby' do |pkg, settings, platform|
   version = settings[:rubygem_concurrent_ruby_version] || '1.2.3'
   pkg.version version
 
+  # leaving temporarily for ruby 3.2.4 for the gem update on 12/08/2024
   case version
   when '1.2.3'
     pkg.sha256sum '82fdd3f8a0816e28d513e637bb2b90a45d7b982bdf4f3a0511722d2e495801e2'
