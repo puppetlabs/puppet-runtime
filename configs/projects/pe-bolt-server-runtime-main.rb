@@ -19,6 +19,10 @@ project 'pe-bolt-server-runtime-main' do |proj|
   end
 
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-pe-bolt-server_with_ruby.rb'))
+  # These are ruby 3/puppet 8 specific gems. Some of them are "default/standard" gems. There
+  # is a very annoying issue where default gems can be loaded by MRI but not jruby. 
+  # We explicitly pacakge up some default gems where we have explicit dependencies for jruby
   proj.component 'rubygem-prime'
   proj.component 'rubygem-rexml'
+  proj.component 'rubygem-getoptlong'
 end
