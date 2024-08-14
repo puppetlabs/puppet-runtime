@@ -121,6 +121,9 @@ component 'openssl' do |pkg, settings, platform|
     'no-whirlpool'
   ]
 
+  # Remove this in 3.0.15 or later
+  pkg.apply_patch 'resources/patches/openssl/CVE-2024-5535.patch'
+
   if settings[:use_legacy_openssl_algos]
     pkg.apply_patch 'resources/patches/openssl/openssl-3-activate-legacy-algos.patch'
   else
