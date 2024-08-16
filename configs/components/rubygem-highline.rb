@@ -1,15 +1,10 @@
 component 'rubygem-highline' do |pkg, settings, _platform|
-  version = settings[:rubygem_highline_version] || '2.1.0'
-  pkg.version version
-
-  # leaving this at 3.0.1 for gem update on 12/08/2024 see https://github.com/puppetlabs/puppet-runtime/pull/888 for more info
-  case version
-  when '2.1.0'
-    pkg.md5sum '4209083bda845d47dcc05b7ab23f25fd'
-  when '3.0.1'
-    pkg.sha256sum 'ca18b218fd581b1fae832f89bfeaf2b34d3a93429c44fd4411042ffce286f009'
+  if settings[:ruby_version].to_f >= 3.2
+    pkg.version '3.1.0'
+    pkg.md5sum 'ab3fa9d21304bf9ee9403ffca3d653d0'
   else
-    raise "rubygem-highline version #{version} has not been configured; Cannot continue."
+    pkg.version '2.1.0'
+    pkg.md5sum '4209083bda845d47dcc05b7ab23f25fd'
   end
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
