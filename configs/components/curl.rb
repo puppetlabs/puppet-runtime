@@ -6,8 +6,8 @@ component 'curl' do |pkg, settings, platform|
   case version
   when '7.88.1'
     pkg.sha256sum 'cdb38b72e36bc5d33d5b8810f8018ece1baa29a8f215b4495e495ded82bbf3c7'
-  when '8.7.1'
-    pkg.sha256sum 'f91249c87f68ea00cf27c44fdfa5a78423e41e71b7d408e5901a9896d905c495'
+  when '8.9.1'
+    pkg.sha256sum '291124a007ee5111997825940b3876b3048f7d31e73e9caa681b80fe48b2dcd5'
   else
     raise "curl version #{version} has not been configured; Cannot continue."
   end
