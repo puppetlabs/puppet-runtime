@@ -119,7 +119,7 @@ component 'augeas' do |pkg, settings, platform|
     end
   end
 
-  if platform.name =~ /sles-15|el-8|debian-10/ || platform.is_fedora?
+  if settings[:supports_pie]
     pkg.environment 'CFLAGS', settings[:cflags]
     pkg.environment 'CPPFLAGS', settings[:cppflags]
     pkg.environment "LDFLAGS", settings[:ldflags]
