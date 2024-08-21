@@ -1,6 +1,6 @@
 component 'openssl' do |pkg, settings, platform|
-  pkg.version '1.1.1v'
-  pkg.sha256sum 'd6697e2871e77238460402e9362d47d18382b15ef9f246aba6c7bd780d38a6b0'
+  pkg.version '1.1.1w'
+  pkg.sha256sum 'cf3098950cb4d853ad95c0841f1f9c6d3dc102dccfcacd521d93925208b76ac8'
   pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
@@ -89,6 +89,7 @@ component 'openssl' do |pkg, settings, platform|
 
   pkg.apply_patch 'resources/patches/openssl/CVE-2023-5678.patch'
   pkg.apply_patch 'resources/patches/openssl/CVE-2024-0727.patch'
+  pkg.apply_patch 'resources/patches/openssl/CVE-2024-5535.patch'
   pkg.apply_patch 'resources/patches/openssl/openssl-1.1.1-CVE-2024-2511.patch'
   pkg.apply_patch 'resources/patches/openssl/openssl-1.1.1-CVE-2024-4741.patch'
 
