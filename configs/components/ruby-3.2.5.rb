@@ -161,7 +161,8 @@ component 'ruby-3.2.5' do |pkg, settings, platform|
     'windows-2012r2-x64',
     'windows-2012r2-x86',
     'windows-2019-x64',
-    'windowsfips-2012r2-x64'
+    'windowsfips-2012r2-x64',
+    'windowsfips-2016-x64'
   ]
 
   unless without_dtrace.include? platform.name
@@ -193,6 +194,19 @@ component 'ruby-3.2.5' do |pkg, settings, platform|
         #{settings[:host]} \
         #{special_flags}"
     ]
+  end
+
+  if(platform.name =~ /windowsfips-2016/)
+    # We need the below patch since during ruby build step for windowsfips-2016-x64 agent-runtime builds,
+    # the rbconfig.rb file that gets generated contains '\r' trailing character in 'ruby_version' config.
+    # We patch rbconfig.rb to remove the '\r' character.
+    # This patch has to run after the build step since rbconfig.rb is generated during the build step. 
+    # This is sort of a hacky way to do this. We need to find why the '\r' character gets appended to
+    # 'ruby_version' field in the future so that this patch can be removed - PA-6902.
+    pkg.add_source("#{base}/rbconfig_win.patch")
+    pkg.build do
+      ["TMP=/var/tmp /usr/bin/patch.exe --binary --strip=1 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../rbconfig_win.patch"]
+    end
   end
 
   #########

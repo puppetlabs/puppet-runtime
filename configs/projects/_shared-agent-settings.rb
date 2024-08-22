@@ -162,7 +162,7 @@ if ruby_version_x == "3"
   proj.setting(:openssl_version, '3.0')
 elsif platform.name =~ /^redhatfips-/
   proj.setting(:openssl_version, '1.1.1-fips')
-elsif platform.name =~ /^windowsfips-2012r2/
+elsif platform.name =~ /^windowsfips-/
   proj.setting(:openssl_version, '1.0.2')
 else
   proj.setting(:openssl_version, '1.1.1')
@@ -183,7 +183,7 @@ if platform.is_windows?
   proj.setting(:cflags, "#{proj.cppflags}")
 
   ldflags = "-L#{proj.tools_root}/lib -L#{proj.gcc_root}/lib -L#{proj.libdir} -Wl,--nxcompat"
-  if platform.name !~ /windowsfips-2012r2/ || name != 'agent-runtime-7.x'
+  if platform.name !~ /windowsfips-/ || name != 'agent-runtime-7.x'
     ldflags += ' -Wl,--dynamicbase'
   end
   proj.setting(:ldflags, ldflags)

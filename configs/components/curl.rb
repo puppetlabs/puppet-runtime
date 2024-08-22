@@ -27,6 +27,7 @@ component 'curl' do |pkg, settings, platform|
   elsif platform.is_windows?
     pkg.build_requires "runtime-#{settings[:runtime_project]}"
     pkg.environment "PATH", "$(shell cygpath -u #{settings[:gcc_bindir]}):$(PATH)"
+    pkg.environment "NM" , "/usr/bin/nm" if platform.name =~ /windowsfips-2016/
     pkg.environment "CYGWIN", settings[:cygwin]
   elsif platform.is_aix? && platform.name != 'aix-7.1-ppc'
     pkg.environment "PKG_CONFIG_PATH", "/opt/puppetlabs/puppet/lib/pkgconfig"

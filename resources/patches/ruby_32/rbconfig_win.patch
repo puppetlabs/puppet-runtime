@@ -1,0 +1,22 @@
+diff --git a/rbconfig.rb b/rbconfig.rb
+index 592dd52..a994b0a 100644
+--- a/rbconfig.rb
++++ b/rbconfig.rb
+@@ -13,7 +13,7 @@ module RbConfig
+     raise "ruby lib version (3.2.5) doesn't match executable version (#{RUBY_VERSION})"
+ 
+   # Ruby installed directory.
+-  TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/3.2.0\r/x64-mingw32")
++  TOPDIR = File.dirname(__FILE__).chomp!("/lib/ruby/3.2.0/x64-mingw32")
+   # DESTDIR on make install.
+   DESTDIR = TOPDIR && TOPDIR[/\A[a-z]:/i] || '' unless defined? DESTDIR
+   # The hash configurations stored.
+@@ -55,7 +55,7 @@ module RbConfig
+   CONFIG["sitedir"] = "$(rubylibprefix)/site_ruby"
+   CONFIG["rubyarchdir"] = "$(rubylibdir)/$(arch)"
+   CONFIG["rubylibdir"] = "$(rubylibprefix)/$(ruby_version)"
+-  CONFIG["ruby_version"] = "3.2.0\r"
++  CONFIG["ruby_version"] = "3.2.0"
+   CONFIG["sitearch"] = "x64-msvcrt"
+   CONFIG["arch"] = "x64-mingw32"
+   CONFIG["sitearchincludedir"] = "$(includedir)/$(sitearch)"
