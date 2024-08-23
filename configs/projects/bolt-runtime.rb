@@ -1,13 +1,13 @@
 project 'bolt-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'bolt')
-  proj.setting(:ruby_version, '2.7.8')
-  proj.setting(:openssl_version, '1.1.1')
-  proj.setting(:rubygem_net_ssh_version, '6.1.0')
+  proj.setting(:ruby_version, '3.2.5')
+  proj.setting(:openssl_version, '3.0')
+  proj.setting(:rubygem_net_ssh_version, '7.2.3')
   proj.setting(:augeas_version, '1.14.1')
   # TODO: Can runtime projects use these updated versions?
   proj.setting(:rubygem_deep_merge_version, '1.2.2')
-  proj.setting(:rubygem_puppet_version, '7.32.1')
+  proj.setting(:rubygem_puppet_version, '8.8.1')
 
   platform = proj.get_platform
 
@@ -111,6 +111,10 @@ project 'bolt-runtime' do |proj|
 
   # What to build?
   # --------------
+
+  # Required to build ruby >=3.0.0
+  proj.component 'libffi'
+  proj.component 'libyaml'
 
   # Ruby and deps
   proj.component "openssl-#{proj.openssl_version}"
