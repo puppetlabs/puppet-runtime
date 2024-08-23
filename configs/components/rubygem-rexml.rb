@@ -2,6 +2,8 @@ component 'rubygem-rexml' do |pkg, settings, platform|
   pkg.version '3.3.4'
   pkg.md5sum 'b7411377f3c1a9cbe65e862f74067f91'
 
+  settings["#{pkg.get_name}_remove_older_versions".to_sym] = true
+
   # If the platform is solaris with sparc architecture in agent-runtime-7.x project, we want to gem install rexml
   # ignoring the dependencies, this is because the pl-ruby version used in these platforms is ancient so it gets
   # confused when installing rexml. It tries to install rexml's dependency 'strscan' by building native extensions
