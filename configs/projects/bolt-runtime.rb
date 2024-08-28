@@ -3,6 +3,8 @@ project 'bolt-runtime' do |proj|
   proj.setting(:runtime_project, 'bolt')
   proj.setting(:ruby_version, '3.2.5')
   proj.setting(:openssl_version, '3.0')
+  # Legacy algos must be enabled in OpenSSL >= 3.0 for Bolt's WinRM transport to work.
+  proj.setting(:use_legacy_openssl_algos, true)
   proj.setting(:rubygem_net_ssh_version, '7.2.3')
   proj.setting(:augeas_version, '1.14.1')
   # TODO: Can runtime projects use these updated versions?
