@@ -3,10 +3,6 @@
 # load it with instance_eval. See ruby-x.y-augeas.rb configs.
 #
 
-pkg.add_source("file://resources/patches/augeas/ruby-augeas-0.5.0-patch_c_extension.patch")
-
-# We can remove the below patch after https://github.com/hercules-team/ruby-augeas/pull/17 is merged.
-pkg.add_source("file://resources/patches/augeas/ruby-augeas-0.5.0-patch_remove_unused_parameter.patch")
 
 # These can be overridden by the including component.
 ruby_version ||= settings[:ruby_version]
@@ -14,9 +10,9 @@ host_ruby ||= settings[:host_ruby]
 ruby_dir ||= settings[:ruby_dir]
 ruby_bindir ||= settings[:ruby_bindir]
 
-pkg.version "0.5.0"
-pkg.md5sum "a132eace43ce13ccd059e22c0b1188ac"
-pkg.url "http://download.augeas.net/ruby/ruby-augeas-#{pkg.get_version}.tgz"
+pkg.version "0.6.0"
+pkg.md5sum "3c2a13b748300b5a984bab9a30e74d0f"
+pkg.url "https://github.com/hercules-team/ruby-augeas/releases/download/release-#{pkg.get_version}/ruby-augeas-#{pkg.get_version}.tgz"
 pkg.mirror "#{settings[:buildsources_url]}/ruby-augeas-#{pkg.get_version}.tgz"
 
 pkg.build_requires "ruby-#{ruby_version}"
@@ -75,10 +71,6 @@ end
 
 pkg.build do
   build_commands = []
-  if ruby_version =~ /^3/
-    build_commands << "#{platform.patch} --strip=2 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../ruby-augeas-0.5.0-patch_c_extension.patch"
-  end
-  build_commands << "#{platform.patch} --strip=2 --fuzz=0 --ignore-whitespace --no-backup-if-mismatch < ../ruby-augeas-0.5.0-patch_remove_unused_parameter.patch"
   build_commands << "#{ruby} ext/augeas/extconf.rb"
   build_commands << "#{platform[:make]} -e -j$(shell expr $(shell #{platform[:num_cores]}) + 1)"
 
