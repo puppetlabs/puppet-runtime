@@ -43,6 +43,9 @@ component 'ruby-2.7.8' do |pkg, settings, platform|
   pkg.apply_patch "#{base}/uri-redos-cve-2023-36617.patch"
   pkg.apply_patch "#{base}/stringio_cve-2024-27280.patch"
 
+  pkg.apply_patch "#{base}/0001-Filter-marshaled-objects-ruby30.patch"
+  pkg.apply_patch "#{base}/0001-Use-safe_load-and-safe_load_file-for-rdoc_options.patch"
+
   if platform.is_cross_compiled?
     unless platform.is_macos?
       pkg.apply_patch "#{base}/uri_generic_remove_safe_nav_operator_r2.5.patch"
