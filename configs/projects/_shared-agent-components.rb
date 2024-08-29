@@ -26,7 +26,7 @@ if proj.openssl_version =~ /^3\./
 elsif platform.name =~ /^redhatfips-.*/
   proj.component "openssl-1.1.1-fips"
 else
-  proj.component "openssl-fips-2.0.16" if platform.name =~ /windowsfips-2012r2/ && proj.openssl_version =~ /1.0.2/
+  proj.component "openssl-fips-2.0.16" if platform.name =~ /windowsfips-/ && proj.openssl_version =~ /1.0.2/
   proj.component "openssl-#{proj.openssl_version}"
 end
 
