@@ -131,6 +131,7 @@ elsif platform.is_windows?
 end
 
 proj.setting(:gem_install, "#{proj.host_gem} install --no-rdoc --no-ri --local ")
+proj.setting(:gem_uninstall, "#{proj.host_gem} uninstall --all --ignore-dependencies ")
 
 # For AIX, we use the triple to install a better rbconfig
 if platform.is_aix?
