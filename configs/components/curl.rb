@@ -48,6 +48,7 @@ component 'curl' do |pkg, settings, platform|
     pkg.apply_patch 'resources/patches/curl/CVE-2023-46218.patch'
     pkg.apply_patch 'resources/patches/curl/CVE-2024-2004.patch'
     pkg.apply_patch 'resources/patches/curl/CVE-2024-2398.patch'
+    pkg.apply_patch 'resources/patches/curl/CVE-2024-7264.patch'
   end
 
   configure_options = []
