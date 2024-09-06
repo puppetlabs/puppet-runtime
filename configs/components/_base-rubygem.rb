@@ -41,9 +41,11 @@ pkg.mirror("#{settings[:buildsources_url]}/#{name}-#{version}.gem")
 # in its component file rubygem-<compoment>, before the instance_eval of this file.
 gem_install_options = settings["#{pkg.get_name}_gem_install_options".to_sym]
 remove_older_versions = settings["#{pkg.get_name}_remove_older_versions".to_sym]
+# Set a default gem_uninstall
+gem_uninstall = settings[:gem_uninstall] || "#{settings[:host_gem]} uninstall --all --ignore-dependencies"
 pkg.install do
   steps = []
-  steps << "#{settings[:gem_uninstall]} #{name}" if remove_older_versions
+  steps << "#{gem_uninstall} #{name}" if remove_older_versions
   steps << if gem_install_options.nil?
              "#{settings[:gem_install]} #{name}-#{version}.gem"
            else
