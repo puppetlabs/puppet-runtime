@@ -94,7 +94,7 @@ component 'ruby-3.2.5' do |pkg, settings, platform|
   special_flags = " --prefix=#{ruby_dir} --with-opt-dir=#{settings[:prefix]} "
 
   if settings[:supports_pie]
-    special_flags += " CFLAGS='#{settings[:cflags]}' LDFLAGS='#{settings[:ldflags]}' CPPFLAGS='#{settings[:cppflags]}' "
+    special_flags += " CFLAGS='-fPIC -fstack-protector-strong -fno-plt -O2' LDFLAGS='#{settings[:ldflags]}' CPPFLAGS='-fPIE #{settings[:cppflags]}' "
   end
 
   # Ruby's build process requires a "base" ruby and we need a ruby to install
