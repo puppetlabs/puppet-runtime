@@ -60,6 +60,10 @@ proj.component 'rubygem-gettext'
 proj.component 'rubygem-fast_gettext'
 proj.component 'rubygem-gettext-setup'
 proj.component 'rubygem-minitar'
+proj.component 'rubygem-faraday'
+proj.component 'rubygem-faraday-follow_redirects'
+proj.component 'rubygem-semantic_puppet'
+proj.component 'rubygem-faraday-net_http'
 
 # Bundler
 proj.component 'rubygem-bundler'
@@ -99,5 +103,6 @@ proj.component 'rubygem-deep_merge'
 proj.component 'rubygem-json_pure'
 proj.component 'rubygem-diff-lcs'
 proj.component 'rubygem-pathspec'
+proj.component 'rubygem-puppet_forge'
 
 proj.component 'ansicon' if platform.is_windows?
