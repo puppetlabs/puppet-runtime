@@ -6,8 +6,8 @@ component 'curl' do |pkg, settings, platform|
   case version
   when '7.88.1'
     pkg.sha256sum 'cdb38b72e36bc5d33d5b8810f8018ece1baa29a8f215b4495e495ded82bbf3c7'
-  when '8.9.1'
-    pkg.sha256sum '291124a007ee5111997825940b3876b3048f7d31e73e9caa681b80fe48b2dcd5'
+  when '8.10.1'
+    pkg.sha256sum 'd15ebab765d793e2e96db090f0e172d127859d78ca6f6391d7eafecfd894bbc0'
   else
     raise "curl version #{version} has not been configured; Cannot continue."
   end
@@ -53,7 +53,7 @@ component 'curl' do |pkg, settings, platform|
   end
 
   configure_options = []
-  configure_options << "--with-ssl=#{settings[:prefix]}"
+  configure_options << "--with-ssl=#{settings[:prefix]} --without-libpsl"
 
   # OpenSSL version 3.0 & up no longer ships by default the insecure algorithms
   # that curl's ntlm module depends on (md4 & des).
