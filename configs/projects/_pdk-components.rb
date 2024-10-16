@@ -95,14 +95,13 @@ proj.component 'rubygem-public_suffix'
 proj.component 'rubygem-addressable'
 proj.component 'rubygem-json-schema'
 
-# PDK build
-proj.component 'rubygem-puppet-modulebuilder'
-
 # Other deps
 proj.component 'rubygem-deep_merge'
 proj.component 'rubygem-json_pure'
 proj.component 'rubygem-diff-lcs'
 proj.component 'rubygem-pathspec'
 proj.component 'rubygem-puppet_forge'
+# PDK build
+proj.component 'rubygem-puppet-modulebuilder'
 
 proj.component 'ansicon' if platform.is_windows?
