@@ -1,7 +1,7 @@
 component 'openssl' do |pkg, settings, platform|
-  pkg.version '3.0.14'
-  pkg.sha256sum 'eeca035d4dd4e84fc25846d952da6297484afa0650a6f84c682e39df3a4123ca'
-  pkg.url "https://openssl.org/source/openssl-#{pkg.get_version}.tar.gz"
+  pkg.version '3.0.15'
+  pkg.sha256sum '23c666d0edf20f14249b3d8f0368acaee9ab585b09e1de82107c66e1f3ec9533'
+  pkg.url "https://github.com/openssl/openssl/releases/download/openssl-#{pkg.get_version}/openssl-#{pkg.get_version}.tar.gz"
   pkg.mirror "#{settings[:buildsources_url]}/openssl-#{pkg.get_version}.tar.gz"
 
   #############################
@@ -120,9 +120,6 @@ component 'openssl' do |pkg, settings, platform|
     # 'no-rmd160', this is causing failures with pxp, remove once pxp-agent does not need it
     'no-whirlpool'
   ]
-
-  # Remove this in 3.0.15 or later
-  pkg.apply_patch 'resources/patches/openssl/CVE-2024-5535.patch'
 
   if settings[:use_legacy_openssl_algos]
     pkg.apply_patch 'resources/patches/openssl/openssl-3-activate-legacy-algos.patch'

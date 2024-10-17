@@ -5,6 +5,9 @@ project 'pdk-runtime' do |proj|
   proj.setting(:rubygem_fast_gettext_version, '1.1.2')
   proj.setting(:rubygem_gettext_version, '3.2.2')
   proj.setting(:rubygem_gettext_setup_version, '0.34')
+  proj.setting(:rubygem_puppet_forge_version, '5.0.4')
+  proj.setting(:rubygem_faraday_version, '2.12.0')
+  proj.setting(:rubygem_faraday_net_http_version, '3.3.0')
 
   platform = proj.get_platform
 

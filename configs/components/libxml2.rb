@@ -1,6 +1,6 @@
 component "libxml2" do |pkg, settings, platform|
-  pkg.version '2.12.6'
-  pkg.sha256sum '889c593a881a3db5fdd96cc9318c87df34eb648edfc458272ad46fd607353fbb'
+  pkg.version '2.13.4'
+  pkg.sha256sum '65d042e1c8010243e617efb02afda20b85c2160acdbfbcb5b26b80cec6515650'
 
   libxml2_version_y = pkg.get_version.gsub(/(\d+)\.(\d+)\.(\d+)/, '\1.\2')
   pkg.url "https://download.gnome.org/sources/libxml2/#{libxml2_version_y}/libxml2-#{pkg.get_version}.tar.xz"
