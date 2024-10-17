@@ -1,6 +1,12 @@
 project 'pe-bolt-server-runtime-main' do |proj|
   proj.setting(:pe_version, 'main')
+  # pe-bolt-server must be made compatible with minitar 1.x before
+  # bumping to a version of puppet 8 that requires minitar 1.x
   proj.setting(:rubygem_puppet_version, '8.8.1')
+  # if you update puppet version to a version that requires minitar 1.x,
+  # then update minitar too
+  # proj.settings(:rubygem_minitar_version, '1.0.1')
+
   # We build bolt server with the ruby installed in the puppet-agent dep. For ruby 2.7 we need to use a --no-document flag
   # for gem installs instead of --no-ri --no-rdoc. This setting allows us to use this while we support both ruby 2.5 and 2.7
   # Once we are no longer using ruby 2.5 we can update.

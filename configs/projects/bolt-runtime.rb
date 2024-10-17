@@ -7,7 +7,12 @@ project 'bolt-runtime' do |proj|
   proj.setting(:augeas_version, '1.14.1')
   # TODO: Can runtime projects use these updated versions?
   proj.setting(:rubygem_deep_merge_version, '1.2.2')
+  # bolt-runtime must be made compatible with minitar 1.x before
+  # bumping to a version of puppet 8 that requires minitar 1.x
   proj.setting(:rubygem_puppet_version, '7.32.1')
+  # if you update puppet version to a version that requires minitar 1.x,
+  # then update minitar too
+  # proj.settings(:rubygem_minitar_version, '1.0.1')
 
   platform = proj.get_platform
 
