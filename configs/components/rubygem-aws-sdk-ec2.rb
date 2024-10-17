@@ -1,6 +1,6 @@
 component "rubygem-aws-sdk-ec2" do |pkg, settings, platform|
-  pkg.version "1.469.0"
-  pkg.md5sum "e9aac12389dbd547207f662cb1b1f05b"
+  pkg.version "1.481.0"
+  pkg.md5sum "bbe900b317e117849d7a440dd1f1e12b"
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end

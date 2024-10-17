@@ -1,6 +1,6 @@
 component 'rubygem-minitar' do |pkg, settings, platform|
-  pkg.version '0.12'
-  pkg.md5sum '359d7e38c9afefb82e97a7f301e8c98a'
+  pkg.version '0.12.1'
+  pkg.md5sum '975dee1dadeb26a2a01105802c3172ab'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
