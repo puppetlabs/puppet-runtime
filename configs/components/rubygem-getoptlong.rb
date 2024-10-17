@@ -1,6 +1,6 @@
 component 'rubygem-getoptlong' do |pkg, settings, platform|
-  pkg.version '0.2.0'
-  pkg.md5sum '91760bf343765c5d3f08cb5393d90487'
+  pkg.version '0.2.1'
+  pkg.md5sum 'ded8176bd043e45b082c05872fc513c3'
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
 end
