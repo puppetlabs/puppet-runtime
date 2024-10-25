@@ -101,16 +101,6 @@ project 'bolt-runtime' do |proj|
     proj.setting(:ldflags, "-L#{proj.libdir} ")
   end
 
-  # These flags are applied in addition to the defaults in configs/component/openssl.rb.
-  proj.setting(:openssl_extra_configure_flags, [
-    'no-dtls',
-    'no-dtls1',
-    'no-idea',
-    'no-seed',
-    'no-weak-ssl-ciphers',
-    '-DOPENSSL_NO_HEARTBEATS',
-  ])
-
   # What to build?
   # --------------
 
