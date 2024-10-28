@@ -104,6 +104,11 @@ project 'bolt-runtime' do |proj|
   # What to build?
   # --------------
 
+  # These flags are applied in addition to the defaults in configs/component/openssl.rb.
+  proj.setting(:openssl_extra_configure_flags, [
+    'enable-weak-ssl-ciphers',
+  ])
+  
   # Required to build ruby >=3.0.0
   proj.component 'libffi'
   proj.component 'libyaml'
