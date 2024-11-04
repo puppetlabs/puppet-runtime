@@ -97,7 +97,6 @@ proj.component 'rubygem-json-schema'
 
 # Other deps
 proj.component 'rubygem-deep_merge'
-proj.component 'rubygem-json_pure'
 proj.component 'rubygem-diff-lcs'
 proj.component 'rubygem-pathspec'
 proj.component 'rubygem-puppet_forge'
