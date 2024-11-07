@@ -1,7 +1,7 @@
 project 'bolt-runtime' do |proj|
   # Used in component configurations to conditionally include dependencies
   proj.setting(:runtime_project, 'bolt')
-  proj.setting(:ruby_version, '3.2.5')
+  proj.setting(:ruby_version, '3.2.6')
   proj.setting(:openssl_version, '3.0')
   # Legacy algos must be enabled in OpenSSL >= 3.0 for Bolt's WinRM transport to work.
   proj.setting(:use_legacy_openssl_algos, true)
