@@ -9,7 +9,7 @@ component 'rubygem-faraday-net_http_persistent' do |pkg, settings, platform|
     pkg.version '2.3.0'
     pkg.md5sum 'b8003472ed288c44021dcfed574353b2' 
   else
-    raise "rubygem-faraday version #{version} is not supported"
+    raise "rubygem-faraday-net_http_persistent version #{version} is not supported"
   end
 
   instance_eval File.read('configs/components/_base-rubygem.rb')
