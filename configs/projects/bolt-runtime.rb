@@ -14,6 +14,7 @@ project 'bolt-runtime' do |proj|
   proj.setting(:rubygem_faraday_version, '2.12.0')
   proj.setting(:rubygem_faraday_net_http_version, '3.3.0')
   proj.setting(:rubygem_faraday_net_http_persistent_version, '2.3.0')
+  proj.setting(:rubygem_r10k_version, '4.1.0')
 
   platform = proj.get_platform
 
