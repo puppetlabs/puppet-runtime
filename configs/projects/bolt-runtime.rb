@@ -9,6 +9,11 @@ project 'bolt-runtime' do |proj|
   proj.setting(:augeas_version, '1.14.1')
   # TODO: Can runtime projects use these updated versions?
   proj.setting(:rubygem_deep_merge_version, '1.2.2')
+  proj.setting(:rubygem_puppet_forge_version, '5.0.4')
+  proj.setting(:rubygem_faraday_version, '2.12.0')
+  proj.setting(:rubygem_faraday_net_http_version, '3.3.0')
+  proj.setting(:rubygem_faraday_net_http_persistent_version, '2.3.0')
+  proj.setting(:rubygem_r10k_version, '4.1.0')
   proj.setting(:rubygem_puppet_version, '8.10.0')
 
   platform = proj.get_platform
@@ -158,7 +163,7 @@ project 'bolt-runtime' do |proj|
   proj.component 'rubygem-faraday-patron'
   proj.component 'rubygem-faraday-rack'
   proj.component 'rubygem-faraday-retry'
-  proj.component 'rubygem-faraday_middleware'
+  proj.component 'rubygem-faraday-follow_redirects'
   proj.component 'rubygem-ruby2_keywords'
 
   # Core dependencies
