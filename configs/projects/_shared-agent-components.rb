@@ -62,11 +62,6 @@ proj.component 'rubygem-gettext'
 proj.component 'rubygem-fast_gettext'
 proj.component 'rubygem-ffi'
 
-# We add rexml explicitly in here because even though ruby 3 ships with rexml as its default gem, the version
-# of rexml it ships with contains CVE-2024-41946, CVE-2024-41123, CVE-2024-35176 and CVE-2024-39908.
-# So, we add it here to update to a higher version
-# free from the CVEs.
-proj.component 'rubygem-rexml'
 
 if platform.is_windows? || platform.is_solaris? || platform.is_aix?
   proj.component 'rubygem-minitar'
