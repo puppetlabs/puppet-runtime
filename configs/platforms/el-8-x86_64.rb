@@ -6,6 +6,7 @@ platform "el-8-x86_64" do |plat|
     libsepol-devel
     libselinux-devel
     pkgconfig 
+    python3.11
     readline-devel
     rpmdevtools
     swig

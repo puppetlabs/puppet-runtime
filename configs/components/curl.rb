@@ -17,6 +17,9 @@ component 'curl' do |pkg, settings, platform|
 
   pkg.build_requires "openssl-#{settings[:openssl_version]}"
   pkg.build_requires "puppet-ca-bundle"
+  unless platform.is_windows?
+    pkg.build_requires "libpsl"
+  end
 
   ldflags = settings[:ldflags]
   if platform.is_cross_compiled_linux?
@@ -35,6 +38,7 @@ component 'curl' do |pkg, settings, platform|
     # exclude -Wl,-brtl
     ldflags = "-L#{settings[:libdir]}"
   else
+    pkg.environment "PKG_CONFIG_PATH", "/opt/puppetlabs/puppet/lib/pkgconfig"
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
   end
 
@@ -53,7 +57,10 @@ component 'curl' do |pkg, settings, platform|
   end
 
   configure_options = []
-  configure_options << "--with-ssl=#{settings[:prefix]} --without-libpsl"
+  configure_options << "--with-ssl=#{settings[:prefix]}"
+  if platform.is_windows?
+    configure_options << "--without-libpsl"
+  end
 
   # OpenSSL version 3.0 & up no longer ships by default the insecure algorithms
   # that curl's ntlm module depends on (md4 & des).

@@ -4,6 +4,7 @@ platform 'el-8-aarch64' do |plat|
   packages = %w(
     perl-Getopt-Long 
     patch 
+    python3.11
     swig 
     libselinux-devel 
     readline-devel 
