@@ -47,6 +47,9 @@ project 'agent-runtime-main' do |proj|
   # Load shared agent components
   ########
 
+  unless platform.is_windows?
+    proj.component 'libpsl'
+  end
   instance_eval File.read(File.join(File.dirname(__FILE__), '_shared-agent-components.rb'))
 
   ########
