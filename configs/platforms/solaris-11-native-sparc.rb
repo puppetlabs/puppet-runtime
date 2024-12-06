@@ -56,6 +56,6 @@ basedir=default" > /var/tmp/vanagon-noask;
 echo "mirror=https://artifactory.delivery.puppetlabs.net/artifactory/generic__remote_opencsw_mirror/testing
 wgetopts=--no-check-certificate" > /var/tmp/vanagon-pkgutil.conf;
 pkgadd -n -a /var/tmp/vanagon-noask -d http://get.opencsw.org/now all
-/opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -U && /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i bison CSWxz-5.6.3,REV=2024.10.10 libunistring_dev python33 || exit 1
+/opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -U && /opt/csw/bin/pkgutil --config=/var/tmp/vanagon-pkgutil.conf -y -i bison CSWxz-5.6.3,REV=2024.10.10 libunistring_dev python33 libpsl_dev || exit 1
 ]
 end

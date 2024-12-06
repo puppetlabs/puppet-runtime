@@ -17,7 +17,7 @@ component 'curl' do |pkg, settings, platform|
 
   pkg.build_requires "openssl-#{settings[:openssl_version]}"
   pkg.build_requires "puppet-ca-bundle"
-  unless platform.is_windows?
+  unless platform.is_windows? || platform.name =~ /solaris-11/
     pkg.build_requires "libpsl"
   end
 
@@ -40,6 +40,14 @@ component 'curl' do |pkg, settings, platform|
   else
     pkg.environment "PKG_CONFIG_PATH", "/opt/puppetlabs/puppet/lib/pkgconfig"
     pkg.environment "PATH", "/opt/pl-build-tools/bin:$(PATH):#{settings[:bindir]}"
+  end
+
+  if(version.start_with?('8'))
+    if(platform.name =~ /solaris-11/)
+      pkg.environment "LD_LIBRARY_PATH", "/opt/csw/lib: "
+    else
+      pkg.environment "LD_LIBRARY_PATH", "/opt/csw/lib"
+    end
   end
 
   # Following lines should we removed once we drop curl 7
