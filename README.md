@@ -1,5 +1,7 @@
 # puppet-runtime
 
+This repository is archived and Perforce will no longer be updating this repository. For more information, see [this Puppet blog post](https://www.puppet.com/blog/open-source-puppet-updates-2025).
+
 The puppet-runtime exists to build vendored components for
 [Puppet](https://github.com/puppetlabs) projects and distribute them as a
 tarball for reuse. Runtime projects are built with
