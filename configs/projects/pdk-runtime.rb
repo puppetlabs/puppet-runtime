@@ -8,6 +8,7 @@ project 'pdk-runtime' do |proj|
   proj.setting(:rubygem_puppet_forge_version, '5.0.4')
   proj.setting(:rubygem_faraday_version, '2.12.0')
   proj.setting(:rubygem_faraday_net_http_version, '3.3.0')
+  proj.setting(:curl_version, '8.10.1')
 
   platform = proj.get_platform
 
